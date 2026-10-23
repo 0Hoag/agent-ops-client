@@ -14,7 +14,7 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
-The development server runs the client. Health requests are proxied to the API at `http://localhost:8080`; configure or run the API separately. See [`0Hoag/agent-ops`](https://github.com/0Hoag/agent-ops) for the API and broader project. This repository does not include API code or credentials.
+The client sends API requests to the same origin (`/`). During local development, the server proxies only `/healthz` to `http://localhost:8080`; other API paths are not proxied. Run the API separately for health checks. The client does not currently read `APP_API_URL` or another runtime API-origin setting. See [`0Hoag/agent-ops`](https://github.com/0Hoag/agent-ops) for the API and broader project. This repository does not include API code or credentials.
 
 ## Checks
 
@@ -31,3 +31,5 @@ The same standalone checks run in GitHub Actions for pull requests and pushes to
 ## Agent workflow
 
 See [AGENTS.md](AGENTS.md), [ROLES.md](ROLES.md), and [FIVE-MINUTES.md](FIVE-MINUTES.md). Client-specific standards are in [docs/client-standards.md](docs/client-standards.md).
+
+The Codex worker script requires Codex CLI with a `worker` profile configured externally (`codex exec --profile worker`). The profile must be available in the invoking user's Codex configuration; this repository does not provide or configure it.
