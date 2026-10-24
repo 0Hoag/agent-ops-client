@@ -16,6 +16,7 @@
     "verify:env": "node scripts/verify-env-fixture.mjs",
     "verify:servers": "node scripts/verify-servers.mjs",
     "verify:browser": "node scripts/verify-browser.mjs",
+    "verify:runs-browser": "node scripts/verify-runs-browser.mjs",
     "preview": "NODE_ENV=production RSPACK_MODE=production rspack preview"
   },
   "dependencies": {

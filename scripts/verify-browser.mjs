@@ -80,9 +80,29 @@ try {
     mode = 'board-data';
     await page.getByText('Fixture issue').waitFor();
     await page.screenshot({ path: `${evidence}/board-data.png`, fullPage: true });
+
+    await page.route('**/api/v1/agent-runs/aggregate**', async (route) => {
+      if (mode === 'runs-loading') await new Promise((resolve) => setTimeout(resolve, 1200));
+      if (mode === 'runs-error') await route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"offline"}' });
+      else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: mode === 'runs-empty' ? [] : [{ wave: 'W3', worker: 'Browser fixture', issue_number: 31, runs: 2, input_tokens: 100, cached_input_tokens: 25, cache_write_tokens: 0, output_tokens: 5, reasoning_tokens: 0, cost_usd: 1.25 }] }) });
+    });
+    await page.route('**/api/v1/agent-runs**', async (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"data":[]}' }));
+    mode = 'runs-loading';
+    await page.goto('http://127.0.0.1:4319/runs');
+    await page.getByRole('status').waitFor();
+    await page.screenshot({ path: `${evidence}/runs-loading.png`, fullPage: true });
+    await page.getByText('Browser fixture').waitFor();
+    mode = 'runs-empty';
+    await page.reload();
+    await page.getByText('No runs recorded.').waitFor();
+    await page.screenshot({ path: `${evidence}/runs-empty.png`, fullPage: true });
+    mode = 'runs-error';
+    await page.reload();
+    await page.getByRole('alert').waitFor();
+    await page.screenshot({ path: `${evidence}/runs-error.png`, fullPage: true });
     assert.deepEqual(errors, [], `browser console errors: ${errors.join('; ')}`);
     fs.writeFileSync(`${evidence}/console-errors.log`, 'No browser console/page errors.\n');
-    console.log(`Browser fixture PASS; screenshots and console log: ${evidence}/; console errors: 0`);
+    console.log(`Browser fixture PASS (health, board, and production runs route loading/empty/error); screenshots and console log: ${evidence}/; console errors: 0`);
   } finally {
     await browser.close();
   }
