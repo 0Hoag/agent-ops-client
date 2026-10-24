@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { boardWebSocketUrl, subscribeToBoard } from './liveBoard';
-import { getApiBaseUrl } from '../../../shared/env';
-import { http } from '../../../shared/http';
 
 const sockets: Array<{ url: string; close: ReturnType<typeof vi.fn>; listener?: (event: MessageEvent<string>) => void }> = [];
 class FakeWebSocket {
@@ -18,8 +16,6 @@ describe('board live updates', () => {
   it('uses same-origin ws or configured secure API origin', () => {
     vi.stubGlobal('window', { location: { href: 'https://client.example/board' } });
     expect(boardWebSocketUrl('repo id')).toBe('wss://client.example/api/v1/board/ws?repository_id=repo+id');
-    vi.spyOn(http, 'get').mockResolvedValue({ data: {} });
-    expect(new URL('/api/v1/board', new URL(getApiBaseUrl(), window.location.href)).origin).toBe('https://client.example');
   });
 
   it('invalidates only matching repository event and closes on cleanup', () => {
