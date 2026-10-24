@@ -1,10 +1,10 @@
-import { useRunAggregates } from './services/runs';
+import { cacheHitPercent, useRunAggregates } from './services/runs';
 import type { RunAggregate } from './services/types';
 
-function cost(value: number | undefined): string { return value === undefined ? 'Unknown' : `$${value.toFixed(4)}`; }
-function percentage(row: RunAggregate): string {
-  const denominator = row.input_tokens + row.cached_input_tokens + row.cache_write_tokens;
-  return denominator === 0 ? 'N/A' : `${((row.cached_input_tokens / denominator) * 100).toFixed(1)}%`;
+export function formatCost(value: number | undefined): string { return value === undefined ? 'Unknown' : `$${value.toFixed(4)}`; }
+export function formatCacheHit(row: RunAggregate): string {
+  const percentage = cacheHitPercent(row);
+  return percentage === null ? 'N/A' : `${percentage.toFixed(1)}%`;
 }
 
 export function RunsPage() {
@@ -14,6 +14,6 @@ export function RunsPage() {
     {aggregates.isPending && <p role="status" className="p-6">Loading runs…</p>}
     {aggregates.isError && <p role="alert" className="rounded bg-rose-50 p-4 text-rose-800">Unable to load runs: {aggregates.error.message}</p>}
     {aggregates.data && aggregates.data.length === 0 && <p className="rounded bg-white p-6 text-slate-600">No runs recorded.</p>}
-    {aggregates.data && aggregates.data.length > 0 && <div className="overflow-x-auto rounded bg-white"><table className="w-full text-left text-sm"><thead className="bg-slate-100"><tr>{['Wave', 'Worker', 'Issue', 'Runs', 'Cache hit', 'Cost (USD)'].map((heading) => <th key={heading} className="p-3">{heading}</th>)}</tr></thead><tbody>{aggregates.data.map((row, index) => <tr className="border-t" key={`${row.wave}-${row.worker}-${row.issue_number ?? 'all'}-${index}`}><td className="p-3">{row.wave}</td><td className="p-3">{row.worker}</td><td className="p-3">{row.issue_number === undefined ? '—' : `#${row.issue_number}`}</td><td className="p-3">{row.runs}</td><td className="p-3">{percentage(row)}</td><td className="p-3">{cost(row.cost_usd)}</td></tr>)}</tbody></table></div>}
+    {aggregates.data && aggregates.data.length > 0 && <div className="overflow-x-auto rounded bg-white"><table className="w-full text-left text-sm"><thead className="bg-slate-100"><tr>{['Wave', 'Worker', 'Issue', 'Runs', 'Cache hit', 'Cost (USD)'].map((heading) => <th key={heading} className="p-3">{heading}</th>)}</tr></thead><tbody>{aggregates.data.map((row, index) => <tr className="border-t" key={`${row.wave}-${row.worker}-${row.issue_number ?? 'all'}-${index}`}><td className="p-3">{row.wave}</td><td className="p-3">{row.worker}</td><td className="p-3">{row.issue_number === undefined ? '—' : `#${row.issue_number}`}</td><td className="p-3">{row.runs}</td><td className="p-3">{formatCacheHit(row)}</td><td className="p-3">{formatCost(row.cost_usd)}</td></tr>)}</tbody></table></div>}
   </section>;
 }
