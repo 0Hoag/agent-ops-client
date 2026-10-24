@@ -43,7 +43,7 @@ describe('RunsPage', () => {
     expect(unknown.textContent).toContain('Unknown');
   });
 
-  it('shows aggregate data returned by the API', async () => {
+  it('renders successful aggregate API rows', async () => {
     getAggregates.mockResolvedValueOnce({ data: { data: [
       { wave: 'W3', worker: 'Real API Worker', issue_number: 30, runs: 2, input_tokens: 75, cached_input_tokens: 25, cache_write_tokens: 0, output_tokens: 5, reasoning_tokens: 0, cost_usd: 1.25 },
     ] } });
