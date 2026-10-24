@@ -1,1 +1,2 @@
-export const healthPaths = { health: '/' };
+/** Paths owned by the health module. */
+export const healthPaths = { health: '/' } as const;
