@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ciLabel, groupIssues, statuses, useBoard, useRepositories } from './services/board';
+import { subscribeToBoard } from './services/liveBoard';
 import type { BoardIssue, IssueStatus, PullRequest } from './services/types';
 
 const titles: Record<IssueStatus, string> = { todo: 'Todo', in_progress: 'In progress', review: 'Review', blocked: 'Blocked', done: 'Done' };
@@ -13,7 +15,11 @@ export function BoardPage() {
   const repositories = useRepositories();
   const [repositoryId, setRepositoryId] = useState('');
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
   const board = useBoard(repositoryId, page);
+  useEffect(() => subscribeToBoard(repositoryId, () => {
+    void queryClient.invalidateQueries({ queryKey: ['board', repositoryId] });
+  }), [queryClient, repositoryId]);
   const allIssues = board.data?.data ?? [];
   const grouped = groupIssues(allIssues);
   return <section><header className="mb-5 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-2xl font-semibold">Issue board</h1><p className="text-sm text-slate-600">Repository work and linked pull request checks</p></div><label className="grid gap-1 text-sm">Repository{repositories.isError ? <span role="alert" className="text-rose-700">Unable to load repositories: {repositories.error.message}</span> : <select aria-label="Repository" className="min-w-64 rounded border bg-white p-2" value={repositoryId} onChange={(event) => { setRepositoryId(event.target.value); setPage(1); }} disabled={repositories.isPending || !repositories.data?.data.length}><option value="">Select a repository</option>{repositories.data?.data.map((repo) => <option key={repo.id} value={repo.id}>{repo.full_name}</option>)}</select>}</label></header>
