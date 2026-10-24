@@ -1,7 +1,9 @@
 import { paths } from './paths';
-import { healthModule } from '../modules/health/module';
+import { createHealthModule } from '../modules/health/module';
 
+/** Registers the health module's canonical route path. */
 export function registerHealth() {
-  paths.health = healthModule.path;
-  return healthModule;
+  const module = createHealthModule();
+  paths.health = module.path;
+  return module;
 }
