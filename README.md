@@ -30,7 +30,7 @@ The same standalone checks run in GitHub Actions for pull requests and pushes to
 
 ## Generated API
 
-`src/shared/api/swagger.json` is the pinned Swagger 2.0 contract from `0Hoag/agent-ops` commit `86a4f211a64b14cf83db6d1e2c8e00a7d5206794` (`api/docs/swagger.json`). Regenerate the checked-in TypeScript client with `pnpm generate:api`; `swagger-typescript-api` 13.1.1 and its templates are pinned in the lockfile and `scripts/api-templates/`.
+`src/shared/api/swagger.json` is the pinned Swagger 2.0 contract from `0Hoag/agent-ops` commit `852c176e7d72560c8e00e24bb1046ac5bde8d17d` (`api/docs/swagger.json`, SHA-256 `f08d1c31ad2e834a408a412bb7b076ee7416a0633a55d9fe6c109bc48b90aeb4`). Regenerate the checked-in TypeScript client with `pnpm generate:api`; `swagger-typescript-api` 13.1.1 and its templates are pinned in the lockfile and `scripts/api-templates/`.
 
 ## Insights API smoke
 
