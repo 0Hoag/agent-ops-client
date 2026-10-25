@@ -119,6 +119,43 @@ it('clears the session and redirects when a protected data request expires after
   expect(sessionStorage.getItem('agent-ops-token')).toBeNull();
   expect(client.getQueryCache().getAll()).toHaveLength(0);
 });
+it.each([401, 200])('keeps the newer session/cache and route gated after stale validation %s', async (status) => {
+  sessionStorage.setItem('agent-ops-token', 'session-a');
+  const adapter = http.defaults.adapter;
+  let finish!: () => void;
+  let unauthorized = 0;
+  const onUnauthorized = () => { unauthorized += 1; };
+  window.addEventListener('auth:unauthorized', onUnauthorized);
+  http.defaults.adapter = (config) => {
+    requests.push(config);
+    expect(config.headers.Authorization).toBe('Bearer session-a');
+    return new Promise((resolve, reject) => {
+      finish = () => {
+        const response = { config, status, statusText: String(status), headers: {}, data: {} };
+        if (status === 200) resolve(response);
+        else reject(new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined, response));
+      };
+    });
+  };
+  try {
+    const client = mount('/board?view=review#issue');
+    await waitFor(() => expect(finish).toBeTypeOf('function'));
+    sessionStorage.setItem('agent-ops-token', 'session-b');
+    finish();
+    await screen.findByRole('alert');
+    expect(sessionStorage.getItem('agent-ops-token')).toBe('session-b');
+    expect(client.getQueryData(['private-data'])).toBe('previous session');
+    expect(unauthorized).toBe(0);
+    expect(screen.getByTestId('location').textContent).toBe('/board?view=review#issue');
+    expect(requests.map((request) => request.url)).toEqual(['/api/v1/auth/session']);
+    http.defaults.adapter = adapter;
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await screen.findByText('No repositories available.');
+    expect(requests.slice(1).every((request) => request.headers.Authorization === 'Bearer session-b')).toBe(true);
+  } finally {
+    window.removeEventListener('auth:unauthorized', onUnauthorized);
+  }
+});
 it('does not render the next protected route using the previous route validation', async () => {
   sessionStorage.setItem('agent-ops-token', 'issued-token');
   mount();
