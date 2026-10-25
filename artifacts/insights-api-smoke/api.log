@@ -1,0 +1,22 @@
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (6 handlers)
+[GIN-debug] GET    /healthz                  --> github.com/0Hoag/agent-ops/api/pkg/handlers.(*Health).Healthz-fm (6 handlers)
+[GIN-debug] GET    /readyz                   --> github.com/0Hoag/agent-ops/api/pkg/handlers.(*Health).Readyz-fm (6 handlers)
+[GIN-debug] POST   /api/v1/webhooks/:provider --> github.com/0Hoag/agent-ops/api/modules/webhook.(*Controller).Handle-fm (6 handlers)
+[GIN-debug] GET    /api/v1/repositories      --> github.com/0Hoag/agent-ops/api/modules/board.(*Controller).ListRepositories-fm (6 handlers)
+[GIN-debug] GET    /api/v1/board             --> github.com/0Hoag/agent-ops/api/modules/board.(*Controller).ListBoard-fm (6 handlers)
+[GIN-debug] GET    /api/v1/board/ws          --> github.com/0Hoag/agent-ops/api/modules/board.(*Hub).Handle-fm (6 handlers)
+[GIN-debug] GET    /api/v1/insights          --> github.com/0Hoag/agent-ops/api/modules/insight.(*Controller).Get-fm (6 handlers)
+[GIN-debug] POST   /api/v1/agent-runs        --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).Create-fm (6 handlers)
+[GIN-debug] GET    /api/v1/agent-runs        --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).List-fm (6 handlers)
+[GIN-debug] GET    /api/v1/agent-runs/aggregate --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).Aggregate-fm (6 handlers)
+{"time":"2026-10-25T09:36:18.126475+07:00","level":"INFO","msg":"api listening","addr":"127.0.0.1:19993"}
+{"time":"2026-10-25T09:36:18.986074+07:00","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":1}
+{"time":"2026-10-25T09:36:19.009816+07:00","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":3}
+{"time":"2026-10-25T09:36:19.039728+07:00","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":6}
+{"time":"2026-10-25T09:36:19.215496+07:00","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/insights","status":200,"duration_ms":4}
+{"time":"2026-10-25T09:36:23.227322+07:00","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":3}
+{"time":"2026-10-25T09:36:23.250269+07:00","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/insights","status":200,"duration_ms":4}
