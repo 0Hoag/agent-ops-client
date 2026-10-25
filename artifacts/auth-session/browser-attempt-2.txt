@@ -1,0 +1,22 @@
+Relevant command output from provisioning attempt 2:
+
+$ pnpm build
+src/app/router.test.tsx(107,60): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+[ELIFECYCLE] Command failed with exit code 2.
+exit=2
+
+Investigation: Testing Library getByRole accepts a name matcher, not Playwright's
+exact option. Resolution: remove exact from the test's getByRole call.
+Subsequent mutation, browser acceptance and final gate were rerun.
+
+$ docker compose -p client-login-24087 ... down --volumes --remove-orphans
+exit=0
+$ docker ps -a --filter label=com.docker.compose.project=client-login-24087 --format {{.ID}}
+exit=0 (empty)
+$ docker volume ls --filter label=com.docker.compose.project=client-login-24087 --format {{.Name}}
+exit=0 (empty)
+CLEANUP PASS: client-login-24087: zero containers, volumes, listeners on 18739, 18740, 18741.

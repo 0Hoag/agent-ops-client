@@ -1,0 +1,203 @@
+[
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:18739/api/v1/auth/login",
+    "status": 401,
+    "authorization": null,
+    "body": {
+      "status": 401,
+      "message": "invalid credentials"
+    }
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:18739/api/v1/auth/login",
+    "status": 200,
+    "authorization": null,
+    "body": {
+      "token": "<redacted>"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/repositories?page=1&per_page=100",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "data": [
+        {
+          "id": "d0000000-0000-4000-8000-000000000001",
+          "provider": "github",
+          "full_name": "login/acceptance"
+        }
+      ],
+      "meta": {
+        "page": 1,
+        "per_page": 100,
+        "total": 1
+      }
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/board?repository_id=d0000000-0000-4000-8000-000000000001&page=1&per_page=100",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "data": [
+        {
+          "id": "d0000000-0000-4000-8000-000000000002",
+          "repository_id": "d0000000-0000-4000-8000-000000000001",
+          "number": 99001,
+          "title": "Login acceptance: real API board issue",
+          "state": "open",
+          "status": "review",
+          "labels": [
+            "status:review"
+          ],
+          "assignee": "",
+          "pull_requests": [
+            {
+              "number": 99002,
+              "title": "Login acceptance linked PR",
+              "state": "open",
+              "head_sha": "d000000000000000000000000000000000000000",
+              "branch": "login/acceptance",
+              "pipeline_runs": [
+                {
+                  "external_id": "login-ci-99002",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "sha": "d000000000000000000000000000000000000000"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "page": 1,
+        "per_page": 100,
+        "total": 1
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:18739/api/v1/auth/login",
+    "status": 200,
+    "authorization": null,
+    "body": {
+      "token": "<redacted>"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/repositories?page=1&per_page=100",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "data": [
+        {
+          "id": "d0000000-0000-4000-8000-000000000001",
+          "provider": "github",
+          "full_name": "login/acceptance"
+        }
+      ],
+      "meta": {
+        "page": 1,
+        "per_page": 100,
+        "total": 1
+      }
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 401,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "status": 401,
+      "message": "invalid token"
+    }
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:18739/api/v1/auth/login",
+    "status": 200,
+    "authorization": null,
+    "body": {
+      "token": "<redacted>"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/auth/session",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "account_id": "d0000000-0000-4000-8000-000000000005",
+      "email": "login@example.test"
+    }
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:18739/api/v1/agent-runs/aggregate",
+    "status": 200,
+    "authorization": "Bearer <redacted>",
+    "body": {
+      "status": 200,
+      "data": []
+    }
+  }
+]

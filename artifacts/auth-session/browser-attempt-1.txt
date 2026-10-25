@@ -1,0 +1,20 @@
+Relevant command output from provisioning attempt 1 (full command and cleanup summary):
+
+$ docker compose -p client-login-21347 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml exec -T postgres psql -U agent_ops -d agent_ops -v ON_ERROR_STOP=1
+CREATE EXTENSION
+ERROR:  null value in column "id" of relation "accounts" violates not-null constraint
+DETAIL:  Failing row contains (null, login@example.test, <disposable bcrypt hash>, 2026-10-25 17:22:04.182916+00, 2026-10-25 17:22:04.182916+00).
+exit=3
+
+Investigation: pinned API migration 005_create_accounts_table.sql declares
+`id uuid PRIMARY KEY` without a default. The fixture insert omitted the id.
+Resolution: supply fixture UUID d0000000-0000-4000-8000-000000000005.
+No API source changes.
+
+$ docker compose -p client-login-21347 ... down --volumes --remove-orphans
+exit=0
+$ docker ps -a --filter label=com.docker.compose.project=client-login-21347 --format {{.ID}}
+exit=0 (empty)
+$ docker volume ls --filter label=com.docker.compose.project=client-login-21347 --format {{.Name}}
+exit=0 (empty)
+CLEANUP PASS: client-login-21347: zero containers, volumes, listeners on 18739, 18740, 18741.
