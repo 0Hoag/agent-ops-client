@@ -27,4 +27,10 @@ describe('authentication service', () => {
     logout();
     expect(hasToken()).toBe(false);
   });
+  it('fails if a mutation skips session validation after login', async () => {
+    loginCall.mockResolvedValue({ data: { token: 'jwt-test' } });
+    sessionCall.mockRejectedValue(new Error('unauthorized'));
+    await expect(login('test@example.com', 'pass')).rejects.toThrow('unauthorized');
+    expect(hasToken()).toBe(false);
+  });
 });
