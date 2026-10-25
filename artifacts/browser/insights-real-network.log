@@ -1,0 +1,10 @@
+[
+  {
+    "url": "http://127.0.0.1:19993/api/v1/repositories?page=1&per_page=100",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:19993/api/v1/insights?repository_id=71b43314-505c-41ed-972a-2c485ce0dcd9",
+    "status": 200
+  }
+]

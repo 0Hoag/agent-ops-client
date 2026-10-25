@@ -1,0 +1,17 @@
+$ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
+$ tsc --noEmit
+WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
+  │ Assets:
+  │   main.js (260.149 KiB)
+
+WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
+  │ Entrypoints:
+  │   main (280.764 KiB)
+  │       main.js
+  │       main.css
+
+WARNING in ⚠ Rspack performance recommendations:
+  │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
+  │ For more info visit https://rspack.rs/guide/optimization/code-splitting
+
+Rspack compiled with 3 warnings in 243 ms

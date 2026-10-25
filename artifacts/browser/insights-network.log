@@ -1,0 +1,17 @@
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
+http://127.0.0.1:4320/api/v1/repositories?page=1&per_page=100
+http://127.0.0.1:4320/api/v1/insights?repository_id=repo-1
