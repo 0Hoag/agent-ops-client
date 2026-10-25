@@ -55,7 +55,7 @@ try {
       else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: mode === 'repo-empty' ? [] : [{ id: 'repo-1', full_name: 'fixture/demo' }], meta: { page: 1, per_page: 100, total: 1 } }) });
     });
     await page.route('**/api/v1/board**', async (route) => {
-      const result = mode === 'board-data'
+      const result = mode === 'board-data' || mode === 'repo-data'
         ? { data: [{ id: 'issue-1', number: 1, title: 'Fixture issue', state: 'open', status: 'todo', labels: [], pull_requests: [] }], meta: { page: 1, per_page: 100, total: 1 } }
         : { data: [], meta: { page: 1, per_page: 100, total: 0 } };
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(result) });
@@ -86,7 +86,6 @@ try {
       if (mode === 'runs-error') await route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"offline"}' });
       else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: mode === 'runs-empty' ? [] : [{ wave: 'W3', worker: 'Browser fixture', issue_number: 31, runs: 2, input_tokens: 100, cached_input_tokens: 25, cache_write_tokens: 0, output_tokens: 5, reasoning_tokens: 0, cost_usd: 1.25 }] }) });
     });
-    await page.route('**/api/v1/agent-runs**', async (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"data":[]}' }));
     mode = 'runs-loading';
     await page.goto('http://127.0.0.1:4319/runs');
     await page.getByRole('status').waitFor();

@@ -1,5 +1,5 @@
 import { cacheHitPercent, useRunAggregates } from './services/runs';
-import type { RunAggregate } from './services/types';
+import type { AgentrunAggregate as RunAggregate } from '../../shared/api/generated/Api';
 
 export function formatCost(value: number | undefined): string { return value === undefined ? 'Unknown' : `$${value.toFixed(4)}`; }
 export function formatCacheHit(row: RunAggregate): string {

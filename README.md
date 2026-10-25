@@ -28,6 +28,10 @@ pnpm build
 
 The same standalone checks run in GitHub Actions for pull requests and pushes to `main`.
 
+## Generated API
+
+`src/shared/api/swagger.json` is the pinned Swagger 2.0 contract from `0Hoag/agent-ops` commit `86a4f211a64b14cf83db6d1e2c8e00a7d5206794` (`api/docs/swagger.json`). Regenerate the checked-in TypeScript client with `pnpm generate:api`; `swagger-typescript-api` 13.1.1 and its templates are pinned in the lockfile and `scripts/api-templates/`.
+
 ## Insights API smoke
 
 Run `scripts/verify-insights-api-smoke.sh` with `CLIENT_DIR` pointing to a clean client fixture and `API_REPO_DIR` pointing to a Git checkout of `0Hoag/agent-ops` (with its Compose file and `api/` tree). For example:

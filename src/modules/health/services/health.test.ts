@@ -1,11 +1,12 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http } from '../../../shared/http';
 import { getHealth } from './health';
 
 describe('getHealth', () => {
   it('returns the API health contract', async () => {
-    const get = vi.spyOn(http, 'get').mockResolvedValueOnce({ data: { status: 200, data: { status: 'ok' } } });
+    const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: { status: 'ok' }, status: 200, statusText: 'OK', headers: {}, config: {} });
     await expect(getHealth()).resolves.toEqual({ status: 'ok' });
-    expect(get).toHaveBeenCalledWith('/healthz');
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/healthz', responseType: 'json' }));
   });
+  afterEach(() => vi.restoreAllMocks());
 });

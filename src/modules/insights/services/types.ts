@@ -1,20 +1,12 @@
-export interface Evidence {
-  delivery_id: string;
-  event_type: string;
-  received_at: string;
-  source_at?: string;
-  pr_number?: number;
-  issue_number?: number;
-}
-
-export interface InsightsResponse {
-  repository_id: string;
+export type Evidence = import('../../../shared/api/generated/Api').InsightEvidence;
+type Metric<T> = { [K in keyof T]-?: K extends 'evidence' ? Evidence[] : NonNullable<T[K]> };
+export type InsightsResponse = Omit<import('../../../shared/api/generated/Api').InsightResponse, 'history' | 'send_back' | 'first_ci_success' | 'cycle_time' | 'suggestions'> & {
   history: { complete: boolean; reason?: string };
-  send_back: { count: number; rate: number; numerator: number; denominator: number; evidence: Evidence[] };
-  first_ci_success: { successful: number; eligible: number; rate: number; evidence: Evidence[] };
-  cycle_time: { completed: number; median_seconds: number; evidence: Evidence[] };
-  suggestions: { key: string; message: string; occurrences: number; evidence: Evidence[] }[];
-}
+  send_back: Metric<NonNullable<import('../../../shared/api/generated/Api').InsightResponse['send_back']>>;
+  first_ci_success: Metric<NonNullable<import('../../../shared/api/generated/Api').InsightResponse['first_ci_success']>>;
+  cycle_time: Metric<NonNullable<import('../../../shared/api/generated/Api').InsightResponse['cycle_time']>>;
+  suggestions: ({ [K in keyof import('../../../shared/api/generated/Api').InsightSuggestion]-?: K extends 'evidence' ? Evidence[] : NonNullable<import('../../../shared/api/generated/Api').InsightSuggestion[K]> })[];
+};
 
 export interface Repository { id: string; provider: string; full_name: string }
-export interface RepositoryPage { data: Repository[]; meta: { page: number; per_page: number; total: number } }
+export interface RepositoryPage { data: Repository[]; meta: import('../../../shared/api/generated/Api').BoardListMeta & Required<Pick<import('../../../shared/api/generated/Api').BoardListMeta, 'page' | 'per_page' | 'total'>> }

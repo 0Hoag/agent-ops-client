@@ -18,6 +18,7 @@
     "verify:browser": "node scripts/verify-browser.mjs",
     "verify:runs-browser": "node scripts/verify-runs-browser.mjs",
     "verify:insights-browser": "node scripts/verify-insights-browser.mjs",
+    "generate:api": "swagger-typescript-api generate -p src/shared/api/swagger.json -o src/shared/api/generated -n Api.ts --axios --sort-routes --sort-types --templates scripts/api-templates --single-http-client",
     "preview": "NODE_ENV=production RSPACK_MODE=production rspack preview"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "playwright": "^1.64.1",
     "postcss": "^8.4.49",
     "postcss-loader": "^8.2.1",
+    "swagger-typescript-api": "13.1.1",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.16.0",
