@@ -154,7 +154,25 @@ export interface InsightSuggestion {
   occurrences?: number;
 }
 
+export interface OrganizationAddMemberRequest {
+  account_id: string;
+  role: string;
+}
+
+export interface OrganizationCreateRequest {
+  name: string;
+}
+
+export interface OrganizationUpdateRoleRequest {
+  role: string;
+}
+
 export interface ResponseErrorResponse {
+  message?: string;
+  status?: number;
+}
+
+export interface ResponseMessageResponse {
   message?: string;
   status?: number;
 }
@@ -633,6 +651,139 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/insights`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsCreate
+     * @summary Create organization
+     * @request POST:/api/v1/organizations
+     */
+    v1OrganizationsCreate: (
+      request: OrganizationCreateRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsDetail
+     * @summary Organization detail
+     * @request GET:/api/v1/organizations/{organization_id}
+     */
+    v1OrganizationsDetail: (
+      organizationId: string,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsList
+     * @summary List organizations
+     * @request GET:/api/v1/organizations
+     */
+    v1OrganizationsList: (params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsMembersCreate
+     * @summary Add organization member
+     * @request POST:/api/v1/organizations/{organization_id}/members
+     */
+    v1OrganizationsMembersCreate: (
+      organizationId: string,
+      request: OrganizationAddMemberRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}/members`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsMembersDelete
+     * @summary Remove organization member
+     * @request DELETE:/api/v1/organizations/{organization_id}/members/{account_id}
+     */
+    v1OrganizationsMembersDelete: (
+      organizationId: string,
+      accountId: string,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}/members/${accountId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsMembersList
+     * @summary List organization members
+     * @request GET:/api/v1/organizations/{organization_id}/members
+     */
+    v1OrganizationsMembersList: (
+      organizationId: string,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}/members`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsMembersPartialUpdate
+     * @summary Update member role
+     * @request PATCH:/api/v1/organizations/{organization_id}/members/{account_id}
+     */
+    v1OrganizationsMembersPartialUpdate: (
+      organizationId: string,
+      accountId: string,
+      request: OrganizationUpdateRoleRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}/members/${accountId}`,
+        method: "PATCH",
+        body: request,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
