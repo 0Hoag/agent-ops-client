@@ -28,6 +28,16 @@ pnpm build
 
 The same standalone checks run in GitHub Actions for pull requests and pushes to `main`.
 
+## Insights API smoke
+
+Run `scripts/verify-insights-api-smoke.sh` with `CLIENT_DIR` pointing to a clean client fixture and `API_REPO_DIR` pointing to a Git checkout of `0Hoag/agent-ops` (with its Compose file and `api/` tree). For example:
+
+```sh
+CLIENT_DIR=/path/to/client-fixture API_REPO_DIR=/path/to/agent-ops scripts/verify-insights-api-smoke.sh
+```
+
+The script starts and cleans up only its uniquely labeled Compose project and uses API/client ports 19993/19994.
+
 ## Agent workflow
 
 See [AGENTS.md](AGENTS.md), [ROLES.md](ROLES.md), and [FIVE-MINUTES.md](FIVE-MINUTES.md). Client-specific standards are in [docs/client-standards.md](docs/client-standards.md).
