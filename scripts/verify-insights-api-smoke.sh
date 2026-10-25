@@ -2,7 +2,15 @@
 set -Eeuo pipefail
 
 CLIENT_DIR=${CLIENT_DIR:?CLIENT_DIR must point to a clean client fixture}
-API_REPO_DIR=/Users/zeross/agent-ops-wt/client/w5b-api-fixture
+API_REPO_DIR=${API_REPO_DIR:?API_REPO_DIR must point to an API checkout}
+if [[ ! -d "$API_REPO_DIR" ]] || ! git -C "$API_REPO_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  printf 'invalid API_REPO_DIR: not a Git checkout: %s\n' "$API_REPO_DIR" >&2
+  exit 1
+fi
+if [[ ! -f "$API_REPO_DIR/docker-compose.yml" || ! -f "$API_REPO_DIR/api/go.mod" ]]; then
+  printf 'invalid API_REPO_DIR: expected docker-compose.yml and api/go.mod: %s\n' "$API_REPO_DIR" >&2
+  exit 1
+fi
 ARTIFACT_DIR="$CLIENT_DIR/artifacts/insights-api-smoke"
 PROJECT="insights-api-$(id -u)-$$"
 API_PORT=19993
