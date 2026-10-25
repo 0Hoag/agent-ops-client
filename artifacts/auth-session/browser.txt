@@ -5,9 +5,9 @@ exit=0
 $ git -C <worktree>/.agent-runs/login-acceptance-api status --porcelain --untracked-files=no
 
 exit=0
-$ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml up -d --build postgres api
+$ docker compose -p client-login-37919 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml up -d --build postgres api
 #1 [internal] load local bake definitions
-#1 reading from stdin 632B done
+#1 reading from stdin 652B done
 #1 DONE 0.0s
 
 #2 [internal] load build definition from Dockerfile
@@ -15,44 +15,46 @@ $ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptanc
 #2 DONE 0.0s
 
 #3 [internal] load metadata for docker.io/library/golang:1.26-alpine
-#3 DONE 1.5s
+#3 ...
 
 #4 [internal] load metadata for docker.io/library/alpine:3.22
-#4 DONE 1.5s
+#4 DONE 1.7s
+
+#3 [internal] load metadata for docker.io/library/golang:1.26-alpine
+#3 DONE 1.7s
 
 #5 [internal] load .dockerignore
-#5 transferring context:
 #5 transferring context: 2B done
-#5 DONE 0.5s
+#5 DONE 0.0s
 
-#6 [stage-1 1/3] FROM docker.io/library/alpine:3.22@sha256:2e0b81d60597f449baa56dc25d355367869d2dca4cd57e866f1e2b52af3eb55f
-#6 resolve docker.io/library/alpine:3.22@sha256:2e0b81d60597f449baa56dc25d355367869d2dca4cd57e866f1e2b52af3eb55f 0.0s done
+#6 [build 1/6] FROM docker.io/library/golang:1.26-alpine@sha256:27f2d3b83cfc5803c8078f8e730af0f7c431bf067afaec8f60a36fb763187cba
+#6 resolve docker.io/library/golang:1.26-alpine@sha256:27f2d3b83cfc5803c8078f8e730af0f7c431bf067afaec8f60a36fb763187cba done
 #6 DONE 0.0s
 
-#7 [build 1/6] FROM docker.io/library/golang:1.26-alpine@sha256:27f2d3b83cfc5803c8078f8e730af0f7c431bf067afaec8f60a36fb763187cba
-#7 resolve docker.io/library/golang:1.26-alpine@sha256:27f2d3b83cfc5803c8078f8e730af0f7c431bf067afaec8f60a36fb763187cba 0.0s done
+#7 [stage-1 1/3] FROM docker.io/library/alpine:3.22@sha256:2e0b81d60597f449baa56dc25d355367869d2dca4cd57e866f1e2b52af3eb55f
+#7 resolve docker.io/library/alpine:3.22@sha256:2e0b81d60597f449baa56dc25d355367869d2dca4cd57e866f1e2b52af3eb55f 0.0s done
 #7 DONE 0.0s
 
 #8 [internal] load build context
-#8 transferring context: 6.97kB done
-#8 DONE 0.0s
+#8 transferring context: 390.52kB 0.2s done
+#8 DONE 0.2s
 
-#9 [build 2/6] WORKDIR /src
+#9 [stage-1 2/3] RUN adduser -D -H app
 #9 CACHED
 
-#10 [build 3/6] COPY go.mod go.sum ./
+#10 [build 5/6] COPY . .
 #10 CACHED
 
-#11 [build 4/6] RUN go mod download
+#11 [build 6/6] RUN go build -o /out/agent-ops-api .
 #11 CACHED
 
-#12 [build 6/6] RUN go build -o /out/agent-ops-api .
+#12 [build 2/6] WORKDIR /src
 #12 CACHED
 
-#13 [stage-1 2/3] RUN adduser -D -H app
+#13 [build 3/6] COPY go.mod go.sum ./
 #13 CACHED
 
-#14 [build 5/6] COPY . .
+#14 [build 4/6] RUN go mod download
 #14 CACHED
 
 #15 [stage-1 3/3] COPY --from=build /out/agent-ops-api /agent-ops-api
@@ -60,36 +62,35 @@ $ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptanc
 
 #16 exporting to image
 #16 exporting layers done
-#16 exporting manifest sha256:0024605dfab0f474bf34f3dccf8f3a46ccf040906470e54adcfee5256015c461 done
-#16 exporting config sha256:db145e2366b32d3d2c7f52bf88e70078195992d789125a87a26366395a1f79c0 done
-#16 exporting attestation manifest sha256:a45ec03cdf54557bc3f2e0d66bbc67ccf0265eabf82e96e96894f79d83119bad 0.0s done
-#16 exporting manifest list sha256:c0c4a0e411dc7b0570c35f28d1f1442dfaf0717dd941782e0071875439c37fc9 done
-#16 naming to docker.io/library/client-login-27388-api:latest
-#16 naming to docker.io/library/client-login-27388-api:latest 0.0s done
-#16 unpacking to docker.io/library/client-login-27388-api:latest done
+#16 exporting manifest sha256:7e5e88491ccbf294a13a73a6902acfc6df20f963fe1cb31c12a374328f2c5a11 0.0s done
+#16 exporting config sha256:68b2874b66e311c9b6d5b873a23f3cb39a39d7053d1e34308d86dbb4b4534864 done
+#16 exporting attestation manifest sha256:082f2ece6ea09b929fc52bb2003d47f718998ac286edeb2f1542739ab879212c 0.0s done
+#16 exporting manifest list sha256:350542dd1ff64cf3ab7b26a69547442b81dcf7d7e460d6a149bc481099e553aa done
+#16 naming to docker.io/library/client-login-37919-api:latest done
+#16 unpacking to docker.io/library/client-login-37919-api:latest done
 #16 DONE 0.1s
 
 #17 resolving provenance for metadata file
 #17 DONE 0.0s
- Image client-login-27388-api Building
- Image client-login-27388-api Built
- Network client-login-27388_default Creating
- Network client-login-27388_default Created
- Volume client-login-27388_agent_ops_postgres Creating
- Volume client-login-27388_agent_ops_postgres Created
- Container client-login-27388-postgres-1 Creating
- Container client-login-27388-postgres-1 Created
- Container client-login-27388-api-1 Creating
- Container client-login-27388-api-1 Created
- Container client-login-27388-postgres-1 Starting
- Container client-login-27388-postgres-1 Started
- Container client-login-27388-postgres-1 Waiting
- Container client-login-27388-postgres-1 Healthy
- Container client-login-27388-api-1 Starting
- Container client-login-27388-api-1 Started
+ Image client-login-37919-api Building
+ Image client-login-37919-api Built
+ Network client-login-37919_default Creating
+ Network client-login-37919_default Created
+ Volume client-login-37919_agent_ops_postgres Creating
+ Volume client-login-37919_agent_ops_postgres Created
+ Container client-login-37919-postgres-1 Creating
+ Container client-login-37919-postgres-1 Created
+ Container client-login-37919-api-1 Creating
+ Container client-login-37919-api-1 Created
+ Container client-login-37919-postgres-1 Starting
+ Container client-login-37919-postgres-1 Started
+ Container client-login-37919-postgres-1 Waiting
+ Container client-login-37919-postgres-1 Healthy
+ Container client-login-37919-api-1 Starting
+ Container client-login-37919-api-1 Started
 
 exit=0
-$ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml exec -T postgres psql -U agent_ops -d agent_ops -v ON_ERROR_STOP=1
+$ docker compose -p client-login-37919 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml exec -T postgres psql -U agent_ops -d agent_ops -v ON_ERROR_STOP=1
 CREATE EXTENSION
 INSERT 0 1
 INSERT 0 1
@@ -101,11 +102,11 @@ exit=0
 $ pnpm build
 WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
   │ Assets:
-  │   main.js (281.110 KiB)
+  │   main.js (281.920 KiB)
 
 WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
   │ Entrypoints:
-  │   main (301.953 KiB)
+  │   main (302.763 KiB)
   │       main.js
   │       main.css
 
@@ -113,148 +114,149 @@ WARNING in ⚠ Rspack performance recommendations:
   │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
   │ For more info visit https://rspack.rs/guide/optimization/code-splitting
 
-Rspack compiled with 3 warnings in 352 ms
+Rspack compiled with 3 warnings in 254 ms
 $ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
 $ tsc --noEmit
 
 exit=0
 BROWSER PASS: public denial board/runs/insights; failed login; real login/session/Bearer; full destination; seeded issue/PR/CI; logout; natural JWT expiry/session 401; redirect and re-login to /runs; zero page errors.
-$ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml logs --no-color
+$ docker compose -p client-login-37919 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml logs --no-color
 postgres-1  | The files belonging to this database system will be owned by user "postgres".
 postgres-1  | This user must also own the server process.
 postgres-1  |
 postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
 postgres-1  | The default database encoding has accordingly been set to "UTF8".
-api-1       | [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
 postgres-1  | The default text search configuration will be set to "english".
 postgres-1  |
+postgres-1  | Data page checksums are disabled.
+postgres-1  |
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default "max_connections" ... 100
+postgres-1  | selecting default "shared_buffers" ... 128MB
+postgres-1  | selecting default time zone ... UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+postgres-1  | sh: locale: not found
+postgres-1  | 2026-10-25 17:47:28.414 UTC [35] WARNING:  no usable system locales were found
+postgres-1  | performing post-bootstrap initialization ... ok
+postgres-1  | syncing data to disk ... ok
+postgres-1  |
+postgres-1  |
+postgres-1  | Success. You can now start the database server using:
+postgres-1  |
+api-1       | [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
 api-1       |  - using env:	export GIN_MODE=release
 api-1       |  - using code:	gin.SetMode(gin.ReleaseMode)
 api-1       |
 api-1       | [GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (6 handlers)
 api-1       | [GIN-debug] GET    /healthz                  --> github.com/0Hoag/agent-ops/api/pkg/handlers.(*Health).Healthz-fm (6 handlers)
 api-1       | [GIN-debug] GET    /readyz                   --> github.com/0Hoag/agent-ops/api/pkg/handlers.(*Health).Readyz-fm (6 handlers)
-postgres-1  | Data page checksums are disabled.
-postgres-1  |
-postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
-postgres-1  | creating subdirectories ... ok
-postgres-1  | selecting dynamic shared memory implementation ... posix
 api-1       | [GIN-debug] POST   /api/v1/webhooks/:provider --> github.com/0Hoag/agent-ops/api/modules/webhook.(*Controller).Handle-fm (6 handlers)
 api-1       | [GIN-debug] GET    /api/v1/repositories      --> github.com/0Hoag/agent-ops/api/modules/board.(*Controller).ListRepositories-fm (6 handlers)
 api-1       | [GIN-debug] GET    /api/v1/board             --> github.com/0Hoag/agent-ops/api/modules/board.(*Controller).ListBoard-fm (6 handlers)
-postgres-1  | selecting default "max_connections" ... 100
-postgres-1  | selecting default "shared_buffers" ... 128MB
-postgres-1  | selecting default time zone ... UTC
-postgres-1  | creating configuration files ... ok
-postgres-1  | running bootstrap script ... ok
+postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1  |
+postgres-1  | initdb: warning: enabling "trust" authentication for local connections
 api-1       | [GIN-debug] GET    /api/v1/board/ws          --> github.com/0Hoag/agent-ops/api/modules/board.(*Hub).Handle-fm (6 handlers)
+postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
 api-1       | [GIN-debug] GET    /api/v1/insights          --> github.com/0Hoag/agent-ops/api/modules/insight.(*Controller).Get-fm (6 handlers)
 api-1       | [GIN-debug] POST   /api/v1/agent-runs        --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).Create-fm (6 handlers)
 api-1       | [GIN-debug] GET    /api/v1/agent-runs        --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).List-fm (6 handlers)
 api-1       | [GIN-debug] GET    /api/v1/agent-runs/aggregate --> github.com/0Hoag/agent-ops/api/modules/agentrun.(*Controller).Aggregate-fm (6 handlers)
 api-1       | [GIN-debug] POST   /api/v1/auth/login        --> github.com/0Hoag/agent-ops/api/modules/auth.(*Controller).Login-fm (6 handlers)
 api-1       | [GIN-debug] GET    /api/v1/auth/session      --> github.com/0Hoag/agent-ops/api/modules/auth.(*Controller).Session-fm (6 handlers)
-api-1       | {"time":"2026-10-25T17:27:45.936547795Z","level":"INFO","msg":"api listening","addr":":8080"}
-postgres-1  | sh: locale: not found
-postgres-1  | 2026-10-25 17:27:43.470 UTC [34] WARNING:  no usable system locales were found
-postgres-1  | performing post-bootstrap initialization ... ok
-postgres-1  | syncing data to disk ... ok
-api-1       | {"time":"2026-10-25T17:27:46.667256587Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:47.671845962Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:49.713261297Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:51.286432256Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":401,"duration_ms":266}
-postgres-1  |
-postgres-1  |
-postgres-1  | Success. You can now start the database server using:
-postgres-1  |
-api-1       | {"time":"2026-10-25T17:27:51.602336673Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":262}
-api-1       | {"time":"2026-10-25T17:27:51.609065798Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:51.613384464Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:51.621289131Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":1}
-api-1       | {"time":"2026-10-25T17:27:51.637929923Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/board","status":200,"duration_ms":4}
-api-1       | {"time":"2026-10-25T17:27:51.723390673Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/board/ws","status":200,"duration_ms":89}
-api-1       | {"time":"2026-10-25T17:27:51.749765214Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:52.056621631Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":264}
-api-1       | {"time":"2026-10-25T17:27:52.059260798Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:52.062184589Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:52.065467214Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:53.803468799Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:27:55.839636675Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
-postgres-1  |
-api-1       | {"time":"2026-10-25T17:27:57.883898592Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-postgres-1  | initdb: warning: enabling "trust" authentication for local connections
-postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
-postgres-1  | waiting for server to start....2026-10-25 17:27:43.911 UTC [40] LOG:  starting PostgreSQL 17.11 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
-postgres-1  | 2026-10-25 17:27:43.913 UTC [40] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-postgres-1  | 2026-10-25 17:27:43.917 UTC [43] LOG:  database system was shut down at 2026-10-25 17:27:43 UTC
-postgres-1  | 2026-10-25 17:27:43.921 UTC [40] LOG:  database system is ready to accept connections
+api-1       | {"time":"2026-10-25T17:47:31.133484385Z","level":"INFO","msg":"api listening","addr":":8080"}
+api-1       | {"time":"2026-10-25T17:47:31.831187677Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":3}
+api-1       | {"time":"2026-10-25T17:47:32.827857678Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:34.875108304Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+postgres-1  | waiting for server to start....2026-10-25 17:47:28.703 UTC [41] LOG:  starting PostgreSQL 17.11 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+postgres-1  | 2026-10-25 17:47:28.704 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-10-25 17:47:28.706 UTC [44] LOG:  database system was shut down at 2026-10-25 17:47:28 UTC
+api-1       | {"time":"2026-10-25T17:47:36.331368721Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":401,"duration_ms":272}
+api-1       | {"time":"2026-10-25T17:47:36.927492721Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:37.16881168Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":273}
+api-1       | {"time":"2026-10-25T17:47:37.179500096Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:37.183244846Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+postgres-1  | 2026-10-25 17:47:28.708 UTC [41] LOG:  database system is ready to accept connections
 postgres-1  |  done
 postgres-1  | server started
 postgres-1  | CREATE DATABASE
-api-1       | {"time":"2026-10-25T17:27:59.929701052Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:01.978473386Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:04.02604797Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:06.057794179Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:08.103279555Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:10.145374875Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:12.194142626Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:14.230316586Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:16.277864212Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:18.344772838Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":3}
-api-1       | {"time":"2026-10-25T17:28:20.376636005Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:22.459493756Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:23.530139548Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":401,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:23.89985309Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":273}
-api-1       | {"time":"2026-10-25T17:28:23.905085632Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:23.90839534Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
-api-1       | {"time":"2026-10-25T17:28:23.913327465Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/agent-runs/aggregate","status":200,"duration_ms":1}
 postgres-1  |
 postgres-1  |
 postgres-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+api-1       | {"time":"2026-10-25T17:47:37.190693221Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":1}
+api-1       | {"time":"2026-10-25T17:47:37.696720972Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/board","status":200,"duration_ms":5}
 postgres-1  |
-postgres-1  | waiting for server to shut down....2026-10-25 17:27:44.043 UTC [40] LOG:  received fast shutdown request
-postgres-1  | 2026-10-25 17:27:44.045 UTC [40] LOG:  aborting any active transactions
-postgres-1  | 2026-10-25 17:27:44.047 UTC [40] LOG:  background worker "logical replication launcher" (PID 46) exited with exit code 1
-postgres-1  | 2026-10-25 17:27:44.047 UTC [41] LOG:  shutting down
-postgres-1  | 2026-10-25 17:27:44.049 UTC [41] LOG:  checkpoint starting: shutdown immediate
-postgres-1  | 2026-10-25 17:27:44.117 UTC [41] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.055 s, total=0.070 s; sync files=301, longest=0.006 s, average=0.001 s; distance=4266 kB, estimate=4266 kB; lsn=0/191E808, redo lsn=0/191E808
-postgres-1  | 2026-10-25 17:27:44.120 UTC [40] LOG:  database system is shut down
+postgres-1  | waiting for server to shut down....2026-10-25 17:47:28.835 UTC [41] LOG:  received fast shutdown request
+postgres-1  | 2026-10-25 17:47:28.836 UTC [41] LOG:  aborting any active transactions
+postgres-1  | 2026-10-25 17:47:28.838 UTC [41] LOG:  background worker "logical replication launcher" (PID 47) exited with exit code 1
+postgres-1  | 2026-10-25 17:47:28.838 UTC [42] LOG:  shutting down
+postgres-1  | 2026-10-25 17:47:28.838 UTC [42] LOG:  checkpoint starting: shutdown immediate
+api-1       | {"time":"2026-10-25T17:47:37.778340222Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/board/ws","status":200,"duration_ms":86}
+api-1       | {"time":"2026-10-25T17:47:38.11809768Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":272}
+api-1       | {"time":"2026-10-25T17:47:38.124520514Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:38.127476889Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:38.131126639Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/repositories","status":200,"duration_ms":0}
+postgres-1  | 2026-10-25 17:47:28.863 UTC [42] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.015 s, total=0.026 s; sync files=301, longest=0.004 s, average=0.001 s; distance=4266 kB, estimate=4266 kB; lsn=0/191E808, redo lsn=0/191E808
+postgres-1  | 2026-10-25 17:47:28.866 UTC [41] LOG:  database system is shut down
 postgres-1  |  done
 postgres-1  | server stopped
 postgres-1  |
 postgres-1  | PostgreSQL init process complete; ready for start up.
 postgres-1  |
-postgres-1  | 2026-10-25 17:27:44.157 UTC [1] LOG:  starting PostgreSQL 17.11 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
-postgres-1  | 2026-10-25 17:27:44.157 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
-postgres-1  | 2026-10-25 17:27:44.157 UTC [1] LOG:  listening on IPv6 address "::", port 5432
-postgres-1  | 2026-10-25 17:27:44.159 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-postgres-1  | 2026-10-25 17:27:44.162 UTC [56] LOG:  database system was shut down at 2026-10-25 17:27:44 UTC
-postgres-1  | 2026-10-25 17:27:44.165 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2026-10-25 17:47:28.949 UTC [1] LOG:  starting PostgreSQL 17.11 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+postgres-1  | 2026-10-25 17:47:28.949 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+api-1       | {"time":"2026-10-25T17:47:38.996352833Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:41.053948834Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:43.094699293Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:45.148600753Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:47.203274795Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:49.255285338Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+postgres-1  | 2026-10-25 17:47:28.949 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2026-10-25 17:47:28.951 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-10-25 17:47:28.953 UTC [57] LOG:  database system was shut down at 2026-10-25 17:47:28 UTC
+postgres-1  | 2026-10-25 17:47:28.956 UTC [1] LOG:  database system is ready to accept connections
+api-1       | {"time":"2026-10-25T17:47:51.304011172Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:53.352105965Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:55.392197841Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:57.446816258Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:47:59.490304801Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:01.545829302Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:03.600292386Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:05.655358846Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:07.69200718Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:09.538245125Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":401,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:09.739523042Z","level":"INFO","msg":"http request","method":"GET","path":"/readyz","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:09.914182833Z","level":"INFO","msg":"http request","method":"POST","path":"/api/v1/auth/login","status":200,"duration_ms":280}
+api-1       | {"time":"2026-10-25T17:48:09.920210833Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:09.924834417Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/auth/session","status":200,"duration_ms":0}
+api-1       | {"time":"2026-10-25T17:48:09.929559708Z","level":"INFO","msg":"http request","method":"GET","path":"/api/v1/agent-runs/aggregate","status":200,"duration_ms":1}
 
 exit=0
-$ docker compose -p client-login-27388 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml down --volumes --remove-orphans
- Container client-login-27388-api-1 Stopping
- Container client-login-27388-api-1 Stopped
- Container client-login-27388-api-1 Removing
- Container client-login-27388-api-1 Removed
- Container client-login-27388-postgres-1 Stopping
- Container client-login-27388-postgres-1 Stopped
- Container client-login-27388-postgres-1 Removing
- Container client-login-27388-postgres-1 Removed
- Volume client-login-27388_agent_ops_postgres Removing
- Network client-login-27388_default Removing
- Volume client-login-27388_agent_ops_postgres Removed
- Network client-login-27388_default Removed
+$ docker compose -p client-login-37919 -f <worktree>/.agent-runs/login-acceptance-api/docker-compose.yml -f <worktree>/.agent-runs/auth-compose.yaml down --volumes --remove-orphans
+ Container client-login-37919-api-1 Stopping
+ Container client-login-37919-api-1 Stopped
+ Container client-login-37919-api-1 Removing
+ Container client-login-37919-api-1 Removed
+ Container client-login-37919-postgres-1 Stopping
+ Container client-login-37919-postgres-1 Stopped
+ Container client-login-37919-postgres-1 Removing
+ Container client-login-37919-postgres-1 Removed
+ Volume client-login-37919_agent_ops_postgres Removing
+ Network client-login-37919_default Removing
+ Volume client-login-37919_agent_ops_postgres Removed
+ Network client-login-37919_default Removed
 
 exit=0
-$ docker ps -a --filter label=com.docker.compose.project=client-login-27388 --format {{.ID}}
+$ docker ps -a --filter label=com.docker.compose.project=client-login-37919 --format {{.ID}}
 
 exit=0
-$ docker volume ls --filter label=com.docker.compose.project=client-login-27388 --format {{.Name}}
+$ docker volume ls --filter label=com.docker.compose.project=client-login-37919 --format {{.Name}}
 
 exit=0
 $ git -C <worktree>/.agent-runs/login-acceptance-api status --porcelain --untracked-files=no
 
 exit=0
-CLEANUP PASS: client-login-27388: zero containers, volumes, listeners on 18739, 18740, 18741.
+CLEANUP PASS: client-login-37919: zero containers, volumes, listeners on 18739, 18740, 18741.
