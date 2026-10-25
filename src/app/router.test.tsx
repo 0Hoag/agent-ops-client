@@ -11,16 +11,22 @@ import { http } from '../shared/http';
 const originalAdapter = http.defaults.adapter;
 let requests: InternalAxiosRequestConfig[];
 let rejectSession = false;
+let sessionFailure: 'network' | '503' | null = null;
 let rejectLogin = false;
 let rejectRepositories = false;
 beforeEach(() => {
   sessionStorage.clear();
   requests = [];
   rejectSession = rejectLogin = rejectRepositories = false;
+  sessionFailure = null;
   http.defaults.adapter = async (config) => {
     requests.push(config);
     const path = config.url?.split('?')[0];
     const response = { config, status: 200, statusText: 'OK', headers: {}, data: {} };
+    if (path?.endsWith('/auth/session') && sessionFailure === 'network') throw new AxiosError('Network Error', 'ERR_NETWORK', config);
+    if (path?.endsWith('/auth/session') && sessionFailure === '503') {
+      throw new AxiosError('Unavailable', 'ERR_BAD_RESPONSE', config, undefined, { ...response, status: 503, statusText: 'Service Unavailable' });
+    }
     if ((path?.endsWith('/auth/session') && rejectSession) ||
         (path?.endsWith('/auth/login') && rejectLogin) ||
         (path?.endsWith('/repositories') && rejectRepositories)) {
@@ -89,6 +95,21 @@ it('rejects an expired session before requesting protected data', async () => {
   expect(requests.map((request) => request.url)).toEqual(['/api/v1/auth/session']);
   expect(sessionStorage.getItem('agent-ops-token')).toBeNull();
   expect(client.getQueryCache().getAll()).toHaveLength(0);
+});
+it.each(['network', '503'] as const)('retains a valid session and retries after temporary %s validation failure', async (failure) => {
+  sessionStorage.setItem('agent-ops-token', 'issued-token');
+  sessionFailure = failure;
+  const client = mount('/board?view=review#issue');
+  await screen.findByRole('alert');
+  expect(sessionStorage.getItem('agent-ops-token')).toBe('issued-token');
+  expect(client.getQueryData(['private-data'])).toBe('previous session');
+  expect(requests.map((request) => request.url)).toEqual(['/api/v1/auth/session']);
+
+  sessionFailure = null;
+  fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+  await screen.findByText('No repositories available.');
+  expect(screen.getByTestId('location').textContent).toBe('/board?view=review#issue');
+  expect(requests.filter((request) => request.url?.endsWith('/auth/session'))).toHaveLength(2);
 });
 it('clears the session and redirects when a protected data request expires after validation', async () => {
   sessionStorage.setItem('agent-ops-token', 'issued-token');

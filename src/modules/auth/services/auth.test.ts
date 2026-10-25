@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AxiosError } from 'axios';
 
 const { loginCall, sessionCall } = vi.hoisted(() => ({ loginCall: vi.fn(), sessionCall: vi.fn() }));
 vi.mock('./client', () => ({ authClient: { api: { v1AuthLoginCreate: loginCall, v1AuthSessionList: sessionCall } } }));
@@ -18,9 +19,18 @@ describe('authentication service', () => {
     loginCall.mockRejectedValue(new Error('invalid'));
     await expect(login('x@example.com', 'bad')).rejects.toThrow();
     sessionStorage.setItem('agent-ops-token', 'expired');
-    sessionCall.mockRejectedValue(new Error('unauthorized'));
+    sessionCall.mockRejectedValue(new AxiosError('unauthorized', 'ERR_BAD_REQUEST', undefined, undefined, { status: 401, statusText: 'Unauthorized', headers: {}, config: {} as never, data: {} }));
     expect(await validateSession()).toBe(false);
     expect(hasToken()).toBe(false);
+  });
+  it.each([
+    ['network failure', new TypeError('Network unavailable')],
+    ['server failure', { response: { status: 503 } }],
+  ])('retains credentials when session validation has a temporary %s', async (_label, error) => {
+    sessionStorage.setItem('agent-ops-token', 'valid-token');
+    sessionCall.mockRejectedValue(error);
+    await expect(validateSession()).rejects.toBe(error);
+    expect(hasToken()).toBe(true);
   });
   it('logs out by removing the token', () => {
     sessionStorage.setItem('agent-ops-token', 'jwt');

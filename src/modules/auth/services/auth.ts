@@ -1,4 +1,5 @@
 import { authClient } from './client';
+import axios from 'axios';
 
 const tokenKey = 'agent-ops-token';
 
@@ -21,9 +22,12 @@ export async function validateSession() {
   try {
     await authClient.api.v1AuthSessionList();
     return true;
-  } catch {
-    logout();
-    return false;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      logout();
+      return false;
+    }
+    throw error;
   }
 }
 
