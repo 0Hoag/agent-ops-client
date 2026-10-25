@@ -18,4 +18,13 @@ describe('generated API transport', () => {
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/api/v1/board?repository_id=repo-1&page=2&per_page=100' }));
     expect(response.data.meta?.page).toBe(2);
   });
+
+  it('uses the generated JWT login operation and response type', async () => {
+    const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: { token: 'jwt-token' }, status: 200, statusText: 'OK', headers: {}, config: { headers: {} } } as never);
+    const credentials = { email: 'user@example.com', password: 'secret' } satisfies Parameters<typeof api.api.v1AuthLoginCreate>[0];
+    const response = await api.api.v1AuthLoginCreate(credentials);
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/api/v1/auth/login', method: 'POST', data: JSON.stringify(credentials) }));
+    const token: string | undefined = response.data.token;
+    expect(token).toBe('jwt-token');
+  });
 });

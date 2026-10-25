@@ -74,6 +74,20 @@ export interface AgentrunListResponse {
   status?: number;
 }
 
+export interface AuthLoginRequest {
+  email?: string;
+  password?: string;
+}
+
+export interface AuthLoginResponse {
+  token?: string;
+}
+
+export interface AuthSessionResponse {
+  account_id?: string;
+  email?: string;
+}
+
 export interface BoardListMeta {
   page?: number;
   per_page?: number;
@@ -509,6 +523,41 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/agent-runs`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AuthLoginCreate
+     * @summary Login
+     * @request POST:/api/v1/auth/login
+     */
+    v1AuthLoginCreate: (
+      credentials: AuthLoginRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AuthLoginResponse, ResponseErrorResponse>({
+        path: `/api/v1/auth/login`,
+        method: "POST",
+        body: credentials,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AuthSessionList
+     * @summary Current session
+     * @request GET:/api/v1/auth/session
+     */
+    v1AuthSessionList: (params: RequestParams = {}) =>
+      this.http.request<AuthSessionResponse, ResponseErrorResponse>({
+        path: `/api/v1/auth/session`,
+        method: "GET",
         format: "json",
         ...params,
       }),
