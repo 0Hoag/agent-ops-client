@@ -9,3 +9,12 @@ http.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+http.interceptors.response.use(undefined, (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.status === 401 &&
+      error.config?.headers.Authorization && sessionStorage.getItem('agent-ops-token')) {
+    sessionStorage.removeItem('agent-ops-token');
+    window.dispatchEvent(new Event('auth:unauthorized'));
+  }
+  return Promise.reject(error);
+});

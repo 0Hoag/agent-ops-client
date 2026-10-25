@@ -1,0 +1,76 @@
+Production guard before/restored/worktree SHA256: b3196d31bb2d8f0a0316fb33de9b8696847dabc018e47c4db1717482aaa054b6
+Unchanged route test SHA256: 201b8663381153f9b4949174482ca39ce28140c84938f03bbff341bd260cbcc0
+Baseline exit=0
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+
+ ✓ src/app/router.test.tsx (9 tests) 204ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  00:27:41
+   Duration  1.37s (transform 155ms, setup 0ms, collect 416ms, tests 204ms, environment 424ms, prepare 63ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+
+Production mutation exit=1
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+
+ ❯ src/app/router.test.tsx (9 tests | 1 failed) 226ms
+   × does not render the next protected route using the previous route validation 29ms
+     → expected [ Array(2) ] to deeply equal [ '/api/v1/auth/session' ]
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  00:27:43
+   Duration  1.19s (transform 165ms, setup 0ms, collect 347ms, tests 226ms, environment 269ms, prepare 94ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/router.test.tsx > does not render the next protected route using the previous route validation
+AssertionError: expected [ Array(2) ] to deeply equal [ '/api/v1/auth/session' ]
+
+- Expected
++ Received
+
+  Array [
++   "/api/v1/agent-runs/aggregate",
+    "/api/v1/auth/session",
+  ]
+
+ ❯ src/app/router.test.tsx:109:50
+    107|   fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
+    108|   await screen.findByRole('heading', { name: 'Sign in' });
+    109|   expect(requests.map((request) => request.url)).toEqual(['/api/v1/aut…
+       |                                                  ^
+    110| });
+    111|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+Byte-identical restore exit=0
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+
+ ✓ src/app/router.test.tsx (9 tests) 185ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  00:27:44
+   Duration  990ms (transform 127ms, setup 0ms, collect 285ms, tests 185ms, environment 242ms, prepare 43ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
