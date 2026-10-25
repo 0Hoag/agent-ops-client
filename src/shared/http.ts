@@ -12,7 +12,8 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(undefined, (error: unknown) => {
   if (axios.isAxiosError(error) && error.response?.status === 401 &&
-      error.config?.headers.Authorization && sessionStorage.getItem('agent-ops-token')) {
+      error.config?.headers.Authorization === `Bearer ${sessionStorage.getItem('agent-ops-token')}` &&
+      sessionStorage.getItem('agent-ops-token')) {
     sessionStorage.removeItem('agent-ops-token');
     window.dispatchEvent(new Event('auth:unauthorized'));
   }
