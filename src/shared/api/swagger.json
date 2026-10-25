@@ -1,0 +1,792 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for repository synchronization and signed webhooks.",
+        "title": "Agent Ops API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/agent-runs": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List agent runs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Repository UUID",
+                        "name": "repository_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Wave",
+                        "name": "wave",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Issue number",
+                        "name": "issue_number",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/agentrun.ListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "AgentRunToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create an agent run",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Static agent run token",
+                        "name": "X-Agent-Run-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Agent run",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/agentrun.CreateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/agentrun.CreatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/agent-runs/aggregate": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Aggregate agent runs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Repository UUID",
+                        "name": "repository_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Wave",
+                        "name": "wave",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Issue number",
+                        "name": "issue_number",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/agentrun.AggregateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/board": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List board issues",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Repository UUID",
+                        "name": "repository_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/board.ListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/board/ws": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Board invalidation websocket handshake",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Repository UUID",
+                        "name": "repository_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "101": {
+                        "description": "Switching Protocols",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/insights": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get repository insights",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Repository UUID",
+                        "name": "repository_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/insight.Envelope"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/repositories": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List repositories",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/board.ListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/webhooks/{provider}": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Ingest provider webhook",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "SCM provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "GitHub HMAC signature",
+                        "name": "X-Hub-Signature-256",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "GitLab webhook token",
+                        "name": "X-Gitlab-Token",
+                        "in": "header"
+                    },
+                    {
+                        "description": "Provider webhook payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "413": {
+                        "description": "Request Entity Too Large",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/healthz": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Process health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/readyz": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Database readiness",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "agentrun.AgentRun": {
+            "type": "object",
+            "properties": {
+                "cache_write_tokens": {
+                    "type": "integer"
+                },
+                "cached_input_tokens": {
+                    "type": "integer"
+                },
+                "cost_usd": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "ended_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "input_tokens": {
+                    "type": "integer"
+                },
+                "issue_numbers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "model": {
+                    "type": "string"
+                },
+                "output_tokens": {
+                    "type": "integer"
+                },
+                "pr_number": {
+                    "type": "integer"
+                },
+                "reasoning_tokens": {
+                    "type": "integer"
+                },
+                "repository_id": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "wave": {
+                    "type": "string"
+                },
+                "worker": {
+                    "type": "string"
+                }
+            }
+        },
+        "agentrun.Aggregate": {
+            "type": "object",
+            "properties": {
+                "cache_write_tokens": {
+                    "type": "integer"
+                },
+                "cached_input_tokens": {
+                    "type": "integer"
+                },
+                "cost_usd": {
+                    "type": "number"
+                },
+                "input_tokens": {
+                    "type": "integer"
+                },
+                "issue_number": {
+                    "type": "integer"
+                },
+                "output_tokens": {
+                    "type": "integer"
+                },
+                "reasoning_tokens": {
+                    "type": "integer"
+                },
+                "runs": {
+                    "type": "integer"
+                },
+                "wave": {
+                    "type": "string"
+                },
+                "worker": {
+                    "type": "string"
+                }
+            }
+        },
+        "agentrun.AggregateResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/agentrun.Aggregate"
+                    }
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "agentrun.CreateInput": {
+            "type": "object",
+            "required": [
+                "ended_at",
+                "model",
+                "repository_id",
+                "started_at",
+                "wave",
+                "worker"
+            ],
+            "properties": {
+                "cache_write_tokens": {
+                    "type": "integer"
+                },
+                "cached_input_tokens": {
+                    "type": "integer"
+                },
+                "ended_at": {
+                    "type": "string"
+                },
+                "input_tokens": {
+                    "type": "integer"
+                },
+                "issue_numbers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "model": {
+                    "type": "string"
+                },
+                "output_tokens": {
+                    "type": "integer"
+                },
+                "pr_number": {
+                    "type": "integer"
+                },
+                "reasoning_tokens": {
+                    "type": "integer"
+                },
+                "repository_id": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "wave": {
+                    "type": "string"
+                },
+                "worker": {
+                    "type": "string"
+                }
+            }
+        },
+        "agentrun.CreatedResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/agentrun.AgentRun"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "agentrun.ListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/agentrun.AgentRun"
+                    }
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "board.ListMeta": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "per_page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "board.ListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "meta": {
+                    "$ref": "#/definitions/board.ListMeta"
+                }
+            }
+        },
+        "insight.CycleMetric": {
+            "type": "object",
+            "properties": {
+                "completed": {
+                    "type": "integer"
+                },
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/insight.Evidence"
+                    }
+                },
+                "median_seconds": {
+                    "type": "number"
+                }
+            }
+        },
+        "insight.Envelope": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/insight.Response"
+                }
+            }
+        },
+        "insight.Evidence": {
+            "type": "object",
+            "properties": {
+                "delivery_id": {
+                    "type": "string"
+                },
+                "event_type": {
+                    "type": "string"
+                },
+                "issue_number": {
+                    "type": "integer"
+                },
+                "pr_number": {
+                    "type": "integer"
+                },
+                "received_at": {
+                    "type": "string"
+                },
+                "source_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "insight.FirstCIMetric": {
+            "type": "object",
+            "properties": {
+                "eligible": {
+                    "type": "integer"
+                },
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/insight.Evidence"
+                    }
+                },
+                "rate": {
+                    "type": "number"
+                },
+                "successful": {
+                    "type": "integer"
+                }
+            }
+        },
+        "insight.History": {
+            "type": "object",
+            "properties": {
+                "complete": {
+                    "type": "boolean"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "insight.Response": {
+            "type": "object",
+            "properties": {
+                "cycle_time": {
+                    "$ref": "#/definitions/insight.CycleMetric"
+                },
+                "first_ci_success": {
+                    "$ref": "#/definitions/insight.FirstCIMetric"
+                },
+                "history": {
+                    "$ref": "#/definitions/insight.History"
+                },
+                "repository_id": {
+                    "type": "string"
+                },
+                "send_back": {
+                    "$ref": "#/definitions/insight.SendBackMetric"
+                },
+                "suggestions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/insight.Suggestion"
+                    }
+                }
+            }
+        },
+        "insight.SendBackMetric": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "denominator": {
+                    "type": "integer"
+                },
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/insight.Evidence"
+                    }
+                },
+                "numerator": {
+                    "type": "integer"
+                },
+                "rate": {
+                    "type": "number"
+                }
+            }
+        },
+        "insight.Suggestion": {
+            "type": "object",
+            "properties": {
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/insight.Evidence"
+                    }
+                },
+                "key": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "occurrences": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "status": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "AgentRunToken": {
+            "type": "apiKey",
+            "name": "X-Agent-Run-Token",
+            "in": "header"
+        }
+    }
+}

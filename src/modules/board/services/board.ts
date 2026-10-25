@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { boardApi } from './client';
+import { api } from '../../../shared/api/client';
 import type { BoardIssue, IssueStatus, Page, Repository } from './types';
 
 export const statuses: IssueStatus[] = ['todo', 'in_progress', 'review', 'blocked', 'done'];
@@ -15,11 +15,13 @@ export function ciLabel(run: { status: string; conclusion: string }): string {
 }
 /** Fetches the GitHub repositories available to the current user. */
 export async function getRepositories(): Promise<Page<Repository>> {
-  return (await boardApi.get<Page<Repository>>('/api/v1/repositories', { params: { page: 1, per_page: 100 } })).data;
+  const response = await api.api.v1RepositoriesList({ page: 1, per_page: 100 });
+  return { ...response.data, data: response.data.data ?? [], meta: response.data.meta! as Page<Repository>['meta'] };
 }
 /** Fetches one repository board page. */
 export async function getBoard(repositoryId: string, page: number): Promise<Page<BoardIssue>> {
-  return (await boardApi.get<Page<BoardIssue>>('/api/v1/board', { params: { repository_id: repositoryId, page, per_page: 100 } })).data;
+  const response = await api.api.v1BoardList({ repository_id: repositoryId, page, per_page: 100 });
+  return { ...response.data, data: response.data.data ?? [], meta: response.data.meta! as Page<BoardIssue>['meta'] };
 }
 /** Queries the repository list. */
 export function useRepositories() { return useQuery({ queryKey: ['board', 'repositories'], queryFn: getRepositories }); }

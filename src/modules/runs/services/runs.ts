@@ -1,20 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
-import { runsApi } from './client';
-import type { ApiEnvelope, Run, RunAggregate } from './types';
+import { api } from '../../../shared/api/client';
+import type { AgentrunAgentRun, AgentrunAggregate } from '../../../shared/api/generated/Api';
 
 export interface RunFilters { repository_id?: string; wave?: string; issue_number?: number }
+type Run = AgentrunAgentRun;
+type RunAggregate = AgentrunAggregate;
 
 export async function getRuns(filters: RunFilters = {}): Promise<Run[]> {
-  return (await runsApi.get<ApiEnvelope<Run[]>>('/api/v1/agent-runs', { params: filters })).data.data;
+  return (await api.api.v1AgentRunsList(filters)).data.data ?? [];
 }
 
 export async function getRunAggregates(filters: Pick<RunFilters, 'repository_id' | 'wave'> = {}): Promise<RunAggregate[]> {
-  return (await runsApi.get<ApiEnvelope<RunAggregate[]>>('/api/v1/agent-runs/aggregate', { params: filters })).data.data;
+  return (await api.api.v1AgentRunsAggregateList(filters)).data.data ?? [];
 }
 
 export function cacheHitPercent(aggregate: Pick<RunAggregate, 'input_tokens' | 'cached_input_tokens' | 'cache_write_tokens'>): number | null {
-  const total = aggregate.input_tokens + aggregate.cached_input_tokens + aggregate.cache_write_tokens;
-  return total === 0 ? null : (aggregate.cached_input_tokens / total) * 100;
+  const input = aggregate.input_tokens ?? 0;
+  const cached = aggregate.cached_input_tokens ?? 0;
+  const written = aggregate.cache_write_tokens ?? 0;
+  const total = input + cached + written;
+  return total === 0 ? null : (cached / total) * 100;
 }
 
 export function useRuns(filters: RunFilters = {}) {

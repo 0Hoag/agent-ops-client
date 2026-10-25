@@ -1,5 +1,5 @@
 export type IssueStatus = 'todo' | 'in_progress' | 'review' | 'blocked' | 'done';
-export interface PageMeta { page: number; per_page: number; total: number }
+export type PageMeta = import('../../../shared/api/generated/Api').BoardListMeta & Required<Pick<import('../../../shared/api/generated/Api').BoardListMeta, 'page' | 'per_page' | 'total'>>;
 export interface Page<T> { data: T[]; meta: PageMeta }
 export interface Repository { id: string; provider: string; full_name: string }
 export interface PipelineRun { external_id: string; status: string; conclusion: string; sha: string }

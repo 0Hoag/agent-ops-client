@@ -1,0 +1,10 @@
+<%
+const { contract, utils } = it;
+const { formatDescription, require, _ } = utils;
+%>
+export interface <%~ contract.name %><% if (contract.name === "BoardListResponse") { %><T = unknown><% } %> {
+  <% for (const field of contract.$content) { %>
+    <%~ includeFile('./object-field-jsdoc.ejs', { ...it, field }) %>
+    <%~ field.name %><%~ contract.name === "BoardListResponse" && field.name === "meta" ? '' : contract.name === "BoardListMeta" ? '' : field.isRequired ? '' : '?' %>: <%~ contract.name === "BoardListResponse" && field.name === "meta" ? "{ page: number; per_page: number; total: number }" : contract.name === "BoardListResponse" && field.name === "data" ? "T[]" : field.value %><%~ field.isNullable ? ' | null' : ''%>;
+  <% } %>
+}

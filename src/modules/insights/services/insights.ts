@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { insightsApi } from './client';
+import { api } from '../../../shared/api/client';
 import type { InsightsResponse, RepositoryPage } from './types';
 
 export async function getRepositories(): Promise<RepositoryPage> {
-  return (await insightsApi.get<RepositoryPage>('/api/v1/repositories', { params: { page: 1, per_page: 100 } })).data;
+  const response = await api.api.v1RepositoriesList({ page: 1, per_page: 100 });
+  return { ...response.data, data: response.data.data ?? [], meta: response.data.meta! as RepositoryPage['meta'] };
 }
 
 export async function getInsights(repositoryId: string): Promise<InsightsResponse> {
-  return (await insightsApi.get<{ data: InsightsResponse }>('/api/v1/insights', { params: { repository_id: repositoryId } })).data.data;
+  return (await api.api.v1InsightsList({ repository_id: repositoryId })).data.data! as InsightsResponse;
 }
 
 export function useRepositories() {
