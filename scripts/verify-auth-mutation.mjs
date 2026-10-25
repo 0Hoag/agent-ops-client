@@ -55,7 +55,7 @@ const guardBaseline = runGuard();
 assert.equal(guardBaseline.status, 0, guardBaseline.stdout + guardBaseline.stderr);
 let guardMutation;
 try {
-  const broken = guardOriginal.toString().replace('session?.path === location.pathname ? session.valid : null', 'session?.valid ?? null');
+  const broken = guardOriginal.toString().replace('session?.path === location.pathname ? session.state : null', 'session?.state ?? null');
   assert.notEqual(broken, guardOriginal.toString());
   writeFileSync(resolve(copy, guard), broken);
   guardMutation = runGuard();
