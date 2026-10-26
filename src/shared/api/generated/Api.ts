@@ -159,8 +159,17 @@ export interface InsightSuggestion {
   occurrences?: number;
 }
 
+export interface OrganizationAcceptInvitationRequest {
+  token: string;
+}
+
 export interface OrganizationAddMemberRequest {
   account_id: string;
+  role: string;
+}
+
+export interface OrganizationCreateInvitationRequest {
+  expires_in_seconds?: number;
   role: string;
 }
 
@@ -683,6 +692,26 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1OrganizationInvitationsAcceptCreate
+     * @summary Accept organization invitation
+     * @request POST:/api/v1/organization-invitations/accept
+     */
+    v1OrganizationInvitationsAcceptCreate: (
+      request: OrganizationAcceptInvitationRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organization-invitations/accept`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1OrganizationsCreate
      * @summary Create organization
      * @request POST:/api/v1/organizations
@@ -714,6 +743,27 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
         path: `/api/v1/organizations/${organizationId}`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OrganizationsInvitationsCreate
+     * @summary Create organization invitation
+     * @request POST:/api/v1/organizations/{organization_id}/invitations
+     */
+    v1OrganizationsInvitationsCreate: (
+      organizationId: string,
+      request: OrganizationCreateInvitationRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/organizations/${organizationId}/invitations`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
