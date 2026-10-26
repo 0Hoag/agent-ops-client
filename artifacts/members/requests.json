@@ -1,0 +1,62 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/session",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/session",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organizations",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/session",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/session",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/session",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organizations/org-fixture/members",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/organizations/org-fixture/members/member-002",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organizations/org-fixture/members",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/organizations/org-fixture/invitations",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/organizations/org-fixture/members/member-002",
+    "authorization": "Bearer fixture-token"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/organizations/org-fixture/members",
+    "authorization": "Bearer fixture-token"
+  }
+]
