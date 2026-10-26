@@ -1,1 +1,1 @@
-export const paths: { health: string; board: string; runs: string; insights: string; members: string; login: string } = { health: '/', board: '/board', runs: '/runs', insights: '/insights', members: '/members', login: '/login' };
+export const paths: { health: string; board: string; runs: string; insights: string; members: string; repositories: string; login: string } = { health: '/', board: '/board', runs: '/runs', insights: '/insights', members: '/members', repositories: '/repositories', login: '/login' };
