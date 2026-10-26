@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, expect, it } from 'vitest';
 import { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { http } from './http';
+import { api } from './api/client';
 
 const originalAdapter = http.defaults.adapter;
 const tokenKey = 'agent-ops-token';
@@ -56,4 +57,19 @@ it('still invalidates the matching session on 401', async () => {
   await expect(http.get('/protected')).rejects.toMatchObject({ response: { status: 401 } });
   expect(sessionStorage.getItem(tokenKey)).toBeNull();
   expect(unauthorizedCount).toBe(1);
+});
+
+it('preserves explicit generated-client authorization and defaults to the stored bearer', async () => {
+  sessionStorage.setItem(tokenKey, 'tenant-a');
+  const received: string[] = [];
+  http.defaults.adapter = async (config) => {
+    received.push(String(config.headers.Authorization));
+    return { data: { email: 'test@example.com', organization_id: 'org-b' }, status: 200, statusText: 'OK', headers: {}, config };
+  };
+
+  await api.api.v1AuthSessionList({ headers: { Authorization: 'Bearer tenant-b' } });
+  await api.api.v1AuthSessionList();
+
+  expect(received).toEqual(['Bearer tenant-b', 'Bearer tenant-a']);
+  expect(sessionStorage.getItem(tokenKey)).toBe('tenant-a');
 });
