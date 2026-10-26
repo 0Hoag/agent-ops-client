@@ -53,6 +53,10 @@ try {
   page.on('request', (request) => { if (request.url().includes('/api/v1/')) console.log(`API request ${request.method()} ${request.url()} auth=${request.headers().authorization ?? '<none>'}`); });
   page.on('response', (response) => { if (response.url().includes('/api/v1/')) console.log(`API response ${response.status()} ${response.url()}`); });
   const requests = [];
+  let releaseDelayedA;
+  const delayedA = new Promise((resolve) => { releaseDelayedA = resolve; });
+  let delayedRequestSeen = false;
+  let delayTenantA = false;
   const records = { 'org-a': 'A-only', 'org-b': 'B-only' };
   const insightValues = { 'org-a': 17, 'org-b': 83 };
   const organizations = [{ id: 'org-a', name: 'Organization A' }, { id: 'org-b', name: 'Organization B' }];
@@ -64,6 +68,10 @@ try {
     requests.push({ url: url.href, auth });
     assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `reject invalid/missing fixture auth: ${auth ?? '<missing>'}`);
     const org = auth === 'Bearer tenant-b' ? 'org-b' : 'org-a';
+    if (delayTenantA && url.pathname.endsWith('/board') && org === 'org-a' && url.searchParams.get('repository_id') === 'a-repo' && !delayedRequestSeen) {
+      delayedRequestSeen = true;
+      await delayedA;
+    }
     let body = {};
     if (url.pathname.endsWith('/auth/session')) body = { email: 'fixture@example.test', account_id: `account-${org}`, organization_id: org };
     else if (url.pathname.endsWith('/organizations')) body = { data: organizations };
@@ -80,11 +88,17 @@ try {
   await page.getByLabel('Repository').selectOption('a-repo');
   await page.getByText(`${records['org-a']}-only board record`).waitFor();
   await page.screenshot({ path: 'artifacts/organization-switch/a.png', fullPage: true });
+  delayTenantA = true;
+  await page.getByLabel('Repository').selectOption('');
+  await page.getByLabel('Repository').selectOption('a-repo');
   await page.getByLabel('Organization').selectOption('org-b');
   await page.waitForFunction(() => sessionStorage.getItem('agent-ops-token') === 'tenant-b');
   await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="b-repo"]') !== null);
   await page.getByLabel('Repository').selectOption('b-repo');
   await page.getByText(`${records['org-b']}-only board record`).waitFor();
+  assert(delayedRequestSeen, 'delayed tenant-A board response was not exercised');
+  releaseDelayedA();
+  await page.waitForTimeout(250);
   assert.equal(await page.getByText(`${records['org-a']}-only board record`).count(), 0);
   assert(requests.some((request) => request.url.includes('/board?repository_id=a-repo') && request.auth === 'Bearer tenant-a'));
   assert(requests.some((request) => request.url.includes('/board?repository_id=b-repo') && request.auth === 'Bearer tenant-b'));
