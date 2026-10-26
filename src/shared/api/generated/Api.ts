@@ -83,9 +83,14 @@ export interface AuthLoginResponse {
   token?: string;
 }
 
+export interface AuthSelectOrganizationRequest {
+  organization_id?: string;
+}
+
 export interface AuthSessionResponse {
   account_id?: string;
   email?: string;
+  organization_id?: string;
 }
 
 export interface BoardListMeta {
@@ -560,6 +565,26 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/auth/login`,
         method: "POST",
         body: credentials,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AuthSelectOrganizationCreate
+     * @summary Select organization
+     * @request POST:/api/v1/auth/select-organization
+     */
+    v1AuthSelectOrganizationCreate: (
+      request: AuthSelectOrganizationRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AuthLoginResponse, ResponseErrorResponse>({
+        path: `/api/v1/auth/select-organization`,
+        method: "POST",
+        body: request,
         type: ContentType.Json,
         format: "json",
         ...params,
