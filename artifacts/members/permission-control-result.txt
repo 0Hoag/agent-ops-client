@@ -1,0 +1,133 @@
+$ node src/modules/members/verify-permission-control.mjs (repository root)
+CLEANUP CONTROL: captured live owned process 60222; independent absence assertion failed with expected owned-process diagnostic; unrelated sentinel 60221 survives.
+COPY: /var/folders/t1/3m89f7ps24d27h_7fsc4xvfw0000gp/T/members-permission-control-Rji43K/client; isolated files copied without repository metadata or build output.
+$ pnpm install --frozen-lockfile (cwd: isolated copy)
+✓ Lockfile passes supply-chain policies (verified 22h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +558
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /Users/zeross/Library/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 558, reused 558, downloaded 0, added 319
+Progress: resolved 558, reused 558, downloaded 0, added 558, done
+
+dependencies:
++ @tanstack/react-query 5.104.5
++ axios 1.20.0
++ react 18.3.1
++ react-dom 18.3.1
++ react-router-dom 6.30.6
+
+devDependencies:
++ @rspack/cli 1.7.12
++ @rspack/core 1.7.12
++ @tailwindcss/postcss 4.3.3
++ @testing-library/react 16.3.3
++ @types/node 22.20.5
++ @types/react 18.3.31
++ @types/react-dom 18.3.7
++ autoprefixer 10.6.1
++ dotenv 16.6.1
++ eslint 9.39.5
++ eslint-plugin-react-hooks 5.2.0
++ jsdom 25.0.1
++ playwright 1.64.1
++ postcss 8.5.31
++ postcss-loader 8.2.1
++ swagger-typescript-api 13.1.1
++ tailwindcss 4.3.3
++ typescript 5.9.3
++ typescript-eslint 8.72.0
++ vitest 2.1.9
+
+Done in 2.3s using pnpm v11.21.0
+exit 0
+$ pnpm build (cwd: isolated copy)
+WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
+  │ Assets:
+  │   main.js (302.658 KiB)
+
+WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
+  │ Entrypoints:
+  │   main (325.994 KiB)
+  │       main.js
+  │       main.css
+
+WARNING in ⚠ Rspack performance recommendations:
+  │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
+  │ For more info visit https://rspack.rs/guide/optimization/code-splitting
+
+Rspack compiled with 3 warnings in 1.07 s
+$ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
+$ tsc --noEmit
+exit 0
+BASELINE: assertion exit=0, invitation buttons=0; captured owned process identities before cleanup: preview=60297, preview=60311, browser=60317, browser=60318, browser=60319, browser=60321; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
+$ pnpm build (cwd: isolated copy)
+WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
+  │ Assets:
+  │   main.js (302.622 KiB)
+
+WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
+  │ Entrypoints:
+  │   main (325.958 KiB)
+  │       main.js
+  │       main.css
+
+WARNING in ⚠ Rspack performance recommendations:
+  │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
+  │ For more info visit https://rspack.rs/guide/optimization/code-splitting
+
+Rspack compiled with 3 warnings in 279 ms
+$ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
+$ tsc --noEmit
+exit 0
+MUTANT: assertion exit=1, invitation buttons=1; captured owned process identities before cleanup: preview=60421, preview=60435, browser=60441, browser=60442, browser=60443, browser=60444; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
+node:assert:150
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: viewer must not create invitations
+
+'1' !== '0'
+
+    at [eval]:1:52
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '1',
+  expected: '0',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+$ pnpm build (cwd: isolated copy)
+WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
+  │ Assets:
+  │   main.js (302.658 KiB)
+
+WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
+  │ Entrypoints:
+  │   main (325.994 KiB)
+  │       main.js
+  │       main.css
+
+WARNING in ⚠ Rspack performance recommendations:
+  │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
+  │ For more info visit https://rspack.rs/guide/optimization/code-splitting
+
+Rspack compiled with 3 warnings in 271 ms
+$ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
+$ tsc --noEmit
+exit 0
+BASELINE: assertion exit=0, invitation buttons=0; captured owned process identities before cleanup: preview=60540, preview=60555, browser=60561, browser=60562, browser=60563, browser=60564; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
+RESTORE: source SHA-256 e33d19d86f59d35b8b1ee40e08b4007a579ba81eed43842a386290441a3f7ecb; restored production-copy SHA-256 e33d19d86f59d35b8b1ee40e08b4007a579ba81eed43842a386290441a3f7ecb; identical.
+STUB SCOPE: browser API stubs cover GET /auth/session, GET /organizations, and GET /organizations/org-1/members only; bearer identity is asserted. No live API/auth server is exercised. Payloads use the response structures consumed by the generated client, including the shared data envelope for members, and membership fields consumed by the module.
