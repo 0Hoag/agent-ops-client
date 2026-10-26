@@ -20,6 +20,7 @@ export function BoardPage() {
   useEffect(() => subscribeToBoard(repositoryId, () => {
     void queryClient.invalidateQueries({ queryKey: ['board', repositoryId] });
   }), [queryClient, repositoryId]);
+  useEffect(() => { const reset = () => { setRepositoryId(''); setPage(1); }; window.addEventListener('organization:changed', reset); return () => window.removeEventListener('organization:changed', reset); }, []);
   const allIssues = board.data?.data ?? [];
   const grouped = groupIssues(allIssues);
   return <section><header className="mb-5 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-2xl font-semibold">Issue board</h1><p className="text-sm text-slate-600">Repository work and linked pull request checks</p></div><label className="grid gap-1 text-sm">Repository{repositories.isError ? <span role="alert" className="text-rose-700">Unable to load repositories: {repositories.error.message}</span> : <select aria-label="Repository" className="min-w-64 rounded border bg-white p-2" value={repositoryId} onChange={(event) => { setRepositoryId(event.target.value); setPage(1); }} disabled={repositories.isPending || !repositories.data?.data.length}><option value="">Select a repository</option>{repositories.data?.data.map((repo) => <option key={repo.id} value={repo.id}>{repo.full_name}</option>)}</select>}</label></header>

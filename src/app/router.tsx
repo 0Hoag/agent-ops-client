@@ -21,9 +21,11 @@ function Protected({ children }: { children: JSX.Element }) {
     window.addEventListener('auth:unauthorized', deny);
     if (!hasToken()) deny();
     else {
+      const validatingToken = sessionStorage.getItem('agent-ops-token');
       void validateSession().then((ok) => {
         if (!active) return;
         setSession({ path: location.pathname, state: ok ? 'valid' : 'denied' });
+        if (ok && sessionStorage.getItem('agent-ops-token') === validatingToken) window.dispatchEvent(new Event('auth:session-restored'));
         if (!ok) queryClient.clear();
       }).catch(() => {
         if (active) setSession({ path: location.pathname, state: 'retry' });
