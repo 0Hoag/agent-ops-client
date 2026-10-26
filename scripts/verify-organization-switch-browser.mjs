@@ -13,6 +13,7 @@ await writeFile('dist/index.html', built.replace('<head>', '<head><base href="/"
 const server = spawn('pnpm', ['preview', '--host', '127.0.0.1', '--port', String(port)], { detached: true, stdio: 'ignore' });
 let browser;
 let cleaned = false;
+let scenarioError;
 async function cleanup() {
   if (cleaned) return;
   cleaned = true;
@@ -26,6 +27,15 @@ async function cleanup() {
       await exited;
     }
   }
+  const portCheck = spawn('lsof', ['-nP', `-iTCP:${port}`, '-sTCP:LISTEN'], { stdio: ['ignore', 'pipe', 'ignore'] });
+  let listeners = '';
+  for await (const chunk of portCheck.stdout) listeners += chunk;
+  const [code] = await once(portCheck, 'exit');
+  assert.equal(code, 1, `owned preview listener remains after ${scenarioError ? 'failure' : 'success'} cleanup: ${listeners}`);
+  if (server.pid) {
+    try { process.kill(-server.pid, 0); assert.fail(`owned process group ${server.pid} remains after cleanup`); }
+    catch (error) { if (error.code !== 'ESRCH') throw error; }
+  }
 }
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { cleanup().finally(() => process.exit(1)); });
 try {
@@ -36,44 +46,93 @@ try {
   }
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
-  await context.addInitScript(() => { sessionStorage.setItem('agent-ops-token', 'tenant-a'); });
   const page = await context.newPage();
+  await context.addInitScript(() => { if (!sessionStorage.getItem('agent-ops-token')) sessionStorage.setItem('agent-ops-token', 'tenant-a'); });
   page.on('console', (message) => console.log(`BROWSER console ${message.type()}: ${message.text()}`));
   page.on('pageerror', (error) => console.error(`BROWSER pageerror: ${error.stack}`));
   page.on('request', (request) => { if (request.url().includes('/api/v1/')) console.log(`API request ${request.method()} ${request.url()} auth=${request.headers().authorization ?? '<none>'}`); });
   page.on('response', (response) => { if (response.url().includes('/api/v1/')) console.log(`API response ${response.status()} ${response.url()}`); });
   const requests = [];
-  const records = { 'org-a': 'A-only board record', 'org-b': 'B-only board record' };
+  const records = { 'org-a': 'A-only', 'org-b': 'B-only' };
+  const insightValues = { 'org-a': 17, 'org-b': 83 };
+  const organizations = [{ id: 'org-a', name: 'Organization A' }, { id: 'org-b', name: 'Organization B' }];
+  const repositories = { 'org-a': [{ id: 'a-repo', provider: 'github', full_name: 'org-a/repo-a' }], 'org-b': [{ id: 'b-repo', provider: 'github', full_name: 'org-b/repo-b' }] };
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (!url.pathname.includes('/api/v1/')) return route.continue();
     const auth = route.request().headers().authorization;
     requests.push({ url: url.href, auth });
+    assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `reject invalid/missing fixture auth: ${auth ?? '<missing>'}`);
     const org = auth === 'Bearer tenant-b' ? 'org-b' : 'org-a';
     let body = {};
-    if (url.pathname.endsWith('/auth/session')) body = { email: 'fixture@example.test', organization_id: org };
-    else if (url.pathname.endsWith('/organizations')) body = { data: [{ id: 'org-a', name: 'Organization A' }, { id: 'org-b', name: 'Organization B' }] };
-    else if (url.pathname.endsWith('/repositories')) body = { data: [{ id: 'org-a', provider: 'github', full_name: 'org-a' }, { id: 'org-b', provider: 'github', full_name: 'org-b' }], meta: { page: 1, per_page: 100, total: 2 } };
-    else if (url.pathname.endsWith('/board')) body = { data: [{ id: `record-${org}`, title: records[org], number: 1, state: 'open', status: 'review', repository_id: org, labels: [], assignee: '', pull_requests: [] }], meta: { page: 1, per_page: 100, total: 1 } };
+    if (url.pathname.endsWith('/auth/session')) body = { email: 'fixture@example.test', account_id: `account-${org}`, organization_id: org };
+    else if (url.pathname.endsWith('/organizations')) body = { data: organizations };
+    else if (url.pathname.endsWith('/repositories')) body = { data: repositories[org], meta: { page: 1, per_page: 100, total: 1 } };
+    else if (url.pathname.endsWith('/board')) body = { data: [{ id: `record-${org}`, title: `${records[org]}-only board record`, number: 1, state: 'open', status: 'review', repository_id: org === 'org-a' ? 'a-repo' : 'b-repo', labels: [], assignee: '', pull_requests: [] }], meta: { page: 1, per_page: 100, total: 1 } };
+    else if (url.pathname.endsWith('/agent-runs/aggregate')) body = { status: 200, data: [{ wave: records[org], worker: 'fixture', runs: 1, input_tokens: 1, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 1, reasoning_tokens: 0, cost_usd: 0 }] };
+    else if (url.pathname.endsWith('/insights')) body = { data: { repository_id: url.searchParams.get('repository_id'), history: { complete: true }, send_back: { count: insightValues[org], numerator: insightValues[org], denominator: 100, rate: insightValues[org] / 100, evidence: [] }, first_ci_success: { rate: 0, eligible: 0, successful: 0, evidence: [] }, cycle_time: { completed: 0, median_seconds: 0, evidence: [] }, suggestions: [] } };
     else if (url.pathname.endsWith('/auth/select-organization')) body = { token: 'tenant-b' };
     console.log(`API stub ${url.pathname} -> ${JSON.stringify(body)}`);
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
   });
   await page.goto(`${base}/board`);
   await page.getByRole('heading', { name: 'Issue board' }).waitFor();
-  await page.waitForTimeout(200);
-  await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="org-a"]') !== null, { timeout: 5000 }).catch(async (error) => {
-    console.error(`DOM: ${await page.locator('body').innerText()}`);
-    console.error(`Requests observed: ${JSON.stringify(requests, null, 2)}`);
-    throw error;
-  });
-  await page.getByLabel('Repository').selectOption('org-a');
-  await page.getByText(records['org-a']).waitFor();
+  await page.getByLabel('Repository').selectOption('a-repo');
+  await page.getByText(`${records['org-a']}-only board record`).waitFor();
   await page.screenshot({ path: 'artifacts/organization-switch/a.png', fullPage: true });
   await page.getByLabel('Organization').selectOption('org-b');
   await page.waitForFunction(() => sessionStorage.getItem('agent-ops-token') === 'tenant-b');
-  await page.getByText(records['org-b']).waitFor();
-  assert.equal(await page.getByText(records['org-a']).count(), 0);
+  await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="b-repo"]') !== null);
+  await page.getByLabel('Repository').selectOption('b-repo');
+  await page.getByText(`${records['org-b']}-only board record`).waitFor();
+  assert.equal(await page.getByText(`${records['org-a']}-only board record`).count(), 0);
+  assert(requests.some((request) => request.url.includes('/board?repository_id=a-repo') && request.auth === 'Bearer tenant-a'));
+  assert(requests.some((request) => request.url.includes('/board?repository_id=b-repo') && request.auth === 'Bearer tenant-b'));
   await page.screenshot({ path: 'artifacts/organization-switch/b.png', fullPage: true });
-  console.log('BROWSER PASS (stub API fixture): two organizations, distinct tenant board records; old record gone after switch.');
-} finally { await cleanup(); }
+  for (const route of ['/runs', '/insights']) {
+    await page.goto(`${base}${route}`);
+    await page.getByRole('heading').first().waitFor();
+    if (route === '/insights') {
+      await page.getByLabel('Repository').selectOption('b-repo');
+      await page.getByText('83 send-backs / 100 eligible').waitFor();
+      assert.equal(await page.getByText('17 send-backs / 100 eligible').count(), 0);
+      assert(requests.some((request) => request.url.includes('/insights?repository_id=b-repo') && request.auth === 'Bearer tenant-b'));
+    } else {
+      await page.getByText('B-only', { exact: true }).waitFor();
+      assert.equal(await page.getByText('A-only', { exact: true }).count(), 0);
+      assert(requests.some((request) => request.url.includes('/agent-runs/aggregate') && request.auth === 'Bearer tenant-b'));
+    }
+  }
+  assert(requests.some((request) => request.url.includes('/agent-runs/aggregate') && request.auth === 'Bearer tenant-b'));
+  assert(requests.some((request) => request.url.includes('/insights') && request.auth === 'Bearer tenant-b'));
+  // Exercise the actual selection transaction in fresh contexts: a failed token
+  // issuance and a token whose validation names the wrong tenant both retain A.
+  for (const failure of ['selection', 'validation']) {
+    const failureContext = await browser.newContext();
+    const failurePage = await failureContext.newPage();
+    await failurePage.addInitScript(() => sessionStorage.setItem('agent-ops-token', 'tenant-a'));
+    await failurePage.route('**/api/v1/**', async (route) => {
+      const url = new URL(route.request().url());
+      const auth = route.request().headers().authorization;
+      assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `${failure} fixture received invalid auth`);
+      if (url.pathname.endsWith('/auth/session')) {
+        const organizationId = failure === 'validation' && auth === 'Bearer tenant-b' ? 'org-a' : 'org-a';
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ email: 'fixture@example.test', account_id: 'account-org-a', organization_id: organizationId }) });
+      } else if (url.pathname.endsWith('/organizations')) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: organizations }) });
+      } else if (url.pathname.endsWith('/auth/select-organization')) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: failure === 'selection' ? '' : 'tenant-b' }) });
+      } else {
+        await route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+      }
+    });
+    await failurePage.goto(`${base}/board`);
+    await failurePage.getByLabel('Organization').selectOption('org-b');
+    await failurePage.getByRole('alert').waitFor();
+    assert.match(await failurePage.getByRole('alert').innerText(), /session is unchanged|retained/i);
+    assert.equal(await failurePage.evaluate(() => sessionStorage.getItem('agent-ops-token')), 'tenant-a', `${failure} failure must retain A`);
+    await failureContext.close();
+  }
+  console.log('BROWSER PASS (stub API fixture): tenant-derived repositories and distinct board/run/insight requests verified.');
+} catch (error) { scenarioError = error; throw error; }
+finally { await cleanup(); }
