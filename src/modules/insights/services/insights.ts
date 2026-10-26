@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../shared/api/client';
-import type { InsightsResponse, RepositoryPage } from './types';
+import type { InsightsResponse, Repository, RepositoryPage } from './types';
 
 export async function getRepositories(): Promise<RepositoryPage> {
-  const response = await api.api.v1RepositoriesList({ page: 1, per_page: 100 });
-  return { ...response.data, data: response.data.data ?? [], meta: response.data.meta! as RepositoryPage['meta'] };
+  const response = await api.api.v1RepositoriesList();
+  return (response.data.data ?? []).filter((repository): repository is Repository => Boolean(repository.id));
 }
 
 export async function getInsights(repositoryId: string): Promise<InsightsResponse> {

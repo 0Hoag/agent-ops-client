@@ -6,7 +6,7 @@ import { http } from '../../shared/http';
 import { InsightsPage } from './InsightsPage';
 
 const requests = vi.spyOn(http, 'request');
-const repoResponse = { data: { data: [{ id: 'repo-1', provider: 'github', full_name: 'acme/widgets' }], meta: { page: 1, per_page: 100, total: 1 } } };
+const repoResponse = { data: { data: [{ id: 'repo-1', provider: 'github', full_name: 'acme/widgets' }] } };
 const metricsResponse = { data: { repository_id: 'repo-1', history: { complete: true }, send_back: { count: 1, rate: 0.5, numerator: 1, denominator: 2, evidence: [] }, first_ci_success: { successful: 0, eligible: 0, rate: 0, evidence: [] }, cycle_time: { completed: 0, median_seconds: 0, evidence: [] }, suggestions: [{ key: 'flaky', message: 'Retrying workflow repeatedly', occurrences: 3, evidence: [] }] } };
 const incompleteResponse = { data: { ...metricsResponse.data, history: { complete: false, reason: 'webhook gap' } } };
 function setup() {
@@ -20,7 +20,7 @@ describe('InsightsPage', () => {
     setup();
     expect(screen.getByRole('status').textContent).toContain('Loading repositories');
     cleanup();
-    requests.mockResolvedValueOnce({ data: { data: [], meta: repoResponse.data.meta }, status: 200, statusText: 'OK', headers: {}, config: {} } as never);
+    requests.mockResolvedValueOnce({ data: { data: [] }, status: 200, statusText: 'OK', headers: {}, config: {} } as never);
     setup();
     expect(await screen.findByText('No repositories available.')).toBeTruthy();
     cleanup();

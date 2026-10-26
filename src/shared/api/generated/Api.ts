@@ -181,6 +181,57 @@ export interface OrganizationUpdateRoleRequest {
   role: string;
 }
 
+export interface RepositorysettingsCreateRequest {
+  backfill_token?: string;
+  full_name?: string;
+  gitlab_base_url?: string;
+  provider?: string;
+  status_mappings?: Record<string, string>;
+  webhook_secret?: string;
+}
+
+export interface RepositorysettingsCreatedResponse {
+  data?: RepositorysettingsCreatedView;
+  status?: number;
+}
+
+export interface RepositorysettingsCreatedView {
+  backfill_token?: string;
+  full_name?: string;
+  gitlab_base_url?: string;
+  id?: string;
+  provider?: string;
+  status_mappings?: Record<string, string>;
+  webhook_secret?: string;
+  webhook_url?: string;
+}
+
+export interface RepositorysettingsListResponse {
+  data?: RepositorysettingsView[];
+  status?: number;
+}
+
+export interface RepositorysettingsUpdateRequest {
+  backfill_token?: string;
+  gitlab_base_url?: string;
+  status_mappings?: Record<string, string>;
+  webhook_secret?: string;
+}
+
+export interface RepositorysettingsView {
+  full_name?: string;
+  gitlab_base_url?: string;
+  id?: string;
+  provider?: string;
+  status_mappings?: Record<string, string>;
+  webhook_url?: string;
+}
+
+export interface RepositorysettingsViewResponse {
+  data?: RepositorysettingsView;
+  status?: number;
+}
+
 export interface ResponseErrorResponse {
   message?: string;
   status?: number;
@@ -866,23 +917,98 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
-     * @name V1RepositoriesList
-     * @summary List repositories
-     * @request GET:/api/v1/repositories
+     * @name V1RepositoriesCreate
+     * @summary Create repository settings
+     * @request POST:/api/v1/repositories
+     * @secure
      */
-    v1RepositoriesList: (
-      query?: {
-        /** Page */
-        page?: number;
-        /** Items per page */
-        per_page?: number;
-      },
+    v1RepositoriesCreate: (
+      request: RepositorysettingsCreateRequest,
       params: RequestParams = {},
     ) =>
-      this.http.request<BoardListResponse, ResponseErrorResponse>({
+      this.http.request<
+        RepositorysettingsCreatedResponse,
+        ResponseErrorResponse
+      >({
+        path: `/api/v1/repositories`,
+        method: "POST",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesDelete
+     * @summary Delete repository settings
+     * @request DELETE:/api/v1/repositories/{repository_id}
+     * @secure
+     */
+    v1RepositoriesDelete: (repositoryId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/repositories/${repositoryId}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesDetail
+     * @summary Get repository settings
+     * @request GET:/api/v1/repositories/{repository_id}
+     * @secure
+     */
+    v1RepositoriesDetail: (repositoryId: string, params: RequestParams = {}) =>
+      this.http.request<RepositorysettingsViewResponse, ResponseErrorResponse>({
+        path: `/api/v1/repositories/${repositoryId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesList
+     * @summary List repository settings
+     * @request GET:/api/v1/repositories
+     * @secure
+     */
+    v1RepositoriesList: (params: RequestParams = {}) =>
+      this.http.request<RepositorysettingsListResponse, ResponseErrorResponse>({
         path: `/api/v1/repositories`,
         method: "GET",
-        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesPartialUpdate
+     * @summary Update repository settings
+     * @request PATCH:/api/v1/repositories/{repository_id}
+     * @secure
+     */
+    v1RepositoriesPartialUpdate: (
+      repositoryId: string,
+      request: RepositorysettingsUpdateRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<RepositorysettingsViewResponse, ResponseErrorResponse>({
+        path: `/api/v1/repositories/${repositoryId}`,
+        method: "PATCH",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

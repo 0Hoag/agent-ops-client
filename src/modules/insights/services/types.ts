@@ -8,5 +8,5 @@ export type InsightsResponse = Omit<import('../../../shared/api/generated/Api').
   suggestions: ({ [K in keyof import('../../../shared/api/generated/Api').InsightSuggestion]-?: K extends 'evidence' ? Evidence[] : NonNullable<import('../../../shared/api/generated/Api').InsightSuggestion[K]> })[];
 };
 
-export interface Repository { id: string; provider: string; full_name: string }
-export interface RepositoryPage { data: Repository[]; meta: import('../../../shared/api/generated/Api').BoardListMeta & Required<Pick<import('../../../shared/api/generated/Api').BoardListMeta, 'page' | 'per_page' | 'total'>> }
+export type Repository = Required<Pick<import('../../../shared/api/generated/Api').RepositorysettingsView, 'id'>> & import('../../../shared/api/generated/Api').RepositorysettingsView
+export type RepositoryPage = Repository[]
