@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { once } from 'node:events';
 import { mkdirSync } from 'node:fs';
@@ -36,6 +36,9 @@ async function cleanup() {
     try { process.kill(-server.pid, 0); assert.fail(`owned process group ${server.pid} remains after cleanup`); }
     catch (error) { if (error.code !== 'ESRCH') throw error; }
   }
+  const descendants = execFileSync('ps', ['-axo', 'pid=,ppid='], { encoding: 'utf8' }).trim().split('\n').map((line) => line.trim().split(/\s+/).map(Number)).filter(([, parent]) => parent === server.pid);
+  assert.equal(descendants.length, 0, `owned direct preview descendants remain: ${JSON.stringify(descendants)}`);
+  console.log(`CLEANUP PASS (${scenarioError ? 'failure' : 'success'}): preview listener absent; owned process group/descendants absent`);
 }
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { cleanup().finally(() => process.exit(1)); });
 try {
@@ -46,7 +49,18 @@ try {
   }
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
+  const beforeListeners = new Set(execFileSync('lsof', ['-nP', '-iTCP', '-sTCP:LISTEN'], { encoding: 'utf8' }).trim().split('\n').slice(1));
   const page = await context.newPage();
+  await page.addInitScript(() => {
+    const NativeWebSocket = window.WebSocket;
+    window.WebSocket = class extends NativeWebSocket {
+      constructor(url, protocols) {
+        super(url, protocols);
+        const repository = new URL(String(url)).searchParams.get('repository_id');
+        if (repository === 'a-repo') window.__delayedTenantASubscription = this;
+      }
+    };
+  });
   await context.addInitScript(() => { if (!sessionStorage.getItem('agent-ops-token')) sessionStorage.setItem('agent-ops-token', 'tenant-a'); });
   page.on('console', (message) => console.log(`BROWSER console ${message.type()}: ${message.text()}`));
   page.on('pageerror', (error) => console.error(`BROWSER pageerror: ${error.stack}`));
@@ -56,6 +70,7 @@ try {
   let releaseDelayedA;
   const delayedA = new Promise((resolve) => { releaseDelayedA = resolve; });
   let delayedRequestSeen = false;
+  let delayedSubscription;
   let delayTenantA = false;
   const records = { 'org-a': 'A-only', 'org-b': 'B-only' };
   const insightValues = { 'org-a': 17, 'org-b': 83 };
@@ -68,6 +83,7 @@ try {
     requests.push({ url: url.href, auth });
     assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `reject invalid/missing fixture auth: ${auth ?? '<missing>'}`);
     const org = auth === 'Bearer tenant-b' ? 'org-b' : 'org-a';
+    if (url.pathname.endsWith('/board/ws')) return route.abort();
     if (delayTenantA && url.pathname.endsWith('/board') && org === 'org-a' && url.searchParams.get('repository_id') === 'a-repo' && !delayedRequestSeen) {
       delayedRequestSeen = true;
       await delayedA;
@@ -87,12 +103,25 @@ try {
   await page.getByRole('heading', { name: 'Issue board' }).waitFor();
   await page.getByLabel('Repository').selectOption('a-repo');
   await page.getByText(`${records['org-a']}-only board record`).waitFor();
+  await page.waitForFunction(() => window.__delayedTenantASubscription !== undefined);
+  await page.evaluate(() => {
+    const socket = window.__delayedTenantASubscription;
+    Object.defineProperty(socket, 'readyState', { configurable: true, value: WebSocket.OPEN });
+    socket.dispatchEvent(new MessageEvent('message', { data: JSON.stringify({ type: 'board.invalidate', repository_id: 'a-repo' }) }));
+  });
   await page.screenshot({ path: 'artifacts/organization-switch/a.png', fullPage: true });
   delayTenantA = true;
   await page.getByLabel('Repository').selectOption('');
   await page.getByLabel('Repository').selectOption('a-repo');
   await page.getByLabel('Organization').selectOption('org-b');
   await page.waitForFunction(() => sessionStorage.getItem('agent-ops-token') === 'tenant-b');
+  await page.evaluate(() => {
+    const socket = window.__delayedTenantASubscription;
+    Object.defineProperty(socket, 'readyState', { configurable: true, value: WebSocket.OPEN });
+    socket.dispatchEvent(new MessageEvent('message', { data: JSON.stringify({ type: 'board.invalidate', repository_id: 'a-repo' }) }));
+  });
+  await page.waitForTimeout(150);
+  assert.equal(await page.getByText(`${records['org-a']}-only board record`).count(), 0, 'delayed tenant-A subscription callback must not render A data after B activation');
   await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="b-repo"]') !== null);
   await page.getByLabel('Repository').selectOption('b-repo');
   await page.getByText(`${records['org-b']}-only board record`).waitFor();
@@ -141,12 +170,48 @@ try {
       }
     });
     await failurePage.goto(`${base}/board`);
+    await failurePage.getByLabel('Repository').waitFor();
+    assert.equal(await failurePage.getByLabel('Repository').inputValue(), '', 'initial repository selection must be empty');
     await failurePage.getByLabel('Organization').selectOption('org-b');
     await failurePage.getByRole('alert').waitFor();
     assert.match(await failurePage.getByRole('alert').innerText(), /session is unchanged|retained/i);
     assert.equal(await failurePage.evaluate(() => sessionStorage.getItem('agent-ops-token')), 'tenant-a', `${failure} failure must retain A`);
     await failureContext.close();
   }
-  console.log('BROWSER PASS (stub API fixture): tenant-derived repositories and distinct board/run/insight requests verified.');
+  const noOrganizationContext = await browser.newContext();
+  const noOrganizationPage = await noOrganizationContext.newPage();
+  await noOrganizationPage.addInitScript(() => sessionStorage.setItem('agent-ops-token', 'tenant-a'));
+  await noOrganizationPage.route('**/api/v1/**', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/auth/session')) await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ email: 'fixture@example.test', account_id: 'account-org-a', organization_id: 'org-a' }) });
+    else if (url.pathname.endsWith('/organizations')) await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [] }) });
+    else if (url.pathname.endsWith('/repositories')) await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [], meta: { page: 1, per_page: 100, total: 0 } }) });
+    else await route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+  });
+  await noOrganizationPage.goto(`${base}/board`);
+  await noOrganizationPage.getByText('No repositories available.').waitFor();
+  assert.equal(await noOrganizationPage.getByLabel('Organization').count(), 0);
+  await noOrganizationContext.close();
+  const transientContext = await browser.newContext();
+  const transientPage = await transientContext.newPage();
+  await transientPage.addInitScript(() => sessionStorage.setItem('agent-ops-token', 'tenant-a'));
+  let releaseRepositories;
+  const pendingRepositories = new Promise((resolve) => { releaseRepositories = resolve; });
+  await transientPage.route('**/api/v1/**', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/auth/session')) await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ email: 'fixture@example.test', account_id: 'account-org-a', organization_id: 'org-a' }) });
+    else if (url.pathname.endsWith('/organizations')) await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: organizations }) });
+    else if (url.pathname.endsWith('/repositories')) { await pendingRepositories; await route.fulfill({ status: 500, contentType: 'application/json', body: '{}' }); }
+    else await route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+  });
+  await transientPage.goto(`${base}/board`);
+  await transientPage.getByLabel('Loading repositories').waitFor();
+  releaseRepositories();
+  await transientPage.getByRole('alert').waitFor();
+  await transientContext.close();
+  console.log('BROWSER PASS (stub API fixture): tenant-derived repositories and distinct board/run/insight requests verified; delayed A response discarded after B activation; failure-retention flows verified.');
+  const afterListeners = new Set(execFileSync('lsof', ['-nP', '-iTCP', '-sTCP:LISTEN'], { encoding: 'utf8' }).trim().split('\n').slice(1));
+  const ownedListener = (listener) => listener.includes(`:${port} `);
+  assert.deepEqual([...afterListeners].filter((listener) => !beforeListeners.has(listener) && !ownedListener(listener)), [], 'fixture introduced unrelated TCP listener');
 } catch (error) { scenarioError = error; throw error; }
 finally { await cleanup(); }
