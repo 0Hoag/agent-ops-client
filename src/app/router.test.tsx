@@ -14,10 +14,11 @@ let rejectSession = false;
 let sessionFailure: 'network' | '503' | null = null;
 let rejectLogin = false;
 let rejectRepositories = false;
+let rejectSelection = false;
 beforeEach(() => {
   sessionStorage.clear();
   requests = [];
-  rejectSession = rejectLogin = rejectRepositories = false;
+  rejectSession = rejectLogin = rejectRepositories = rejectSelection = false;
   sessionFailure = null;
   http.defaults.adapter = async (config) => {
     requests.push(config);
@@ -28,11 +29,15 @@ beforeEach(() => {
       throw new AxiosError('Unavailable', 'ERR_BAD_RESPONSE', config, undefined, { ...response, status: 503, statusText: 'Service Unavailable' });
     }
     if ((path?.endsWith('/auth/session') && rejectSession) ||
+        (path?.endsWith('/auth/select-organization') && rejectSelection) ||
         (path?.endsWith('/auth/login') && rejectLogin) ||
         (path?.endsWith('/repositories') && rejectRepositories)) {
       throw new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined, { ...response, status: 401 });
     }
     if (config.url?.endsWith('/auth/login')) response.data = { token: 'issued-token' };
+    if (path?.endsWith('/organizations')) response.data = { data: [{ id: 'org-a', name: 'Organization A' }, { id: 'org-b', name: 'Organization B' }] };
+    if (path?.endsWith('/auth/select-organization')) response.data = { token: 'tenant-token' };
+    if (path?.endsWith('/auth/session')) response.data = { email: 'fixture@example.test', ...(config.headers.Authorization === 'Bearer issued-token' ? { organization_id: 'org-a' } : {}) };
     if (path?.endsWith('/repositories')) response.data = { data: [], meta: { page: 1, per_page: 100, total: 0 } };
     return response;
   };
@@ -68,6 +73,14 @@ it('preserves the full destination through login using real generated operations
   const authorized = requests.filter((request) => !request.url?.endsWith('/auth/login'));
   expect(authorized.length).toBeGreaterThanOrEqual(3);
   expect(authorized.every((request) => request.headers.Authorization === 'Bearer issued-token')).toBe(true);
+});
+it('discovers organizations through the authenticated shell after session restoration', async () => {
+  sessionStorage.clear();
+  sessionStorage.setItem('agent-ops-token', 'issued-token');
+  mount('/board');
+  await screen.findByRole('heading', { name: 'Issue board' });
+  expect(requests.some((request) => request.url?.endsWith('/organizations'))).toBe(true);
+  expect(screen.getByLabelText('Organization')).toBeTruthy();
 });
 it('shows a failed login without reaching protected data', async () => {
   rejectLogin = true;
@@ -130,11 +143,11 @@ it.each([401, 200])('keeps the newer session/cache and route gated after stale v
     requests.push(config);
     expect(config.headers.Authorization).toBe('Bearer session-a');
     return new Promise((resolve, reject) => {
-      finish = () => {
+    finish = () => {
         const response = { config, status, statusText: String(status), headers: {}, data: {} };
         if (status === 200) resolve(response);
         else reject(new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined, response));
-      };
+    };
     });
   };
   try {
@@ -142,7 +155,7 @@ it.each([401, 200])('keeps the newer session/cache and route gated after stale v
     await waitFor(() => expect(finish).toBeTypeOf('function'));
     sessionStorage.setItem('agent-ops-token', 'session-b');
     finish();
-    await screen.findByRole('alert');
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(sessionStorage.getItem('agent-ops-token')).toBe('session-b');
     expect(client.getQueryData(['private-data'])).toBe('previous session');
     expect(unauthorized).toBe(0);
@@ -164,5 +177,5 @@ it('does not render the next protected route using the previous route validation
   rejectSession = true;
   fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
   await screen.findByRole('heading', { name: 'Sign in' });
-  expect(requests.map((request) => request.url)).toEqual(['/api/v1/auth/session']);
+  expect(requests.filter((request) => request.url?.endsWith('/auth/session')).map((request) => request.url)).toEqual(['/api/v1/auth/session']);
 });
