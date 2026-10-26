@@ -105,6 +105,34 @@ try {
   }
   assert(requests.some((request) => request.url.includes('/agent-runs/aggregate') && request.auth === 'Bearer tenant-b'));
   assert(requests.some((request) => request.url.includes('/insights') && request.auth === 'Bearer tenant-b'));
+  // Exercise the actual selection transaction in fresh contexts: a failed token
+  // issuance and a token whose validation names the wrong tenant both retain A.
+  for (const failure of ['selection', 'validation']) {
+    const failureContext = await browser.newContext();
+    const failurePage = await failureContext.newPage();
+    await failurePage.addInitScript(() => sessionStorage.setItem('agent-ops-token', 'tenant-a'));
+    await failurePage.route('**/api/v1/**', async (route) => {
+      const url = new URL(route.request().url());
+      const auth = route.request().headers().authorization;
+      assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `${failure} fixture received invalid auth`);
+      if (url.pathname.endsWith('/auth/session')) {
+        const organizationId = failure === 'validation' && auth === 'Bearer tenant-b' ? 'org-a' : 'org-a';
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ email: 'fixture@example.test', account_id: 'account-org-a', organization_id: organizationId }) });
+      } else if (url.pathname.endsWith('/organizations')) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: organizations }) });
+      } else if (url.pathname.endsWith('/auth/select-organization')) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: failure === 'selection' ? '' : 'tenant-b' }) });
+      } else {
+        await route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+      }
+    });
+    await failurePage.goto(`${base}/board`);
+    await failurePage.getByLabel('Organization').selectOption('org-b');
+    await failurePage.getByRole('alert').waitFor();
+    assert.match(await failurePage.getByRole('alert').innerText(), /session is unchanged|retained/i);
+    assert.equal(await failurePage.evaluate(() => sessionStorage.getItem('agent-ops-token')), 'tenant-a', `${failure} failure must retain A`);
+    await failureContext.close();
+  }
   console.log('BROWSER PASS (stub API fixture): tenant-derived repositories and distinct board/run/insight requests verified.');
 } catch (error) { scenarioError = error; throw error; }
 finally { await cleanup(); }
