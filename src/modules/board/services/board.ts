@@ -14,9 +14,9 @@ export function ciLabel(run: { status: string; conclusion: string }): string {
   return result === 'success' ? 'Passed' : result === 'failure' ? 'Failed' : result || 'Completed';
 }
 /** Fetches the GitHub repositories available to the current user. */
-export async function getRepositories(): Promise<Page<Repository>> {
-  const response = await api.api.v1RepositoriesList({ page: 1, per_page: 100 });
-  return { ...response.data, data: response.data.data ?? [], meta: response.data.meta! as Page<Repository>['meta'] };
+export async function getRepositories(): Promise<Repository[]> {
+  const response = await api.api.v1RepositoriesList();
+  return (response.data.data ?? []).filter((repository): repository is Repository => Boolean(repository.id));
 }
 /** Fetches one repository board page. */
 export async function getBoard(repositoryId: string, page: number): Promise<Page<BoardIssue>> {

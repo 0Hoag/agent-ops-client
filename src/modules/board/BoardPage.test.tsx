@@ -15,7 +15,7 @@ const emptyBoard = { data: [], meta: { page: 1, per_page: 100, total: 0 } };
 
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  requests.mockImplementation((config) => Promise.resolve({ data: { data: config.url?.includes('/repositories?') ? repositories : emptyBoard.data, meta: emptyBoard.meta }, status: 200, statusText: 'OK', headers: {}, config: { ...config, headers: {} } } as never));
+  requests.mockImplementation((config) => Promise.resolve({ data: config.url?.endsWith('/repositories') ? { data: repositories } : { data: emptyBoard.data, meta: emptyBoard.meta }, status: 200, statusText: 'OK', headers: {}, config: { ...config, headers: {} } } as never));
   const view = render(<QueryClientProvider client={client}><BoardPage /></QueryClientProvider>);
   return { client, ...view };
 }
@@ -36,7 +36,7 @@ describe('BoardPage live lifecycle', () => {
     notify?.();
     await waitFor(() => expect(invalidate).toHaveBeenCalledWith({ queryKey: ['board', 'repo-1'] }));
     await waitFor(() => expect(requests).toHaveBeenCalledTimes(3));
-    expect(requests.mock.calls[0][0].url).toBe('/api/v1/repositories?page=1&per_page=100');
+    expect(requests.mock.calls[0][0].url).toBe('/api/v1/repositories');
     expect(requests.mock.calls[1][0].url).toBe('/api/v1/board?repository_id=repo-1&page=1&per_page=100');
     expect(client.getQueryCache().find({ queryKey: ['board', 'repo-1', 1] })?.state.data).toEqual(emptyBoard);
     expect(client.getQueryCache().find({ queryKey: ['board', 'repo-2', 1] })).toBeUndefined();
