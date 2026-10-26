@@ -10,6 +10,8 @@ const base = `http://127.0.0.1:${port}`;
 mkdirSync('artifacts/organization-switch', { recursive: true });
 const built = await readFile('dist/index.html', 'utf8');
 await writeFile('dist/index.html', built.replace('<head>', '<head><base href="/">'));
+const sentinel = spawn('sleep', ['60'], { detached: true, stdio: 'ignore' });
+sentinel.unref();
 const server = spawn('pnpm', ['preview', '--host', '127.0.0.1', '--port', String(port)], { detached: true, stdio: 'ignore' });
 let browser;
 let cleaned = false;
@@ -36,9 +38,17 @@ async function cleanup() {
     try { process.kill(-server.pid, 0); assert.fail(`owned process group ${server.pid} remains after cleanup`); }
     catch (error) { if (error.code !== 'ESRCH') throw error; }
   }
-  const descendants = execFileSync('ps', ['-axo', 'pid=,ppid='], { encoding: 'utf8' }).trim().split('\n').map((line) => line.trim().split(/\s+/).map(Number)).filter(([, parent]) => parent === server.pid);
-  assert.equal(descendants.length, 0, `owned direct preview descendants remain: ${JSON.stringify(descendants)}`);
-  console.log(`CLEANUP PASS (${scenarioError ? 'failure' : 'success'}): preview listener absent; owned process group/descendants absent`);
+  const processTree = execFileSync('ps', ['-axo', 'pid=,ppid='], { encoding: 'utf8' }).trim().split('\n').map((line) => line.trim().split(/\s+/).map(Number));
+  const owned = new Set([server.pid]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const [pid, parent] of processTree) if (owned.has(parent) && !owned.has(pid)) { owned.add(pid); changed = true; }
+  }
+  assert.deepEqual([...owned].filter((pid) => pid !== server.pid), [], 'owned preview descendants remain');
+  assert.doesNotThrow(() => process.kill(sentinel.pid, 0), 'unrelated sentinel was terminated');
+  console.log(`CLEANUP PASS (${scenarioError ? 'forced-failure' : 'success'}): preview listener absent; owned process group and all descendants absent; unrelated sentinel preserved`);
+  try { process.kill(-sentinel.pid, 'SIGTERM'); } catch { /* sentinel already exited */ }
 }
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { cleanup().finally(() => process.exit(1)); });
 try {
@@ -72,6 +82,7 @@ try {
   let delayedRequestSeen = false;
   let delayedSubscription;
   let delayTenantA = false;
+  let selectionIssued = false;
   const records = { 'org-a': 'A-only', 'org-b': 'B-only' };
   const insightValues = { 'org-a': 17, 'org-b': 83 };
   const organizations = [{ id: 'org-a', name: 'Organization A' }, { id: 'org-b', name: 'Organization B' }];
@@ -81,6 +92,7 @@ try {
     if (!url.pathname.includes('/api/v1/')) return route.continue();
     const auth = route.request().headers().authorization;
     requests.push({ url: url.href, auth });
+    if (selectionIssued && url.pathname.endsWith('/auth/session') && auth !== 'Bearer tenant-b') console.error('CONTROL DIAGNOSTIC: explicit bearer preservation assertion: selected-token validation must use Bearer tenant-b');
     assert(['Bearer tenant-a', 'Bearer tenant-b'].includes(auth), `reject invalid/missing fixture auth: ${auth ?? '<missing>'}`);
     const org = auth === 'Bearer tenant-b' ? 'org-b' : 'org-a';
     if (url.pathname.endsWith('/board/ws')) return route.abort();
@@ -95,7 +107,7 @@ try {
     else if (url.pathname.endsWith('/board')) body = { data: [{ id: `record-${org}`, title: `${records[org]}-only board record`, number: 1, state: 'open', status: 'review', repository_id: org === 'org-a' ? 'a-repo' : 'b-repo', labels: [], assignee: '', pull_requests: [] }], meta: { page: 1, per_page: 100, total: 1 } };
     else if (url.pathname.endsWith('/agent-runs/aggregate')) body = { status: 200, data: [{ wave: records[org], worker: 'fixture', runs: 1, input_tokens: 1, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 1, reasoning_tokens: 0, cost_usd: 0 }] };
     else if (url.pathname.endsWith('/insights')) body = { data: { repository_id: url.searchParams.get('repository_id'), history: { complete: true }, send_back: { count: insightValues[org], numerator: insightValues[org], denominator: 100, rate: insightValues[org] / 100, evidence: [] }, first_ci_success: { rate: 0, eligible: 0, successful: 0, evidence: [] }, cycle_time: { completed: 0, median_seconds: 0, evidence: [] }, suggestions: [] } };
-    else if (url.pathname.endsWith('/auth/select-organization')) body = { token: 'tenant-b' };
+    else if (url.pathname.endsWith('/auth/select-organization')) { selectionIssued = true; body = { token: 'tenant-b' }; }
     console.log(`API stub ${url.pathname} -> ${JSON.stringify(body)}`);
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
   });
@@ -114,7 +126,11 @@ try {
   await page.getByLabel('Repository').selectOption('');
   await page.getByLabel('Repository').selectOption('a-repo');
   await page.getByLabel('Organization').selectOption('org-b');
-  await page.waitForFunction(() => sessionStorage.getItem('agent-ops-token') === 'tenant-b');
+  try { await page.waitForFunction(() => sessionStorage.getItem('agent-ops-token') === 'tenant-b', { timeout: 5000 }); }
+  catch {
+    if (selectionIssued && requests.some((request) => request.url.includes('/auth/session') && request.auth !== 'Bearer tenant-b')) throw new Error('CONTROL ASSERTION: explicit bearer preservation assertion: selected-token validation used the active tenant token');
+    throw new Error('organization switch did not activate tenant B');
+  }
   await page.evaluate(() => {
     const socket = window.__delayedTenantASubscription;
     Object.defineProperty(socket, 'readyState', { configurable: true, value: WebSocket.OPEN });
@@ -122,7 +138,11 @@ try {
   });
   await page.waitForTimeout(150);
   assert.equal(await page.getByText(`${records['org-a']}-only board record`).count(), 0, 'delayed tenant-A subscription callback must not render A data after B activation');
-  await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="b-repo"]') !== null);
+  try { await page.waitForFunction(() => document.querySelector('select[aria-label="Repository"] option[value="b-repo"]') !== null, { timeout: 5000 }); }
+  catch {
+    if (await page.getByText(`${records['org-a']}-only board record`).count()) throw new Error('CONTROL ASSERTION: stale tenant data assertion: A-only board record rendered after B activation');
+    throw new Error('CONTROL ASSERTION: stale session/cache guard removal prevented tenant-B repository state from loading');
+  }
   await page.getByLabel('Repository').selectOption('b-repo');
   await page.getByText(`${records['org-b']}-only board record`).waitFor();
   assert(delayedRequestSeen, 'delayed tenant-A board response was not exercised');
@@ -213,5 +233,6 @@ try {
   const afterListeners = new Set(execFileSync('lsof', ['-nP', '-iTCP', '-sTCP:LISTEN'], { encoding: 'utf8' }).trim().split('\n').slice(1));
   const ownedListener = (listener) => listener.includes(`:${port} `);
   assert.deepEqual([...afterListeners].filter((listener) => !beforeListeners.has(listener) && !ownedListener(listener)), [], 'fixture introduced unrelated TCP listener');
+  if (process.env.ORGANIZATION_SWITCH_FORCE_FAILURE === '1') throw new Error('FORCED_SCENARIO_FAILURE: cleanup verification');
 } catch (error) { scenarioError = error; throw error; }
 finally { await cleanup(); }

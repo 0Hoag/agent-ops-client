@@ -19,8 +19,8 @@ try {
   await run('pnpm', ['build'], { cwd: temp });
   await run('node', [runScript], { cwd: temp });
   const controls = [
-    ['explicit-bearer', files[0], "if (token && !config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`;", "if (token) config.headers.Authorization = `Bearer ${token}`;", /TimeoutError|invalid\/missing fixture auth|AssertionError/],
-    ['switch-cache', files[1], "if (typeof window !== 'undefined') window.dispatchEvent(new Event('organization:will-change'));", '', /A-only-only board record|stale tenant|AssertionError/],
+    ['explicit-bearer', files[0], "if (token && !config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`;", "if (token) config.headers.Authorization = `Bearer ${token}`;", /CONTROL ASSERTION: explicit bearer preservation assertion: selected-token validation used the active tenant token/],
+    ['switch-cache', files[1], "if (typeof window !== 'undefined') window.dispatchEvent(new Event('organization:will-change'));", '', /CONTROL ASSERTION: stale session\/cache guard removal prevented tenant-B repository state from loading/],
   ];
   for (const [name, file, expected, mutation, behavior] of controls) {
     const sourcePath = join(temp, file);
