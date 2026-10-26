@@ -62,6 +62,37 @@ function descendants(pid) {
   return found;
 }
 
+function captureOwned(processes) {
+  const captured = new Map();
+  for (const { name, pid } of processes) {
+    if (!pid) continue;
+    captured.set(pid, { name, pid });
+    for (const child of descendants(pid)) captured.set(child, { name, pid: child });
+  }
+  return [...captured.values()];
+}
+
+async function assertCapturedAbsent(captured) {
+  await delay(150);
+  for (const { name, pid } of captured) assert.equal(processAlive(pid), false, `owned ${name} process ${pid} survived cleanup`);
+}
+
+async function proveCleanupAssertion() {
+  const control = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { detached: true, stdio: 'ignore' });
+  try {
+    const captured = captureOwned([{ name: 'control', pid: control.pid }]);
+    await delay(100);
+    assert(captured.length >= 1, 'control descendant was not captured');
+    await assert.rejects(assertCapturedAbsent(captured), /owned control process .* survived cleanup/);
+    record(`CLEANUP CONTROL: captured live owned process ${control.pid}; independent absence assertion failed with expected owned-process diagnostic; unrelated sentinel ${sentinel.pid} survives.`);
+  } finally {
+    try { process.kill(-control.pid, 'SIGTERM'); } catch {}
+    await delay(100);
+    try { process.kill(-control.pid, 'SIGKILL'); } catch {}
+    await assertCapturedAbsent([{ name: 'control', pid: control.pid }]);
+  }
+}
+
 async function scenario(expectFailure) {
   const port = await freePort();
   const server = spawn('pnpm', ['preview', '--host', '127.0.0.1', '--port', String(port)], { cwd: copy, detached: true, stdio: ['ignore', 'ignore', 'pipe'] });
@@ -70,6 +101,7 @@ async function scenario(expectFailure) {
   let browser;
   let browserServer;
   let browserPid;
+  let owned = [];
   let result;
   try {
     let ready = false;
@@ -95,6 +127,7 @@ async function scenario(expectFailure) {
     });
     await page.goto(`http://127.0.0.1:${port}/members`);
     await page.getByText('peer-1').waitFor();
+    owned = captureOwned([{ name: 'preview', pid: server.pid }, { name: 'browser', pid: browserPid }]);
     // This is deliberately the same user-facing assertion for baseline and mutant builds.
     const inviteVisible = await page.getByRole('button', { name: 'Create invitation link' }).count();
     const check = spawnSync(process.execPath, ['-e', "const assert=require('node:assert/strict'); assert.equal(process.argv[1], '0', 'viewer must not create invitations')", String(inviteVisible)], { encoding: 'utf8' });
@@ -106,6 +139,7 @@ async function scenario(expectFailure) {
       assert.doesNotMatch(result.output, /ERR_MODULE_NOT_FOUND|Build failed|Timeout|timed out/);
     }
   } finally {
+    owned = [...new Map([...owned, ...captureOwned([{ name: 'preview', pid: server.pid }, { name: 'browser', pid: browserPid }])].map((item) => [item.pid, item])).values()];
     try { await browser?.close(); } catch {}
     try { await browserServer?.close(); } catch {}
     if (server.pid) {
@@ -113,24 +147,20 @@ async function scenario(expectFailure) {
       await delay(300);
       try { process.kill(-server.pid, 'SIGKILL'); } catch {}
     }
-    await delay(150);
-    if (browserPid) {
-      assert.equal(processAlive(browserPid), false, 'owned browser process survived cleanup');
-      assert.deepEqual(descendants(browserPid), [], 'owned browser descendants survived cleanup');
-    }
+    await assertCapturedAbsent(owned);
     if (server.pid) {
       try { process.kill(-server.pid, 0); assert.fail('owned preview process group survived cleanup'); } catch (error) { if (error.code !== 'ESRCH') throw error; }
-      assert.deepEqual(descendants(server.pid), [], 'owned preview descendants survived cleanup');
     }
     await assertPortClosed(port);
     assert.equal(processAlive(sentinel.pid), true, 'unrelated sentinel did not survive scenario');
   }
-  record(`${expectFailure ? 'MUTANT' : 'BASELINE'}: assertion exit=${result.status}, invitation buttons=${result.inviteVisible}; browser and preview process/listener absent after cleanup; sentinel pid ${sentinel.pid} survives.`);
+  record(`${expectFailure ? 'MUTANT' : 'BASELINE'}: assertion exit=${result.status}, invitation buttons=${result.inviteVisible}; captured owned process identities before cleanup: ${owned.map(({ name, pid }) => `${name}=${pid}`).join(', ')}; every captured PID absent, preview process group absent, listener closed; sentinel pid ${sentinel.pid} survives.`);
   if (expectFailure) record(result.output.trim());
   return result;
 }
 
 try {
+  await proveCleanupAssertion();
   const original = await readFile(sourcePath);
   const originalHash = digest(original);
   await cp(root, copy, { recursive: true, filter: (source) => !['.git', 'node_modules', 'dist', '.agent-runs'].includes(path.basename(source)) });

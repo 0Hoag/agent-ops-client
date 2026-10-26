@@ -1,5 +1,6 @@
 $ node src/modules/members/verify-permission-control.mjs (repository root)
-COPY: /var/folders/t1/3m89f7ps24d27h_7fsc4xvfw0000gp/T/members-permission-control-jIRwkt/client; isolated files copied without repository metadata or build output.
+CLEANUP CONTROL: captured live owned process 60222; independent absence assertion failed with expected owned-process diagnostic; unrelated sentinel 60221 survives.
+COPY: /var/folders/t1/3m89f7ps24d27h_7fsc4xvfw0000gp/T/members-permission-control-Rji43K/client; isolated files copied without repository metadata or build output.
 $ pnpm install --frozen-lockfile (cwd: isolated copy)
 ✓ Lockfile passes supply-chain policies (verified 22h ago)
 Lockfile is up to date, resolution step is skipped
@@ -9,7 +10,7 @@ Packages: +558
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/zeross/Library/pnpm/store/v11
   Virtual store is at:             node_modules/.pnpm
-Progress: resolved 558, reused 558, downloaded 0, added 257
+Progress: resolved 558, reused 558, downloaded 0, added 319
 Progress: resolved 558, reused 558, downloaded 0, added 558, done
 
 dependencies:
@@ -58,11 +59,11 @@ WARNING in ⚠ Rspack performance recommendations:
   │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
   │ For more info visit https://rspack.rs/guide/optimization/code-splitting
 
-Rspack compiled with 3 warnings in 1.04 s
+Rspack compiled with 3 warnings in 1.07 s
 $ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
 $ tsc --noEmit
 exit 0
-BASELINE: assertion exit=0, invitation buttons=0; browser and preview process/listener absent after cleanup; sentinel pid 56271 survives.
+BASELINE: assertion exit=0, invitation buttons=0; captured owned process identities before cleanup: preview=60297, preview=60311, browser=60317, browser=60318, browser=60319, browser=60321; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
 $ pnpm build (cwd: isolated copy)
 WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
   │ Assets:
@@ -78,11 +79,11 @@ WARNING in ⚠ Rspack performance recommendations:
   │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
   │ For more info visit https://rspack.rs/guide/optimization/code-splitting
 
-Rspack compiled with 3 warnings in 316 ms
+Rspack compiled with 3 warnings in 279 ms
 $ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
 $ tsc --noEmit
 exit 0
-MUTANT: assertion exit=1, invitation buttons=1; browser and preview process/listener absent after cleanup; sentinel pid 56271 survives.
+MUTANT: assertion exit=1, invitation buttons=1; captured owned process identities before cleanup: preview=60421, preview=60435, browser=60441, browser=60442, browser=60443, browser=60444; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
 node:assert:150
   throw new AssertionError(obj);
   ^
@@ -123,10 +124,10 @@ WARNING in ⚠ Rspack performance recommendations:
   │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
   │ For more info visit https://rspack.rs/guide/optimization/code-splitting
 
-Rspack compiled with 3 warnings in 310 ms
+Rspack compiled with 3 warnings in 271 ms
 $ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
 $ tsc --noEmit
 exit 0
-BASELINE: assertion exit=0, invitation buttons=0; browser and preview process/listener absent after cleanup; sentinel pid 56271 survives.
+BASELINE: assertion exit=0, invitation buttons=0; captured owned process identities before cleanup: preview=60540, preview=60555, browser=60561, browser=60562, browser=60563, browser=60564; every captured PID absent, preview process group absent, listener closed; sentinel pid 60221 survives.
 RESTORE: source SHA-256 e33d19d86f59d35b8b1ee40e08b4007a579ba81eed43842a386290441a3f7ecb; restored production-copy SHA-256 e33d19d86f59d35b8b1ee40e08b4007a579ba81eed43842a386290441a3f7ecb; identical.
 STUB SCOPE: browser API stubs cover GET /auth/session, GET /organizations, and GET /organizations/org-1/members only; bearer identity is asserted. No live API/auth server is exercised. Payloads use the response structures consumed by the generated client, including the shared data envelope for members, and membership fields consumed by the module.
