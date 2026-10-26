@@ -1,0 +1,1 @@
+PASS: invitation acceptance submitted fixture token and returned to members.

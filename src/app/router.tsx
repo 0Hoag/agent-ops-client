@@ -5,6 +5,9 @@ import { registerHealth } from './register-health';
 import { registerBoard } from './register-board';
 import { registerRuns } from './register-runs';
 import { registerInsights } from './register-insights';
+import { registerMembers } from './register-members';
+import { InvitationPage } from '../modules/members/InvitationPage';
+import { membersPaths } from '../modules/members/paths';
 import { LoginPage } from '../modules/auth/LoginPage';
 import { hasToken, validateSession } from '../modules/auth/services/auth';
 import { paths } from './paths';
@@ -42,5 +45,6 @@ export function AppRouter() {
   const board = registerBoard();
   const runs = registerRuns();
   const insights = registerInsights();
-  return <Routes><Route path={health.path} element={health.element} /><Route path={paths.login} element={<LoginPage />} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.health} replace />} /></Routes>;
+  const members = registerMembers();
+  return <Routes><Route path={health.path} element={health.element} /><Route path={paths.login} element={<LoginPage />} /><Route path={membersPaths.invite} element={<Protected><InvitationPage /></Protected>} /><Route path={members.path} element={<Protected>{members.element}</Protected>} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.health} replace />} /></Routes>;
 }

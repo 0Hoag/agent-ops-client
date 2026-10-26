@@ -1,0 +1,1 @@
+PASS: Members browser flow, list/role update/invitation/removal screenshots; all intercepted API requests carried Bearer fixture-token. API responses are Playwright fixtures.

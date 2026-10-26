@@ -1,0 +1,1 @@
+PASS: viewer sees members but no invite, role-change, or removal controls. API responses are Playwright fixtures.
