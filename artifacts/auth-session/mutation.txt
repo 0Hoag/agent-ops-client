@@ -1,46 +1,46 @@
-Disposable copy: .agent-runs/auth-mutation-etFBre
-Production before/restored/worktree SHA256: ad14225a96cad0eee3078d97bf1bca7c3155ea30de0caa334bb031118c3c4655
-Unchanged test SHA256: b7fd8dd133a14182437aa9e8d5cde8417f9dceb5891bc2df6ca71d8c294aab56
+Disposable copy: .agent-runs/auth-mutation-BbASDG
+Production before/restored/worktree SHA256: 142eba85170556ed9ddf237c4ac5151d72a0f2cf9a1a5f2ac63c7d757094a534
+Unchanged test SHA256: 2e27907f94bb7615eb77df351b0d10f36e1c8f1c5a07964efb891159297545a4
 Baseline exit=0
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ✓ src/modules/auth/services/auth.test.ts (4 tests) 3ms
+ ✓ src/modules/auth/services/auth.test.ts (6 tests) 3ms
 
  Test Files  1 passed (1)
-      Tests  4 passed (4)
-   Start at  00:27:39
-   Duration  332ms (transform 43ms, setup 0ms, collect 30ms, tests 3ms, environment 0ms, prepare 70ms)
+      Tests  6 passed (6)
+   Start at  00:46:51
+   Duration  282ms (transform 33ms, setup 0ms, collect 68ms, tests 3ms, environment 0ms, prepare 44ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
 
 Production mutation exit=1
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ❯ src/modules/auth/services/auth.test.ts (4 tests | 2 failed) 7ms
-   × authentication service > stores a successful login token and validates using Authorization-enabled shared client 4ms
+ ❯ src/modules/auth/services/auth.test.ts (6 tests | 2 failed) 7ms
+   × authentication service > stores a successful login token and validates using Authorization-enabled shared client 3ms
      → expected "spy" to be called 2 times, but got 1 times
    × authentication service > fails if a mutation skips session validation after login 1ms
      → promise resolved "'jwt-test'" instead of rejecting
 
  Test Files  1 failed (1)
-      Tests  2 failed | 2 passed (4)
-   Start at  00:27:40
-   Duration  333ms (transform 42ms, setup 0ms, collect 33ms, tests 7ms, environment 0ms, prepare 67ms)
+      Tests  2 failed | 4 passed (6)
+   Start at  00:46:51
+   Duration  271ms (transform 33ms, setup 0ms, collect 67ms, tests 7ms, environment 0ms, prepare 46ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
 ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
 
  FAIL  src/modules/auth/services/auth.test.ts > authentication service > stores a successful login token and validates using Authorization-enabled shared client
 AssertionError: expected "spy" to be called 2 times, but got 1 times
- ❯ src/modules/auth/services/auth.test.ts:15:25
-     13|     expect(sessionStorage.getItem('agent-ops-token')).toBe('jwt-test');
-     14|     expect(await validateSession()).toBe(true);
-     15|     expect(sessionCall).toHaveBeenCalledTimes(2);
+ ❯ src/modules/auth/services/auth.test.ts:16:25
+     14|     expect(sessionStorage.getItem('agent-ops-token')).toBe('jwt-test');
+     15|     expect(await validateSession()).toBe(true);
+     16|     expect(sessionCall).toHaveBeenCalledTimes(2);
        |                         ^
-     16|   });
-     17|   it('rejects invalid login and clears expired sessions', async () => {
+     17|   });
+     18|   it('rejects invalid login and clears expired sessions', async () => {
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
 
@@ -53,26 +53,26 @@ AssertionError: promise resolved "'jwt-test'" instead of rejecting
 + Received:
 "jwt-test"
 
- ❯ src/modules/auth/services/auth.test.ts:33:51
-     31|     loginCall.mockResolvedValue({ data: { token: 'jwt-test' } });
-     32|     sessionCall.mockRejectedValue(new Error('unauthorized'));
-     33|     await expect(login('test@example.com', 'pass')).rejects.toThrow('u…
+ ❯ src/modules/auth/services/auth.test.ts:43:51
+     41|     loginCall.mockResolvedValue({ data: { token: 'jwt-test' } });
+     42|     sessionCall.mockRejectedValue(new Error('unauthorized'));
+     43|     await expect(login('test@example.com', 'pass')).rejects.toThrow('u…
        |                                                   ^
-     34|     expect(hasToken()).toBe(false);
-     35|   });
+     44|     expect(hasToken()).toBe(false);
+     45|   });
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
 
 
 Byte-identical restore exit=0
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ✓ src/modules/auth/services/auth.test.ts (4 tests) 3ms
+ ✓ src/modules/auth/services/auth.test.ts (6 tests) 3ms
 
  Test Files  1 passed (1)
-      Tests  4 passed (4)
-   Start at  00:27:40
-   Duration  271ms (transform 38ms, setup 0ms, collect 29ms, tests 3ms, environment 0ms, prepare 55ms)
+      Tests  6 passed (6)
+   Start at  00:46:52
+   Duration  314ms (transform 29ms, setup 0ms, collect 67ms, tests 3ms, environment 0ms, prepare 38ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.

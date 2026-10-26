@@ -55,7 +55,7 @@ const guardBaseline = runGuard();
 assert.equal(guardBaseline.status, 0, guardBaseline.stdout + guardBaseline.stderr);
 let guardMutation;
 try {
-  const broken = guardOriginal.toString().replace('session?.path === location.pathname ? session.valid : null', 'session?.valid ?? null');
+  const broken = guardOriginal.toString().replace('session?.path === location.pathname ? session.state : null', 'session?.state ?? null');
   assert.notEqual(broken, guardOriginal.toString());
   writeFileSync(resolve(copy, guard), broken);
   guardMutation = runGuard();
@@ -78,3 +78,37 @@ writeFileSync('artifacts/auth-session/guard-mutation.txt', [
   `Byte-identical restore exit=${guardRestored.status}\n${guardRestored.stdout}${guardRestored.stderr}`,
 ].join('\n').replaceAll(root, '<worktree>').replace(/\x1b\[[0-9;]*m/g, '').replace(/[ \t]+$/gm, '').trimEnd() + '\n');
 console.log('PASS: production cross-route validation mutation leaked a protected request; unchanged test failed; byte-identical restore passed.');
+
+const identityTest = 'src/modules/auth/services/session-identity.test.ts';
+const identityBytes = readFileSync(identityTest);
+const runIdentity = () => spawnSync(resolve('node_modules/.bin/vitest'), ['run', identityTest], { cwd: copy, encoding: 'utf8' });
+const identityBaseline = runIdentity();
+assert.equal(identityBaseline.status, 0, identityBaseline.stdout + identityBaseline.stderr);
+const preFix = spawnSync('git', ['show', '7a14d598de97dd911232913b958b6fbe1d009a3c:src/modules/auth/services/auth.ts'], { encoding: 'buffer' });
+assert.equal(preFix.status, 0);
+let identityFailure;
+try {
+  writeFileSync(resolve(copy, path), preFix.stdout);
+  identityFailure = runIdentity();
+  assert.notEqual(identityFailure.status, 0);
+  assert.match(identityFailure.stdout + identityFailure.stderr, /expected null to be 'session-b'/);
+  assert.match(identityFailure.stdout + identityFailure.stderr, /5 failed/);
+} finally {
+  writeFileSync(resolve(copy, path), original);
+}
+const identityRestored = runIdentity();
+assert.equal(identityRestored.status, 0, identityRestored.stdout + identityRestored.stderr);
+assert.deepEqual(readFileSync(resolve(copy, path)), original);
+assert.deepEqual(readFileSync(path), original);
+assert.deepEqual(readFileSync(resolve(copy, identityTest)), identityBytes);
+assert.deepEqual(readFileSync(identityTest), identityBytes);
+writeFileSync('artifacts/auth-session/identity-control.txt', [
+  'Pre-fix production: 7a14d598de97dd911232913b958b6fbe1d009a3c',
+  `Pre-fix production SHA256: ${hash(preFix.stdout)}`,
+  `Fixed production before/restored/worktree SHA256: ${hash(original)}`,
+  `Unchanged deferred-transport test SHA256: ${hash(identityBytes)}`,
+  `Baseline exit=${identityBaseline.status}\n${identityBaseline.stdout}${identityBaseline.stderr}`,
+  `Pre-fix production exit=${identityFailure.status}\n${identityFailure.stdout}${identityFailure.stderr}`,
+  `Byte-identical restore exit=${identityRestored.status}\n${identityRestored.stdout}${identityRestored.stderr}`,
+].join('\n').replaceAll(root, '<worktree>').replace(/\x1b\[[0-9;]*m/g, '').replace(/[ \t]+$/gm, '').trimEnd() + '\n');
+console.log('PASS: unchanged actual validateSession/login deferred tests fail against pre-fix production; byte-identical restoration passes.');

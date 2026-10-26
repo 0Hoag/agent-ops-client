@@ -1,0 +1,128 @@
+Pre-fix production: 7a14d598de97dd911232913b958b6fbe1d009a3c
+Pre-fix production SHA256: 03e0d9a22b73f416f466384165d7ad70cbb6f3c548d61a285fac946a67a3252a
+Fixed production before/restored/worktree SHA256: 142eba85170556ed9ddf237c4ac5151d72a0f2cf9a1a5f2ac63c7d757094a534
+Unchanged deferred-transport test SHA256: fdc7673873c3ff2f4cb2fa0cf4989cb8dec0028b01004e0571f099e6e5322e5b
+Baseline exit=0
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
+
+ ✓ src/modules/auth/services/session-identity.test.ts (6 tests) 12ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  00:46:56
+   Duration  523ms (transform 45ms, setup 0ms, collect 69ms, tests 12ms, environment 226ms, prepare 54ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+Pre-fix production exit=1
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
+
+ ❯ src/modules/auth/services/session-identity.test.ts (6 tests | 5 failed) 15ms
+   × does not validate or delete session B after delayed session A response 401 7ms
+     → expected null to be 'session-b' // Object.is equality
+   × does not validate or delete session B after delayed session A response 200 2ms
+     → expected true to be 'retry' // Object.is equality
+   × does not delete or authorize session B after post-login session A response 401 2ms
+     → expected null to be 'session-b' // Object.is equality
+   × does not delete or authorize session B after post-login session A response 503 1ms
+     → expected null to be 'session-b' // Object.is equality
+   × does not delete or authorize session B after post-login session A response 200 2ms
+     → expected 'authorized' to be 'rejected' // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  00:46:57
+   Duration  561ms (transform 46ms, setup 0ms, collect 79ms, tests 15ms, environment 229ms, prepare 41ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/auth/services/session-identity.test.ts > does not validate or delete session B after delayed session A response 401
+AssertionError: expected null to be 'session-b' // Object.is equality
+
+- Expected:
+"session-b"
+
++ Received:
+null
+
+ ❯ src/modules/auth/services/session-identity.test.ts:54:44
+     52|   transport.finish(status);
+     53|   const outcome = await result;
+     54|   expect(sessionStorage.getItem(tokenKey)).toBe('session-b');
+       |                                            ^
+     55|   expect(unauthorized).toBe(0);
+     56|   expect(outcome).toBe('retry');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  src/modules/auth/services/session-identity.test.ts > does not validate or delete session B after delayed session A response 200
+AssertionError: expected true to be 'retry' // Object.is equality
+
+- Expected:
+"retry"
+
++ Received:
+true
+
+ ❯ src/modules/auth/services/session-identity.test.ts:56:19
+     54|   expect(sessionStorage.getItem(tokenKey)).toBe('session-b');
+     55|   expect(unauthorized).toBe(0);
+     56|   expect(outcome).toBe('retry');
+       |                   ^
+     57| });
+     58|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/modules/auth/services/session-identity.test.ts > does not delete or authorize session B after post-login session A response 401
+ FAIL  src/modules/auth/services/session-identity.test.ts > does not delete or authorize session B after post-login session A response 503
+AssertionError: expected null to be 'session-b' // Object.is equality
+
+- Expected:
+"session-b"
+
++ Received:
+null
+
+ ❯ src/modules/auth/services/session-identity.test.ts:66:44
+     64|   transport.finish(status);
+     65|   const outcome = await result;
+     66|   expect(sessionStorage.getItem(tokenKey)).toBe('session-b');
+       |                                            ^
+     67|   expect(unauthorized).toBe(0);
+     68|   expect(outcome).toBe('rejected');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  src/modules/auth/services/session-identity.test.ts > does not delete or authorize session B after post-login session A response 200
+AssertionError: expected 'authorized' to be 'rejected' // Object.is equality
+
+Expected: "rejected"
+Received: "authorized"
+
+ ❯ src/modules/auth/services/session-identity.test.ts:68:19
+     66|   expect(sessionStorage.getItem(tokenKey)).toBe('session-b');
+     67|   expect(unauthorized).toBe(0);
+     68|   expect(outcome).toBe('rejected');
+       |                   ^
+     69| });
+     70|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+Byte-identical restore exit=0
+
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
+
+ ✓ src/modules/auth/services/session-identity.test.ts (6 tests) 13ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  00:46:58
+   Duration  572ms (transform 45ms, setup 0ms, collect 76ms, tests 13ms, environment 225ms, prepare 39ms)
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.

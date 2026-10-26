@@ -12,23 +12,26 @@ import { paths } from './paths';
 function Protected({ children }: { children: JSX.Element }) {
   const location = useLocation();
   const queryClient = useQueryClient();
-  const [session, setSession] = useState<{ path: string; valid: boolean } | null>(null);
-  const valid = session?.path === location.pathname ? session.valid : null;
+  const [session, setSession] = useState<{ path: string; state: 'valid' | 'denied' | 'retry' } | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const state = session?.path === location.pathname ? session.state : null;
   useEffect(() => {
     let active = true;
-    const deny = () => { active = false; setSession({ path: location.pathname, valid: false }); queryClient.clear(); };
+    const deny = () => { active = false; setSession({ path: location.pathname, state: 'denied' }); queryClient.clear(); };
     window.addEventListener('auth:unauthorized', deny);
     if (!hasToken()) deny();
     else {
       void validateSession().then((ok) => {
         if (!active) return;
-        setSession({ path: location.pathname, valid: ok });
+        setSession({ path: location.pathname, state: ok ? 'valid' : 'denied' });
         if (!ok) queryClient.clear();
+      }).catch(() => {
+        if (active) setSession({ path: location.pathname, state: 'retry' });
       });
     }
     return () => { active = false; window.removeEventListener('auth:unauthorized', deny); };
-  }, [location.pathname, queryClient]);
-  return valid ? children : valid === false ? <Navigate to={paths.login} state={{ from: location.pathname + location.search + location.hash }} replace /> : <p role="status">Checking session…</p>;
+  }, [location.pathname, queryClient, attempt]);
+  return state === 'valid' ? children : state === 'denied' ? <Navigate to={paths.login} state={{ from: location.pathname + location.search + location.hash }} replace /> : state === 'retry' ? <section role="alert"><p>Unable to verify your session. Check your connection and try again.</p><button onClick={() => setAttempt((value) => value + 1)}>Retry</button></section> : <p role="status">Checking session…</p>;
 }
 
 /** Mounts the route elements exposed by registered feature modules. */

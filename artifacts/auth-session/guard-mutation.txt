@@ -1,15 +1,15 @@
-Production guard before/restored/worktree SHA256: b3196d31bb2d8f0a0316fb33de9b8696847dabc018e47c4db1717482aaa054b6
-Unchanged route test SHA256: 201b8663381153f9b4949174482ca39ce28140c84938f03bbff341bd260cbcc0
+Production guard before/restored/worktree SHA256: 75d3019639b638e98e658a3e8b33f070931742edb71408fe399d2c023d87423d
+Unchanged route test SHA256: 32d182bbafeadd3529c09d8cd1557efad427314b13fdb8b531f7548bb855f821
 Baseline exit=0
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ✓ src/app/router.test.tsx (9 tests) 204ms
+ ✓ src/app/router.test.tsx (13 tests) 347ms
 
  Test Files  1 passed (1)
-      Tests  9 passed (9)
-   Start at  00:27:41
-   Duration  1.37s (transform 155ms, setup 0ms, collect 416ms, tests 204ms, environment 424ms, prepare 63ms)
+      Tests  13 passed (13)
+   Start at  00:46:52
+   Duration  1.06s (transform 117ms, setup 0ms, collect 255ms, tests 347ms, environment 231ms, prepare 48ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
 stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
@@ -19,16 +19,16 @@ stderr | src/app/router.test.tsx > denies missing sessions and clears cached dat
 
 Production mutation exit=1
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ❯ src/app/router.test.tsx (9 tests | 1 failed) 226ms
-   × does not render the next protected route using the previous route validation 29ms
+ ❯ src/app/router.test.tsx (13 tests | 1 failed) 359ms
+   × does not render the next protected route using the previous route validation 21ms
      → expected [ Array(2) ] to deeply equal [ '/api/v1/auth/session' ]
 
  Test Files  1 failed (1)
-      Tests  1 failed | 8 passed (9)
-   Start at  00:27:43
-   Duration  1.19s (transform 165ms, setup 0ms, collect 347ms, tests 226ms, environment 269ms, prepare 94ms)
+      Tests  1 failed | 12 passed (13)
+   Start at  00:46:54
+   Duration  1.06s (transform 118ms, setup 0ms, collect 264ms, tests 359ms, environment 228ms, prepare 51ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
 stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
@@ -48,27 +48,27 @@ AssertionError: expected [ Array(2) ] to deeply equal [ '/api/v1/auth/session' ]
     "/api/v1/auth/session",
   ]
 
- ❯ src/app/router.test.tsx:109:50
-    107|   fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
-    108|   await screen.findByRole('heading', { name: 'Sign in' });
-    109|   expect(requests.map((request) => request.url)).toEqual(['/api/v1/aut…
+ ❯ src/app/router.test.tsx:167:50
+    165|   fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
+    166|   await screen.findByRole('heading', { name: 'Sign in' });
+    167|   expect(requests.map((request) => request.url)).toEqual(['/api/v1/aut…
        |                                                  ^
-    110| });
-    111|
+    168| });
+    169|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
 
 
 Byte-identical restore exit=0
 
- RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-etFBre
+ RUN  v2.1.9 <worktree>/.agent-runs/auth-mutation-BbASDG
 
- ✓ src/app/router.test.tsx (9 tests) 185ms
+ ✓ src/app/router.test.tsx (13 tests) 348ms
 
  Test Files  1 passed (1)
-      Tests  9 passed (9)
-   Start at  00:27:44
-   Duration  990ms (transform 127ms, setup 0ms, collect 285ms, tests 185ms, environment 242ms, prepare 43ms)
+      Tests  13 passed (13)
+   Start at  00:46:55
+   Duration  1.07s (transform 108ms, setup 0ms, collect 250ms, tests 348ms, environment 227ms, prepare 39ms)
 
 The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
 stderr | src/app/router.test.tsx > denies missing sessions and clears cached data: /board
