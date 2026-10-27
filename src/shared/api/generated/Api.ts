@@ -16,6 +16,7 @@ export interface AgentrunAgentRun {
   cost_usd?: number;
   created_at?: string;
   ended_at?: string;
+  harness?: string;
   id?: string;
   input_tokens?: number;
   issue_numbers?: number[];
@@ -24,6 +25,7 @@ export interface AgentrunAgentRun {
   pr_number?: number;
   reasoning_tokens?: number;
   repository_id?: string;
+  session_id?: string;
   started_at?: string;
   updated_at?: string;
   wave?: string;
@@ -52,6 +54,7 @@ export interface AgentrunCreateInput {
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   ended_at: string;
+  harness?: string;
   input_tokens?: number;
   issue_numbers?: number[];
   model: string;
@@ -59,6 +62,7 @@ export interface AgentrunCreateInput {
   pr_number?: number;
   reasoning_tokens?: number;
   repository_id: string;
+  session_id?: string;
   started_at: string;
   wave: string;
   worker: string;
