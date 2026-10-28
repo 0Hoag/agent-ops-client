@@ -4,11 +4,7 @@
     72
   ],
   "sourceHead": "56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71",
-  "sourceSha256": {
-    "src/modules/runs/RunsPage.tsx": "28703dcff56f3e233646bb866b59b66ef298a9f4f7decf3aaef3ebb63bd20f86",
-    "scripts/verify-pricing-browser.mjs": "5a8ce8c5168b4b6439f86a23d376f916847df3d4f337b7052357114cffdf2fa6"
-  },
-  "browserCommand": "PREVIEW_PORT=60198 GIT_HEAD=56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71 node scripts/verify-pricing-browser.mjs",
+  "browserCommand": "PREVIEW_PORT=60198 node scripts/verify-pricing-browser.mjs",
   "browserResult": "BROWSER PASS: built preview http://127.0.0.1:60198; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD billed/equivalent and VND cost_vnd/unknown fixture assertions. Requests [\"GET /api/v1/auth/session\",\"GET /api/v1/organizations\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations/org-a/members\",\"GET /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"GET /api/v1/agent-run-prices\",\"PATCH /api/v1/agent-run-prices/price-1\",\"GET /api/v1/agent-run-prices\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations/org-b/members\",\"GET /api/v1/agent-run-prices\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations\",\"GET /api/v1/agent-runs/aggregate\"]",
   "screenshots": [
     "pricing-owner.png",
@@ -28,6 +24,6 @@
     "swagger": "f31cc63387208492ee856eff2e3dab6699142825c13697edc1cbeb826c4bab92",
     "generated": "bb066640b4c8c79c5da2ce9f78be088dd66a6539cf7cd9f4e14fd7ec794bd907"
   },
-  "hostedCi": "not polled per instruction",
+  "hostedCi": "not recorded",
   "realApiSmoke": "pending root #340 acceptance"
 }
