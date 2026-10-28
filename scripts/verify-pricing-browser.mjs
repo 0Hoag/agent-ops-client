@@ -5,9 +5,9 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
 
-const port = 24373;
+const port = Number(process.env.PREVIEW_PORT ?? 24373);
 const base = `http://127.0.0.1:${port}`;
-const evidence = '.agent-runs/w10b-price-editor-r3';
+const evidence = '.agent-runs/w10h-cost-protocol';
 await mkdir(evidence, { recursive: true });
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, base).pathname;
@@ -51,10 +51,11 @@ try {
     else if (path.endsWith('/agent-run-prices') && request.method() === 'POST') { const value = request.postDataJSON(); const prices = pricesByOrg[currentOrg]; if (rejectNextCreate || prices.some((item) => item.model === value.model && item.effective_date === value.effective_date)) { rejectNextCreate = false; status = 409; body = { error: 'duplicate version' }; } else { prices.push({ ...value, id: 'price-2' }); body = { data: prices[1] }; } }
     else if (path.endsWith('/agent-run-prices/price-1') && request.method() === 'PATCH') { pricesByOrg[currentOrg][0] = { ...pricesByOrg[currentOrg][0], ...request.postDataJSON() }; body = { data: pricesByOrg[currentOrg][0] }; }
     else if (path.endsWith('/agent-runs/aggregate')) body = { data: [
-      { wave: 'W10', worker: 'known-usd', runs: 1, input_tokens: 100, cached_input_tokens: 20, cache_write_tokens: 10, output_tokens: 30, reasoning_tokens: 0, cost_usd: 1.25, equivalent_cost_usd: 31250 },
-      { wave: 'W10', worker: 'known-vnd', runs: 1, input_tokens: 100, cached_input_tokens: 20, cache_write_tokens: 10, output_tokens: 30, reasoning_tokens: 0, billed_cost_usd: 1.25, equivalent_cost_usd: 31250 },
+      { wave: 'W10', worker: 'known-usd', runs: 1, input_tokens: 100, cached_input_tokens: 20, cache_write_tokens: 10, output_tokens: 30, reasoning_tokens: 0, cost_usd: 1.25, equivalent_cost_usd: 1.25, cost_vnd: 31250 },
+      { wave: 'W10', worker: 'known-vnd', runs: 1, input_tokens: 100, cached_input_tokens: 20, cache_write_tokens: 10, output_tokens: 30, reasoning_tokens: 0, billed_cost_usd: 1.25, equivalent_cost_usd: 1.25, cost_vnd: 31250 },
       { wave: 'W10', worker: 'unknown', runs: 1, input_tokens: 100, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 30, reasoning_tokens: 0 },
-      { wave: 'W10', worker: 'subscription', runs: 1, input_tokens: 100, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 30, reasoning_tokens: 0, billed_cost_usd: 0, cost_usd: 0, equivalent_cost_usd: 62500 },
+      { wave: 'W10', worker: 'missing-vnd', runs: 1, input_tokens: 100, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 30, reasoning_tokens: 0, equivalent_cost_usd: 1.25 },
+      { wave: 'W10', worker: 'subscription', runs: 1, input_tokens: 100, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 30, reasoning_tokens: 0, billed_cost_usd: 0, cost_usd: 0, equivalent_cost_usd: 1.25, cost_vnd: 31250 },
     ] };
     else { status = 404; body = { error: `unexpected fixture endpoint ${path}` }; }
     await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
@@ -105,20 +106,21 @@ try {
   await page.getByLabel(/currency/i).selectOption('VND');
   await page.screenshot({ path: `${evidence}/runs-vnd.png`, fullPage: true });
   const runText = await page.locator('table').innerText();
-  assert.match(runText, /known-usd\t—\t1\t15\.4%\tVND 31,250/);
-  assert.match(runText, /known-vnd\t—\t1\t15\.4%\tVND 31,250/);
+  assert.match(runText, /known-usd\t—\t1\t15\.4%\tVND 31,250/, 'VND must use server cost_vnd, not equivalent_cost_usd');
+  assert.match(runText, /known-vnd\t—\t1\t15\.4%\tVND 31,250/, 'VND must use server cost_vnd, not equivalent_cost_usd');
   assert.match(runText, /unknown\t—\t1\t0\.0%\tUnknown/);
-  assert.match(runText, /subscription\t—\t1\t0\.0%\tVND 62,500/);
+  assert.match(runText, /missing-vnd\t—\t1\t0\.0%\tUnknown/, 'missing cost_vnd must remain Unknown');
+  assert.match(runText, /subscription\t—\t1\t0\.0%\tVND 31,250/);
   await page.getByLabel(/currency/i).selectOption('USD');
   const usdText = await page.locator('table').innerText();
   assert.match(usdText, /known-usd\t—\t1\t15\.4%\t\$1\.2500/);
-  assert.match(usdText, /subscription\t—\t1\t0\.0%\t\$0\.0000/);
+  assert.match(usdText, /subscription\t—\t1\t0\.0%\t\$0\.0000 \(equivalent API USD \$1\.2500\)/);
   assert.deepEqual(await page.evaluate(() => window.__fixturePageErrors), [], 'browser runtime errors');
   const observed = requests.map(({ method, url }) => `${method} ${url}`);
-  const summary = `BROWSER PASS: built preview ${base}; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD/VND and unknown/equivalent fixture assertions. Requests ${JSON.stringify(observed)}`;
+  const summary = `BROWSER PASS: built preview ${base}; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD billed/equivalent and VND cost_vnd/unknown fixture assertions. Requests ${JSON.stringify(observed)}`;
   console.log(summary);
   await writeFile(`${evidence}/requests.json`, JSON.stringify(requests, null, 2));
-  await writeFile(`${evidence}/manifest.json`, JSON.stringify({ issue: 13, pr: 70, sourceHead: process.env.GIT_HEAD ?? 'unrecorded', browserCommand: 'node scripts/verify-pricing-browser.mjs', browserResult: summary, screenshots: ['pricing-owner.png', 'pricing-edited.png', 'pricing-member-org-b.png', 'runs-vnd.png'], requestLog: 'requests.json', runFixture: { usdToVndEquivalent: '1.25 -> 31,250 (server value)', subscription: 'billed USD 0; equivalent VND 62,500', unknown: 'Unknown' }, apiSchemaSha256: {}, hostedCi: process.env.HOSTED_CI ?? 'not recorded', realApiSmoke: 'pending separate acceptance' }, null, 2));
+  await writeFile(`${evidence}/manifest.json`, JSON.stringify({ issues: [71, 72], sourceHead: process.env.GIT_HEAD ?? 'unrecorded', browserCommand: `PREVIEW_PORT=${port} node scripts/verify-pricing-browser.mjs`, browserResult: summary, screenshots: ['pricing-owner.png', 'pricing-edited.png', 'pricing-member-org-b.png', 'runs-vnd.png'], requestLog: 'requests.json', runFixture: { billed_cost_usd: 0, equivalent_cost_usd: 1.25, cost_vnd: 31250, missingCostVnd: 'Unknown', unknown: 'Unknown' }, apiSchemaSha256: {}, hostedCi: process.env.HOSTED_CI ?? 'not recorded', realApiSmoke: 'pending root #340 acceptance' }, null, 2));
   const hashes = {};
   for (const file of ['src/shared/api/swagger.json', 'src/shared/api/generated/Api.ts']) hashes[file] = createHash('sha256').update(await readFile(file)).digest('hex');
   const manifest = JSON.parse(await readFile(`${evidence}/manifest.json`, 'utf8'));

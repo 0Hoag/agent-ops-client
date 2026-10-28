@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http } from '../../shared/http';
-import { RunsPage } from './RunsPage';
+import { formatRunCost, RunsPage } from './RunsPage';
 
 const getAggregates = vi.spyOn(http, 'request');
 
@@ -21,6 +21,15 @@ describe('RunsPage', () => {
   function requestConfig() {
     return getAggregates.mock.calls.at(-1)?.[0] as { url?: string };
   }
+
+  it('formats server VND and subscription billed/equivalent USD independently', () => {
+    const row = { billed_cost_usd: 0, equivalent_cost_usd: 1.25, cost_vnd: 31250, cost_usd: 0 };
+    expect(formatRunCost(row, 'USD')).toBe('$0.0000 (equivalent API USD $1.2500)');
+    expect(formatRunCost(row, 'VND')).toBe('VND 31,250');
+    expect(formatRunCost({ equivalent_cost_usd: 1.25 }, 'VND')).toBe('Unknown');
+    expect(formatRunCost({}, 'USD')).toBe('Unknown');
+    expect(formatRunCost({ cost_usd: 2.5 }, 'USD')).toBe('$2.5000');
+  });
 
   it('renders loading, empty, and error states', async () => {
     let resolve: ((value: { data: { data: [] } }) => void) | undefined;
@@ -63,11 +72,12 @@ describe('RunsPage', () => {
     expect(row.textContent).toContain('$1.2500');
   });
 
-  it('uses only server-provided equivalent cost for VND', async () => {
-    aggregateResponse([{ wave: 'W3', worker: 'Subscription', runs: 1, cost_usd: 0, billed_cost_usd: 0, equivalent_cost_usd: 25000 }]);
+  it('uses server cost_vnd and explicitly labels subscription equivalent API USD', async () => {
+    aggregateResponse([{ wave: 'W3', worker: 'Subscription', runs: 1, cost_usd: 0, billed_cost_usd: 0, equivalent_cost_usd: 1.25, cost_vnd: 31250 }]);
     setup();
     await screen.findByRole('row', { name: /Subscription/ });
+    expect(screen.getByRole('row', { name: /Subscription/ }).textContent).toContain('equivalent API USD $1.2500');
     fireEvent.change(screen.getByRole('combobox', { name: 'Currency' }), { target: { value: 'VND' } });
-    expect(await screen.findByRole('cell', { name: 'VND 25,000' })).toBeTruthy();
+    expect(await screen.findByRole('cell', { name: 'VND 31,250' })).toBeTruthy();
   });
 });
