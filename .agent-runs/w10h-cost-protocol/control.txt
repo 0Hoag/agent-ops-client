@@ -1,0 +1,24 @@
+Disposable production-copy boundary control (copy at .agent-runs/w10h-control-copy; fixture and harness identical in each run)
+Source head: 56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71
+Source SHA-256 RunsPage.tsx: 28703dcff56f3e233646bb866b59b66ef298a9f4f7decf3aaef3ebb63bd20f86
+
+Baseline:
+node_modules/.bin/rspack build && PREVIEW_PORT=60208 GIT_HEAD=56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71 node scripts/verify-pricing-browser.mjs
+Exit 0; BROWSER PASS: built preview http://127.0.0.1:60208; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD billed/equivalent and VND cost_vnd/unknown fixture assertions.
+
+Mutation diff (actual production formatter; only the disposable copy was changed):
+- if (currency === 'VND') return row.cost_vnd === undefined ? 'Unknown' : `VND ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(row.cost_vnd)}`;
++ if (currency === 'VND') return row.equivalent_cost_usd === undefined ? 'Unknown' : `VND ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(row.equivalent_cost_usd)}`;
+
+Mutated production build and same harness:
+node_modules/.bin/rspack build && PREVIEW_PORT=60207 GIT_HEAD=56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71 node scripts/verify-pricing-browser.mjs
+Build exit 0; browser exit 1.
+AssertionError [ERR_ASSERTION]: VND must use server cost_vnd, not equivalent_cost_usd
+actual: known-usd VND 1; known-vnd VND 1; unknown Unknown; missing-vnd VND 1; subscription VND 1
+expected: /known-usd\t—\t1\t15\.4%\tVND 31,250/
+
+Restored production source, rebuilt and same harness:
+node_modules/.bin/rspack build && PREVIEW_PORT=60208 GIT_HEAD=56b5c2f769e0e4d8fd155ef628fdcd46a6c37f71 node scripts/verify-pricing-browser.mjs
+Exit 0; BROWSER PASS: built preview http://127.0.0.1:60208; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD billed/equivalent and VND cost_vnd/unknown fixture assertions.
+
+Harnesses ran on exclusive ports 60198 (current checkout), 60207 and 60208 (sequential disposable copy), all closed by their harness finally cleanup. Existing fixed-port harness has no automatic port allocator; unique free ports were reserved by separate OS-assigned ephemeral port check and passed explicitly.
