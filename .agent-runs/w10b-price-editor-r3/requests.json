@@ -1,0 +1,87 @@
+[
+  {
+    "method": "GET",
+    "url": "/api/v1/auth/session",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/organizations",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/auth/session",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/organizations/org-a/members",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/agent-run-prices",
+    "body": null
+  },
+  {
+    "method": "POST",
+    "url": "/api/v1/agent-run-prices",
+    "body": "{\"model\":\"fixture-model\",\"effective_date\":\"2026-01-01\",\"input_per_million\":0,\"cached_input_per_million\":0,\"cache_write_per_million\":0,\"output_per_million\":0,\"reasoning_per_million\":0}"
+  },
+  {
+    "method": "POST",
+    "url": "/api/v1/agent-run-prices",
+    "body": "{\"model\":\"fixture-next\",\"effective_date\":\"2026-07-01\",\"input_per_million\":0,\"cached_input_per_million\":0,\"cache_write_per_million\":0,\"output_per_million\":0,\"reasoning_per_million\":0}"
+  },
+  {
+    "method": "POST",
+    "url": "/api/v1/agent-run-prices",
+    "body": "{\"model\":\"fixture-next\",\"effective_date\":\"2026-07-01\",\"input_per_million\":0,\"cached_input_per_million\":0,\"cache_write_per_million\":0,\"output_per_million\":0,\"reasoning_per_million\":0}"
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/agent-run-prices",
+    "body": null
+  },
+  {
+    "method": "PATCH",
+    "url": "/api/v1/agent-run-prices/price-1",
+    "body": "{\"id\":\"price-1\",\"model\":\"fixture-edited\",\"effective_date\":\"2026-01-01\",\"input_per_million\":1,\"cached_input_per_million\":0.1,\"cache_write_per_million\":0.2,\"output_per_million\":2,\"reasoning_per_million\":0.3}"
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/agent-run-prices",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/auth/session",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/organizations/org-b/members",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/agent-run-prices",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/auth/session",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/organizations",
+    "body": null
+  },
+  {
+    "method": "GET",
+    "url": "/api/v1/agent-runs/aggregate",
+    "body": null
+  }
+]

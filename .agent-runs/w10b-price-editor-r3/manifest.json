@@ -1,0 +1,25 @@
+{
+  "issue": 13,
+  "pr": 70,
+  "sourceHead": "c9142f4785ccfbca0796138edeb11b59f7b0c8e4",
+  "browserCommand": "node scripts/verify-pricing-browser.mjs",
+  "browserResult": "BROWSER PASS: built preview http://127.0.0.1:24373; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD/VND and unknown/equivalent fixture assertions. Requests [\"GET /api/v1/auth/session\",\"GET /api/v1/organizations\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations/org-a/members\",\"GET /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"POST /api/v1/agent-run-prices\",\"GET /api/v1/agent-run-prices\",\"PATCH /api/v1/agent-run-prices/price-1\",\"GET /api/v1/agent-run-prices\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations/org-b/members\",\"GET /api/v1/agent-run-prices\",\"GET /api/v1/auth/session\",\"GET /api/v1/organizations\",\"GET /api/v1/agent-runs/aggregate\"]",
+  "screenshots": [
+    "pricing-owner.png",
+    "pricing-edited.png",
+    "pricing-member-org-b.png",
+    "runs-vnd.png"
+  ],
+  "requestLog": "requests.json",
+  "runFixture": {
+    "usdToVndEquivalent": "1.25 -> 31,250 (server value)",
+    "subscription": "billed USD 0; equivalent VND 62,500",
+    "unknown": "Unknown"
+  },
+  "apiSchemaSha256": {
+    "swagger": "f31cc63387208492ee856eff2e3dab6699142825c13697edc1cbeb826c4bab92",
+    "generated": "bb066640b4c8c79c5da2ce9f78be088dd66a6539cf7cd9f4e14fd7ec794bd907"
+  },
+  "hostedCi": "40724493296 success exact head c9142f4785ccfbca0796138edeb11b59f7b0c8e4",
+  "realApiSmoke": "pending separate acceptance"
+}

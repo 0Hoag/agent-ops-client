@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 
 const port = 24373;
 const base = `http://127.0.0.1:${port}`;
-const evidence = '.agent-runs/w10b-price-editor-r2';
+const evidence = '.agent-runs/w10b-price-editor-r3';
 await mkdir(evidence, { recursive: true });
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, base).pathname;
@@ -37,6 +37,7 @@ try {
   page.on('pageerror', (error) => console.log(`pageerror ${error.stack}`));
   let currentOrg = 'org-a';
   let role = 'owner';
+  let rejectNextCreate = false;
   const pricesByOrg = { 'org-a': [{ id: 'price-1', model: 'fixture-model', effective_date: '2026-01-01', input_per_million: 1, cached_input_per_million: 0.1, cache_write_per_million: 0.2, output_per_million: 2, reasoning_per_million: 0.3 }], 'org-b': [] };
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request();
@@ -47,7 +48,7 @@ try {
     else if (path.endsWith('/organizations')) body = { data: [{ id: currentOrg, name: `Organization ${currentOrg}` }] };
     else if (path.endsWith('/members')) body = { data: [{ account_id: 'acct-a', role }] };
     else if (path.endsWith('/agent-run-prices') && request.method() === 'GET') body = { data: pricesByOrg[currentOrg] };
-    else if (path.endsWith('/agent-run-prices') && request.method() === 'POST') { const value = request.postDataJSON(); const prices = pricesByOrg[currentOrg]; if (prices.some((item) => item.model === value.model && item.effective_date === value.effective_date)) { status = 409; body = { error: 'duplicate version' }; } else { prices.push({ ...value, id: 'price-2' }); body = { data: prices[1] }; } }
+    else if (path.endsWith('/agent-run-prices') && request.method() === 'POST') { const value = request.postDataJSON(); const prices = pricesByOrg[currentOrg]; if (rejectNextCreate || prices.some((item) => item.model === value.model && item.effective_date === value.effective_date)) { rejectNextCreate = false; status = 409; body = { error: 'duplicate version' }; } else { prices.push({ ...value, id: 'price-2' }); body = { data: prices[1] }; } }
     else if (path.endsWith('/agent-run-prices/price-1') && request.method() === 'PATCH') { pricesByOrg[currentOrg][0] = { ...pricesByOrg[currentOrg][0], ...request.postDataJSON() }; body = { data: pricesByOrg[currentOrg][0] }; }
     else if (path.endsWith('/agent-runs/aggregate')) body = { data: [
       { wave: 'W10', worker: 'known-usd', runs: 1, input_tokens: 100, cached_input_tokens: 20, cache_write_tokens: 10, output_tokens: 30, reasoning_tokens: 0, cost_usd: 1.25, equivalent_cost_usd: 31250 },
@@ -63,18 +64,34 @@ try {
   await page.getByRole('heading', { name: 'Model prices' }).waitFor();
   await page.getByText('fixture-model').waitFor();
   await page.getByRole('button', { name: 'Create version' }).waitFor();
-  await page.screenshot({ path: `${evidence}/pricing-owner.png`, fullPage: true });
+  await page.getByLabel('Model').fill('fixture-model');
+  await page.getByLabel('Effective date').fill('2026-01-01');
+  await page.getByRole('button', { name: 'Create version' }).click();
+  await page.getByRole('alert').filter({ hasText: 'Unable to save price version' }).waitFor();
+  assert.equal(pricesByOrg['org-a'].length, 1, 'duplicate version must be rejected');
+  await page.getByLabel('Model').fill('');
+  await page.getByRole('button', { name: 'Create version' }).click();
+  assert.equal(requests.filter((item) => item.method === 'POST').length, 1, 'required model validation must prevent request');
+  await page.getByLabel('Model').fill('fixture-next');
+  await page.getByLabel('Effective date').fill('2026-07-01');
+  rejectNextCreate = true;
+  await page.getByRole('button', { name: 'Create version' }).click();
+  await page.getByRole('alert').filter({ hasText: 'Unable to save price version' }).waitFor();
+  assert.equal(pricesByOrg['org-a'].length, 1, 'API rejection must not alter prices');
   const version = { model: 'fixture-next', effective_date: '2026-07-01' };
   await page.getByLabel('Model').fill(version.model);
   await page.getByLabel('Effective date').fill(version.effective_date);
   await page.getByRole('button', { name: 'Create version' }).click();
   await page.waitForFunction(() => document.body.innerText.includes('fixture-next'));
-  const createRequest = requests.find((item) => item.method === 'POST');
-  assert.deepEqual(JSON.parse(createRequest.body).model, version.model);
+  await page.screenshot({ path: `${evidence}/pricing-owner.png`, fullPage: true });
+  const createRequest = requests.find((item) => item.method === 'POST' && JSON.parse(item.body).model === version.model);
+  assert.deepEqual(JSON.parse(createRequest.body), { model: 'fixture-next', effective_date: '2026-07-01', input_per_million: 0, cached_input_per_million: 0, cache_write_per_million: 0, output_per_million: 0, reasoning_per_million: 0 });
   await page.getByRole('button', { name: 'Edit' }).first().click();
   await page.getByLabel('Model').fill('fixture-edited');
   await page.getByRole('button', { name: 'Update version' }).click();
   await page.waitForFunction(() => document.body.innerText.includes('fixture-edited'));
+  const editRequest = requests.find((item) => item.method === 'PATCH');
+  assert.equal(JSON.parse(editRequest.body).model, 'fixture-edited');
   await page.screenshot({ path: `${evidence}/pricing-edited.png`, fullPage: true });
   currentOrg = 'org-b'; role = 'member';
   await page.evaluate(() => { sessionStorage.setItem('agent-ops-token', 'fixture-token-b'); window.dispatchEvent(new Event('organization:will-change')); window.dispatchEvent(new Event('organization:changed')); });
@@ -98,10 +115,10 @@ try {
   assert.match(usdText, /subscription\t—\t1\t0\.0%\t\$0\.0000/);
   assert.deepEqual(await page.evaluate(() => window.__fixturePageErrors), [], 'browser runtime errors');
   const observed = requests.map(({ method, url }) => `${method} ${url}`);
-  const summary = `BROWSER PASS: built preview ${base}; pricing list/create/PATCH, owner/member UI, org switch isolation; USD/VND and unknown/equivalent fixture assertions. Requests ${JSON.stringify(observed)}`;
+  const summary = `BROWSER PASS: built preview ${base}; duplicate response and one-shot API rejection show UI alert without fixture mutation; required-field native validation prevented request; successful create and PATCH state/body, owner/member UI, org switch isolation; USD/VND and unknown/equivalent fixture assertions. Requests ${JSON.stringify(observed)}`;
   console.log(summary);
   await writeFile(`${evidence}/requests.json`, JSON.stringify(requests, null, 2));
-  await writeFile(`${evidence}/manifest.json`, JSON.stringify({ issue: 13, pr: 70, sourceHead: '5e9a9bdc484944860b921e6b9fc4eb173fe2b8fa', browserCommand: 'node scripts/verify-pricing-browser.mjs', browserResult: summary, screenshots: ['pricing-owner.png', 'pricing-edited.png', 'pricing-member-org-b.png', 'runs-vnd.png'], requestLog: 'requests.json', runFixture: { usdToVndEquivalent: '1.25 -> 31,250 (server value)', subscription: 'billed USD 0; equivalent VND 62,500', unknown: 'Unknown' }, apiSchemaSha256: { swagger: 'f31cc63387208492ee856eff2e3dab6699142825c13697edc1cbeb826c4bab92', generated: 'bb066640b4c8c79c5da2ce9f78be088dd66a6539cf7cd9f4e14fd7ec794bd907' }, hostedCi: '40721877001 success on 5e9a9bdc484944860b921e6b9fc4eb173fe2b8fa', realApiSmoke: 'pending separate acceptance' }, null, 2));
+  await writeFile(`${evidence}/manifest.json`, JSON.stringify({ issue: 13, pr: 70, sourceHead: process.env.GIT_HEAD ?? 'unrecorded', browserCommand: 'node scripts/verify-pricing-browser.mjs', browserResult: summary, screenshots: ['pricing-owner.png', 'pricing-edited.png', 'pricing-member-org-b.png', 'runs-vnd.png'], requestLog: 'requests.json', runFixture: { usdToVndEquivalent: '1.25 -> 31,250 (server value)', subscription: 'billed USD 0; equivalent VND 62,500', unknown: 'Unknown' }, apiSchemaSha256: {}, hostedCi: process.env.HOSTED_CI ?? 'not recorded', realApiSmoke: 'pending separate acceptance' }, null, 2));
   const hashes = {};
   for (const file of ['src/shared/api/swagger.json', 'src/shared/api/generated/Api.ts']) hashes[file] = createHash('sha256').update(await readFile(file)).digest('hex');
   const manifest = JSON.parse(await readFile(`${evidence}/manifest.json`, 'utf8'));
