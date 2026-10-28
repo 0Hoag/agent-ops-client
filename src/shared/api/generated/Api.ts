@@ -11,6 +11,7 @@
  */
 
 export interface AgentrunAgentRun {
+  billing_type?: string;
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   cost_usd?: number;
@@ -33,9 +34,12 @@ export interface AgentrunAgentRun {
 }
 
 export interface AgentrunAggregate {
+  billed_cost_usd?: number;
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   cost_usd?: number;
+  cost_vnd?: number;
+  equivalent_cost_usd?: number;
   input_tokens?: number;
   issue_number?: number;
   output_tokens?: number;
@@ -51,6 +55,7 @@ export interface AgentrunAggregateResponse {
 }
 
 export interface AgentrunCreateInput {
+  billing_type?: string;
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   ended_at: string;
@@ -76,6 +81,20 @@ export interface AgentrunCreatedResponse {
 export interface AgentrunListResponse {
   data?: AgentrunAgentRun[];
   status?: number;
+}
+
+export interface AgentrunPriceVersion {
+  cache_write_per_million?: number;
+  cached_input_per_million?: number;
+  created_at?: string;
+  effective_date?: string;
+  id?: string;
+  input_per_million?: number;
+  model?: string;
+  organization_id?: string;
+  output_per_million?: number;
+  reasoning_per_million?: number;
+  updated_at?: string;
 }
 
 export interface AuthLoginRequest {
@@ -540,6 +559,69 @@ export class Api<SecurityDataType extends unknown> {
   }
 
   api = {
+    /**
+     * No description
+     *
+     * @name V1AgentRunPricesCreate
+     * @summary Create model price version
+     * @request POST:/api/v1/agent-run-prices
+     * @secure
+     */
+    v1AgentRunPricesCreate: (
+      request: AgentrunPriceVersion,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-run-prices`,
+        method: "POST",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AgentRunPricesList
+     * @summary List model price versions
+     * @request GET:/api/v1/agent-run-prices
+     * @secure
+     */
+    v1AgentRunPricesList: (params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-run-prices`,
+        method: "GET",
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AgentRunPricesPartialUpdate
+     * @summary Update model price version
+     * @request PATCH:/api/v1/agent-run-prices/{price_id}
+     * @secure
+     */
+    v1AgentRunPricesPartialUpdate: (
+      priceId: string,
+      request: AgentrunPriceVersion,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-run-prices/${priceId}`,
+        method: "PATCH",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *
