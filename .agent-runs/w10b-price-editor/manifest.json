@@ -1,0 +1,9 @@
+{
+  "issue": 13,
+  "sourceHead": "b7d0aa1124c45cfbb27ca93d4f0db6d3e3af38c3",
+  "apiSchema": "src/shared/api/swagger.json SHA-256 f31cc63387208492ee856eff2e3dab6699142825c13697edc1cbeb826c4bab92; generated Api.ts SHA-256 bb066640b4c8c79c5da2ce9f78be088dd66a6539cf7cd9f4e14fd7ec794bd907; both unchanged",
+  "hostedCi": "main CI run 40717105472 success at start; feature branch CI not awaited",
+  "fixtureBrowser": "Blocked: fixture-only auth/org setup through standard login does not complete in isolated preview. No successful built UI browser verification claimed.",
+  "realApiSmoke": "Pending later acceptance; no API fixture release",
+  "ports": [24373, 28381]
+}

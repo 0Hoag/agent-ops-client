@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http } from '../../shared/http';
 import { RunsPage } from './RunsPage';
@@ -61,5 +61,13 @@ describe('RunsPage', () => {
     expect(row.textContent).toContain('#30');
     expect(row.textContent).toContain('25.0%');
     expect(row.textContent).toContain('$1.2500');
+  });
+
+  it('uses only server-provided equivalent cost for VND', async () => {
+    aggregateResponse([{ wave: 'W3', worker: 'Subscription', runs: 1, cost_usd: 0, billed_cost_usd: 0, equivalent_cost_usd: 25000 }]);
+    setup();
+    await screen.findByRole('row', { name: /Subscription/ });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Currency' }), { target: { value: 'VND' } });
+    expect(await screen.findByRole('cell', { name: 'VND 25,000' })).toBeTruthy();
   });
 });
