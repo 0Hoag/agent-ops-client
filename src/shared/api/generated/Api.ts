@@ -180,6 +180,33 @@ export interface BoardListResponse {
   meta?: BoardListMeta;
 }
 
+export interface InsightAnalyticsBucket {
+  actual_cost_usd?: number;
+  cache_hit_rate?: number;
+  cache_write_tokens?: number;
+  cached_input_tokens?: number;
+  equivalent_cost_usd?: number;
+  input_tokens?: number;
+  key?: string;
+  output_tokens?: number;
+  reasoning_tokens?: number;
+  runs?: number;
+  start?: string;
+  unknown_price_count?: number;
+}
+
+export interface InsightAnalyticsResponse {
+  bucket_timestamp?: string;
+  buckets?: InsightAnalyticsBucket[];
+  cache_denominator?: string;
+  from?: string;
+  group_by?: string;
+  period?: string;
+  to?: string;
+  unknown_price_count?: number;
+  week_starts?: string;
+}
+
 export interface InsightCycleMetric {
   completed?: number;
   evidence?: InsightEvidence[];
@@ -905,6 +932,45 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/board/ws`,
         method: "GET",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1InsightsAnalyticsList
+     * @summary Get cost and cache analytics
+     * @request GET:/api/v1/insights/analytics
+     */
+    v1InsightsAnalyticsList: (
+      query: {
+        /** Inclusive UTC start date (YYYY-MM-DD) */
+        from: string;
+        /**
+         * Grouping dimension
+         * @default "harness"
+         */
+        group_by?: "harness" | "model" | "wave" | "area";
+        /**
+         * Bucket period
+         * @default "daily"
+         */
+        period?: "daily" | "weekly";
+        /**
+         * Repository UUID
+         * @format uuid
+         */
+        repository_id?: string;
+        /** Inclusive UTC end date (YYYY-MM-DD), max 366 days */
+        to: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<InsightAnalyticsResponse, ResponseErrorResponse>({
+        path: `/api/v1/insights/analytics`,
+        method: "GET",
+        query: query,
+        format: "json",
         ...params,
       }),
 
