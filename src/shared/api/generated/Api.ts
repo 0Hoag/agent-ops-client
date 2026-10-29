@@ -150,6 +150,22 @@ export interface AgentrunTimelineInput {
   steps?: AgentrunRunStep[];
 }
 
+export interface AlertHistoryResponse {
+  data?: AlertOccurrence[];
+  meta?: PaginationPaginatorResponse;
+}
+
+export interface AlertOccurrence {
+  alertKey?: string;
+  detectedAt?: string;
+  id?: string;
+  message?: string;
+  organizationID?: string;
+  repository?: string;
+  rule?: string;
+  subject?: string;
+}
+
 export interface AuthLoginRequest {
   email?: string;
   password?: string;
@@ -346,6 +362,12 @@ export interface OrganizationCreateRequest {
 
 export interface OrganizationUpdateRoleRequest {
   role: string;
+}
+
+export interface PaginationPaginatorResponse {
+  page?: number;
+  per_page?: number;
+  total?: number;
 }
 
 export interface RepositorysettingsCreateRequest {
@@ -890,6 +912,30 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/agent-runs/${runId}/timeline`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AlertsHistoryList
+     * @summary List alert history
+     * @request GET:/api/v1/alerts/history
+     */
+    v1AlertsHistoryList: (
+      query?: {
+        /** Page */
+        page?: number;
+        /** Items per page */
+        per_page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertHistoryResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/history`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
