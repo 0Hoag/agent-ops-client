@@ -1,13 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../shared/api/client';
-import type { AgentrunAgentRun, AgentrunAggregate } from '../../../shared/api/generated/Api';
+import type { AgentrunAgentRun, AgentrunAggregate, AgentrunRunStep } from '../../../shared/api/generated/Api';
 
-export interface RunFilters { repository_id?: string; wave?: string; issue_number?: number }
+export interface RunFilters { repository_id?: string; wave?: string; harness?: string; model?: string; issue_number?: number; pr_number?: number; started_after?: string; started_before?: string; page?: number; per_page?: number }
 type Run = AgentrunAgentRun;
 type RunAggregate = AgentrunAggregate;
+export interface RunPage { data: Run[]; meta: { page: number; per_page: number; total: number } }
+export type RunStep = AgentrunRunStep;
 
-export async function getRuns(filters: RunFilters = {}): Promise<Run[]> {
-  return (await api.api.v1AgentRunsList(filters)).data.data ?? [];
+export async function getRuns(filters: RunFilters = {}): Promise<RunPage> {
+  const response = (await api.api.v1AgentRunsList({ page: 1, per_page: 20, ...filters })).data;
+  return { data: response.data ?? [], meta: { page: response.meta?.page ?? filters.page ?? 1, per_page: response.meta?.per_page ?? filters.per_page ?? 20, total: response.meta?.total ?? 0 } };
+}
+
+export async function getRunTimeline(runId: string): Promise<RunStep[]> {
+  const response = (await api.api.v1AgentRunsTimelineList(runId)).data;
+  const payload = response as unknown as { data?: { steps?: RunStep[] } | RunStep[]; steps?: RunStep[] };
+  return Array.isArray(payload.data) ? payload.data : payload.data?.steps ?? payload.steps ?? [];
 }
 
 export async function getRunAggregates(filters: Pick<RunFilters, 'repository_id' | 'wave'> = {}): Promise<RunAggregate[]> {
@@ -24,6 +33,10 @@ export function cacheHitPercent(aggregate: Pick<RunAggregate, 'input_tokens' | '
 
 export function useRuns(filters: RunFilters = {}) {
   return useQuery({ queryKey: ['runs', filters], queryFn: () => getRuns(filters) });
+}
+
+export function useRunTimeline(runId: string) {
+  return useQuery({ queryKey: ['runs', runId, 'timeline'], queryFn: () => getRunTimeline(runId), enabled: Boolean(runId) });
 }
 
 export function useRunAggregates(filters: Pick<RunFilters, 'repository_id' | 'wave'> = {}) {
