@@ -6,7 +6,7 @@ This repository contains the Agent Ops client only. The API is maintained in [`0
 
 ## Git and delivery
 
-- Use GitHub CLI (`gh`); target `main` and open a pull request for each deliverable.
+- Use GitHub CLI (`gh`); branch from `origin/reviews/development`, open each pull request with `--base reviews/development` (never delete that branch; it reaches `main` only through a promotion PR opened by the coordinator).
 - Use Conventional Commits, for example `feat(client): add ...` or `chore(ci): ...`.
 - Include `Closes #n` for each issue the PR resolves.
 - Do not merge your own PR.

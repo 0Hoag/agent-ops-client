@@ -7,9 +7,9 @@ root=$(git rev-parse --show-toplevel)
 wt="$HOME/agent-ops-wt/client/${branch//\//-}"
 mkdir -p "$root/.agent-runs"
 
-git -C "$root" fetch origin main
+git -C "$root" fetch origin reviews/development
 if [ ! -d "$wt" ]; then
-  git -C "$root" worktree add "$wt" -b "$branch" origin/main
+  git -C "$root" worktree add "$wt" -b "$branch" origin/reviews/development
 fi
 
 OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 opencode run \
