@@ -113,7 +113,7 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "List agent runs",
+                "summary": "List organization-scoped agent runs",
                 "parameters": [
                     {
                         "type": "string",
