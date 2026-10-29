@@ -19,6 +19,16 @@ describe('generated API transport', () => {
     expect(response.data.meta?.page).toBe(2);
   });
 
+  it('requests analytics through the generated operation with its filters', async () => {
+    const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: {}, status: 200, statusText: 'OK', headers: {}, config: { headers: {} } } as never);
+    const filters = { repository_id: 'repo-1', group_by: 'model', period: 'weekly', from: '2026-01-01', to: '2026-01-31' } satisfies Parameters<typeof api.api.v1InsightsAnalyticsList>[0];
+    await api.api.v1InsightsAnalyticsList(filters);
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({
+      url: '/api/v1/insights/analytics?repository_id=repo-1&group_by=model&period=weekly&from=2026-01-01&to=2026-01-31',
+      method: 'GET',
+    }));
+  });
+
   it('uses the generated JWT login operation and response type', async () => {
     const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: { token: 'jwt-token' }, status: 200, statusText: 'OK', headers: {}, config: { headers: {} } } as never);
     const credentials = { email: 'user@example.com', password: 'secret' } satisfies Parameters<typeof api.api.v1AuthLoginCreate>[0];
