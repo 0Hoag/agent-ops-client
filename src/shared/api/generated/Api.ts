@@ -25,6 +25,7 @@ export interface AgentrunAgentRun {
   output_tokens?: number;
   pr_number?: number;
   reasoning_tokens?: number;
+  relations?: AgentrunRunRelations;
   repository_id?: string;
   session_id?: string;
   started_at?: string;
@@ -80,6 +81,7 @@ export interface AgentrunCreatedResponse {
 
 export interface AgentrunListResponse {
   data?: AgentrunAgentRun[];
+  meta?: any;
   status?: number;
 }
 
@@ -95,6 +97,57 @@ export interface AgentrunPriceVersion {
   output_per_million?: number;
   reasoning_per_million?: number;
   updated_at?: string;
+}
+
+export interface AgentrunRunCI {
+  conclusion?: string;
+  external_id?: string;
+  pr_number?: number;
+  repository_id?: string;
+  sha?: string;
+  status?: string;
+}
+
+export interface AgentrunRunIssue {
+  number?: number;
+  repository_id?: string;
+  state?: string;
+  status?: string;
+  title?: string;
+}
+
+export interface AgentrunRunPullRequest {
+  head_sha?: string;
+  number?: number;
+  repository_id?: string;
+  state?: string;
+  title?: string;
+}
+
+export interface AgentrunRunRelations {
+  ci?: AgentrunRunCI[];
+  issues?: AgentrunRunIssue[];
+  pull_requests?: AgentrunRunPullRequest[];
+}
+
+export interface AgentrunRunStep {
+  cache_hit?: boolean;
+  cache_write_tokens?: number;
+  cached_input_tokens?: number;
+  cumulative_cost_usd?: number;
+  ended_at?: string;
+  id?: string;
+  input_tokens?: number;
+  output_tokens?: number;
+  reasoning_tokens?: number;
+  run_id?: string;
+  sequence?: number;
+  started_at?: string;
+  tool_name?: string;
+}
+
+export interface AgentrunTimelineInput {
+  steps?: AgentrunRunStep[];
 }
 
 export interface AuthLoginRequest {
@@ -674,15 +727,29 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @name V1AgentRunsList
-     * @summary List agent runs
+     * @summary List organization-scoped agent runs
      * @request GET:/api/v1/agent-runs
      */
     v1AgentRunsList: (
       query?: {
+        /** Harness identity */
+        harness?: string;
         /** Issue number */
         issue_number?: number;
+        /** Model identity */
+        model?: string;
+        /** Page number (default 1) */
+        page?: number;
+        /** Page size (default 20, maximum 100) */
+        per_page?: number;
+        /** Pull request number */
+        pr_number?: number;
         /** Repository UUID */
         repository_id?: string;
+        /** RFC3339 lower bound */
+        started_after?: string;
+        /** RFC3339 upper bound */
+        started_before?: string;
         /** Wave */
         wave?: string;
       },
@@ -692,6 +759,46 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/agent-runs`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AgentRunsTimelineCreate
+     * @summary Ingest run timeline
+     * @request POST:/api/v1/agent-runs/{run_id}/timeline
+     * @secure
+     */
+    v1AgentRunsTimelineCreate: (
+      runId: string,
+      request: AgentrunTimelineInput,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-runs/${runId}/timeline`,
+        method: "POST",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1AgentRunsTimelineList
+     * @summary Get run timeline
+     * @request GET:/api/v1/agent-runs/{run_id}/timeline
+     * @secure
+     */
+    v1AgentRunsTimelineList: (runId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-runs/${runId}/timeline`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
