@@ -180,6 +180,28 @@ export interface BoardListResponse {
   meta?: BoardListMeta;
 }
 
+export interface BudgetBudget {
+  created_at?: string;
+  ends_at?: string;
+  id?: string;
+  organization_id?: string;
+  repository_id?: string;
+  starts_at?: string;
+  token_limit?: number;
+  updated_at?: string;
+  usd_limit?: number;
+  wave?: string;
+}
+
+export interface BudgetRequest {
+  ends_at?: string;
+  repository_id?: string;
+  starts_at?: string;
+  token_limit?: number;
+  usd_limit?: number;
+  wave?: string;
+}
+
 export interface InsightAnalyticsBucket {
   actual_cost_usd?: number;
   cache_hit_rate?: number;
@@ -974,6 +996,94 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/board/ws`,
         method: "GET",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsCreate
+     * @summary Create budget
+     * @request POST:/api/v1/budgets
+     */
+    v1BudgetsCreate: (budget: BudgetRequest, params: RequestParams = {}) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets`,
+        method: "POST",
+        body: budget,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsDelete
+     * @summary Delete budget
+     * @request DELETE:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsDelete: (budgetId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsDetail
+     * @summary Get budget
+     * @request GET:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsDetail: (budgetId: string, params: RequestParams = {}) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsList
+     * @summary List budgets
+     * @request GET:/api/v1/budgets
+     */
+    v1BudgetsList: (params: RequestParams = {}) =>
+      this.http.request<BudgetBudget[], ResponseErrorResponse>({
+        path: `/api/v1/budgets`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsPartialUpdate
+     * @summary Update budget
+     * @request PATCH:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsPartialUpdate: (
+      budgetId: string,
+      budget: BudgetRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "PATCH",
+        body: budget,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 
