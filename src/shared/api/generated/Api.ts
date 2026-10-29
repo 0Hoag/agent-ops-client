@@ -213,6 +213,32 @@ export interface InsightCycleMetric {
   median_seconds?: number;
 }
 
+export interface InsightDeliveryCostMetric {
+  actual_cost_usd?: number;
+  cost_per_item_usd?: number;
+  count?: number;
+  eligible?: number;
+  equivalent_cost_usd?: number;
+  unavailable?: number;
+}
+
+export interface InsightDeliveryHistory {
+  complete?: boolean;
+  unavailable?: number;
+}
+
+export interface InsightDeliveryResponse {
+  closed_issues?: InsightDeliveryCostMetric;
+  first_ci_success?: InsightFirstCIMetric;
+  from?: string;
+  harness_comparison?: InsightHarnessMetric[];
+  history?: InsightDeliveryHistory;
+  issue_to_merge_lead_time?: InsightLeadTimeMetric;
+  merged_prs?: InsightDeliveryCostMetric;
+  send_back?: InsightSendBackMetric;
+  to?: string;
+}
+
 export interface InsightEnvelope {
   data?: InsightResponse;
 }
@@ -233,9 +259,25 @@ export interface InsightFirstCIMetric {
   successful?: number;
 }
 
+export interface InsightHarnessMetric {
+  changed_lines?: number;
+  cost_per_changed_line_usd?: number;
+  eligible?: number;
+  equivalent_cost_usd?: number;
+  harness?: string;
+  runs?: number;
+  unavailable?: number;
+}
+
 export interface InsightHistory {
   complete?: boolean;
   reason?: string;
+}
+
+export interface InsightLeadTimeMetric {
+  completed?: number;
+  median_seconds?: number;
+  unavailable?: number;
 }
 
 export interface InsightResponse {
@@ -968,6 +1010,35 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<InsightAnalyticsResponse, ResponseErrorResponse>({
         path: `/api/v1/insights/analytics`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1InsightsDeliveryList
+     * @summary Get delivery quality analytics
+     * @request GET:/api/v1/insights/delivery
+     */
+    v1InsightsDeliveryList: (
+      query: {
+        /** Inclusive UTC start date (YYYY-MM-DD) */
+        from: string;
+        /**
+         * Repository UUID
+         * @format uuid
+         */
+        repository_id?: string;
+        /** Inclusive UTC end date (YYYY-MM-DD), max 366 days */
+        to: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<InsightDeliveryResponse, ResponseErrorResponse>({
+        path: `/api/v1/insights/delivery`,
         method: "GET",
         query: query,
         format: "json",
