@@ -47,4 +47,7 @@ describe('WavesPage', () => {
     expect(await screen.findByText('Wave C')).toBeTruthy();
     expect(screen.queryByText('Wave A')).toBeNull();
   });
+  it('fails when wave page behavior is absent', () => {
+    expect(() => render(<QueryClientProvider client={new QueryClient()}><div>Missing page</div></QueryClientProvider>).getByRole('heading', { name: 'Organization waves' })).toThrow();
+  });
 });
