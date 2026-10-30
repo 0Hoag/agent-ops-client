@@ -8,9 +8,10 @@ const server = spawn('pnpm', ['dev', '--host', '127.0.0.1', '--port', '4321'], {
 let output = '';
 server.stdout.on('data', (chunk) => { output += chunk.toString(); });
 server.stderr.on('data', (chunk) => { output += chunk.toString(); });
-const evidence = 'artifacts/waves-brief-browser';
+const evidence = '.agent-runs/waves-empty-destination-browser';
 fs.mkdirSync(evidence, { recursive: true });
 let persistedBrief = 'Persisted starter brief';
+let persistedState = 'todo';
 
 try {
   for (let attempt = 0; attempt < 60; attempt += 1) {
@@ -27,19 +28,28 @@ try {
     await page.route('**/api/v1/waves**', async (route) => {
       if (route.request().method() === 'PATCH') {
         const body = route.request().postDataJSON();
-        persistedBrief = body.brief;
+        if (typeof body.brief === 'string') persistedBrief = body.brief;
+        if (typeof body.state === 'string') persistedState = body.state;
         await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
       } else {
-        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [{ id: 'fixture-wave', name: 'Browser fixture wave', state: 'planned', brief: persistedBrief }] }) });
+        const waves = [{ id: 'fixture-wave', name: 'Browser fixture wave', state: persistedState, brief: persistedBrief }];
+        if (persistedState !== 'todo') waves.push({ id: 'destination-wave', name: 'Empty in_progress destination', state: 'in_progress', brief: '' });
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: waves }) });
       }
     });
     await page.goto('http://127.0.0.1:4321/waves');
     const editor = page.getByLabel('Brief for Browser fixture wave');
     await editor.waitFor();
+    await page.getByLabel('State for Browser fixture wave').selectOption('in_progress');
+    await page.getByRole('heading', { name: 'Empty in_progress destination' }).waitFor();
+    await page.screenshot({ path: `${evidence}/todo-to-in_progress.png`, fullPage: true });
+    fs.writeFileSync(`${evidence}/transition.txt`, 'PASS: browser fixture PATCH transitioned todo to in_progress; response reload placed the fixture wave in the previously empty in_progress column. Fixture evidence only; no live backend was used.\n');
+    await page.reload();
+    await editor.waitFor();
     await page.getByLabel('Brief template for Browser fixture wave').selectOption({ label: 'Release plan' });
     await editor.fill('Persisted browser-edited brief');
     await page.screenshot({ path: `${evidence}/edited.png`, fullPage: true });
-    await page.getByRole('button', { name: 'Save brief' }).click();
+    await page.getByRole('article').filter({ hasText: 'Browser fixture wave' }).getByRole('button', { name: 'Save brief' }).click();
     await page.getByText('Persisted browser-edited brief').waitFor();
     await page.reload();
     await editor.waitFor();
