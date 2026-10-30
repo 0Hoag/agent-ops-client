@@ -457,6 +457,14 @@ export interface WaveWave {
   updated_at?: string;
 }
 
+export interface WorkerRequest {
+  branch?: string;
+  brief?: string;
+  script?: string;
+  wave?: string;
+  worktree?: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat =
   | "json"
@@ -1620,6 +1628,76 @@ export class Api<SecurityDataType extends unknown> {
         method: "POST",
         body: body,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersDetail
+     * @summary Get worker job
+     * @request GET:/api/v1/workers/{worker_id}
+     */
+    v1WorkersDetail: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/workers/${workerId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersRestartCreate
+     * @summary Restart worker
+     * @request POST:/api/v1/workers/restart
+     */
+    v1WorkersRestartCreate: (
+      request: WorkerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/workers/restart`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersStartCreate
+     * @summary Start worker
+     * @request POST:/api/v1/workers/start
+     */
+    v1WorkersStartCreate: (
+      request: WorkerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/workers/start`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersStopCreate
+     * @summary Stop worker
+     * @request POST:/api/v1/workers/{worker_id}/stop
+     */
+    v1WorkersStopCreate: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, any>({
+        path: `/api/v1/workers/${workerId}/stop`,
+        method: "POST",
         format: "json",
         ...params,
       }),
