@@ -1,0 +1,5 @@
+# Production client container
+
+Build the production image with `docker build -t agent-ops-client .`. The first stage compiles the existing Rspack application; the runtime stage is the unprivileged Nginx image and serves on port 8080. Run with `-p 8080:8080 -e API_UPSTREAM=http://api:8080` to route same-origin `/api/` requests to the configured upstream. The default upstream is Nginx's default (`http://127.0.0.1:8080`); set `API_UPSTREAM` to the API service's reachable HTTP origin. The Nginx proxy preserves Authorization and websocket upgrade headers; unknown frontend paths fall back to `index.html`.
+
+`APP_API_URL` is compiled into the bundle at build time, so the production image does not substitute it at runtime. The normal build uses the empty default, making API requests same-origin. `scripts/test-client-container.sh` builds and exercises the image against a disposable deterministic HTTP fixture. That fixture validates proxy routing and header forwarding only; it is not a real API integration test.
