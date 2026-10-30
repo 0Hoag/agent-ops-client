@@ -25,12 +25,14 @@ describe('generated worker lifecycle contract', () => {
     await api.api.v1WorkersRestartCreate(body);
     await api.api.v1WorkersStopCreate('worker-1');
     await api.api.v1WorkersDetail('worker-1');
+    await api.api.v1WorkersLogsList('worker-1');
 
     expect(request.mock.calls.map(([config]) => ({ method: config?.method, url: config?.url, data: config?.data }))).toEqual([
       { method: 'POST', url: '/api/v1/workers/start', data: JSON.stringify(body) },
       { method: 'POST', url: '/api/v1/workers/restart', data: JSON.stringify(body) },
       { method: 'POST', url: '/api/v1/workers/worker-1/stop', data: null },
       { method: 'GET', url: '/api/v1/workers/worker-1', data: null },
+      { method: 'GET', url: '/api/v1/workers/worker-1/logs', data: null },
     ]);
     const authConfig = await http.interceptors.request.handlers?.[0]?.fulfilled?.({ headers: {} } as never);
     expect(authConfig?.headers?.Authorization).toBe('Bearer worker-token');
