@@ -7,7 +7,7 @@ import { WavesPage } from './page';
 
 const request = vi.spyOn(http, 'request');
 let currentOrg = 'org-a';
-const fixture = [{ id: 'a', name: 'Wave A', brief: 'First', state: 'planned' }, { id: 'b', name: 'Wave B', state: 'active' }];
+const fixture = [{ id: 'a', name: 'Wave A', brief: 'First', state: 'todo' }, { id: 'b', name: 'Wave B', state: 'in_progress' }];
 function respond(data: unknown) { request.mockImplementation(async (config) => ({ data: config?.url === '/api/v1/auth/session' ? { organization_id: currentOrg } : { data }, status: 200, statusText: 'OK', headers: {}, config } as never)); }
 function setup() { const client = new QueryClient({ defaultOptions: { queries: { retry: false } } }); return render(<QueryClientProvider client={client}><WavesPage /></QueryClientProvider>); }
 
@@ -17,17 +17,20 @@ describe('WavesPage', () => {
     respond(fixture);
     setup();
     expect(await screen.findByText('Wave A')).toBeTruthy();
-    expect(screen.getByRole('region', { name: 'planned waves' })).toBeTruthy();
+    expect(screen.getByRole('region', { name: 'todo waves' })).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Wave C' } });
     fireEvent.change(screen.getByLabelText('Brief'), { target: { value: 'Third' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create wave' }));
     await waitFor(() => expect(request.mock.calls.some(([config]) => config?.method === 'POST' && config?.data === JSON.stringify({ name: 'Wave C', brief: 'Third' }))).toBe(true));
   });
   it('updates state and recovers from a list failure', async () => {
-    respond(fixture);
+    respond([fixture[0]]);
     setup();
-    fireEvent.change(await screen.findByLabelText('State for Wave A'), { target: { value: 'active' } });
-    await waitFor(() => expect(request.mock.calls.some(([config]) => config?.method === 'PATCH' && config?.data === JSON.stringify({ state: 'active' }))).toBe(true));
+    const selector = await screen.findByLabelText('State for Wave A');
+    expect((selector as HTMLSelectElement).options.length).toBe(5);
+    expect(screen.getByRole('region', { name: 'in_progress waves' })).toBeTruthy();
+    fireEvent.change(selector, { target: { value: 'in_progress' } });
+    await waitFor(() => expect(request.mock.calls.some(([config]) => config?.method === 'PATCH' && config?.data === JSON.stringify({ state: 'in_progress' }))).toBe(true));
     cleanup();
     request.mockImplementationOnce(async (config) => ({ data: { organization_id: currentOrg }, status: 200, statusText: 'OK', headers: {}, config } as never));
     request.mockImplementationOnce(async () => { throw new Error('offline'); });
@@ -38,7 +41,7 @@ describe('WavesPage', () => {
     expect(await screen.findByText('Wave A')).toBeTruthy();
   });
   it('isolates the cache when organization changes', async () => {
-    request.mockImplementation(async (config) => ({ data: config?.url === '/api/v1/auth/session' ? { organization_id: currentOrg } : { data: currentOrg === 'org-a' ? fixture : [{ id: 'c', name: 'Wave C', state: 'planned' }] }, status: 200, statusText: 'OK', headers: {}, config } as never));
+    request.mockImplementation(async (config) => ({ data: config?.url === '/api/v1/auth/session' ? { organization_id: currentOrg } : { data: currentOrg === 'org-a' ? fixture : [{ id: 'c', name: 'Wave C', state: 'todo' }] }, status: 200, statusText: 'OK', headers: {}, config } as never));
     setup();
     expect(await screen.findByText('Wave A')).toBeTruthy();
     currentOrg = 'org-b';
@@ -46,6 +49,13 @@ describe('WavesPage', () => {
     fireEvent(window, new Event('organization:changed'));
     expect(await screen.findByText('Wave C')).toBeTruthy();
     expect(screen.queryByText('Wave A')).toBeNull();
+  });
+  it('renders supported empty workflow columns for an empty list', async () => {
+    respond([]);
+    setup();
+    expect(await screen.findByText('No waves found.')).toBeTruthy();
+    expect(screen.getByRole('region', { name: 'in_progress waves' })).toBeTruthy();
+    expect(screen.getByRole('region', { name: 'done waves' })).toBeTruthy();
   });
   it('edits a templated brief, saves with PATCH and reloads the persisted brief', async () => {
     let saved = 'First';

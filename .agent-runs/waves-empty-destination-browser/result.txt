@@ -1,0 +1,1 @@
+PASS: fixture PATCH saved the edited brief; reloading fetched the persisted fixture brief. This is browser fixture evidence, not live backend evidence.
