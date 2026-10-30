@@ -12,3 +12,7 @@ export async function createWave(input: WaveRequest): Promise<void> {
 export async function updateWaveState(id: string, state: string): Promise<void> {
   await api.api.v1WavesPartialUpdate(id, { state });
 }
+
+export async function updateWaveBrief(id: string, brief: string): Promise<void> {
+  await api.api.v1WavesPartialUpdate(id, { brief });
+}

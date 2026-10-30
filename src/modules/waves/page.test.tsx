@@ -47,7 +47,32 @@ describe('WavesPage', () => {
     expect(await screen.findByText('Wave C')).toBeTruthy();
     expect(screen.queryByText('Wave A')).toBeNull();
   });
-  it('fails when wave page behavior is absent', () => {
-    expect(() => render(<QueryClientProvider client={new QueryClient()}><div>Missing page</div></QueryClientProvider>).getByRole('heading', { name: 'Organization waves' })).toThrow();
+  it('edits a templated brief, saves with PATCH and reloads the persisted brief', async () => {
+    let saved = 'First';
+    request.mockImplementation(async (config) => {
+      if (config?.url === '/api/v1/auth/session') return { data: { organization_id: currentOrg }, status: 200, statusText: 'OK', headers: {}, config } as never;
+      if (config?.method === 'PATCH') { saved = JSON.parse(config.data as string).brief; return { data: {}, status: 200, statusText: 'OK', headers: {}, config } as never; }
+      return { data: { data: [{ ...fixture[0], brief: saved }, fixture[1]] }, status: 200, statusText: 'OK', headers: {}, config } as never;
+    });
+    setup();
+    fireEvent.change(await screen.findByLabelText('Brief template for Wave A'), { target: { value: 'Release plan' } });
+    fireEvent.change(screen.getByLabelText('Brief for Wave A'), { target: { value: 'Edited release brief' } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Save brief' })[0]);
+    await waitFor(() => expect(request.mock.calls.some(([config]) => config?.method === 'PATCH' && config?.data === JSON.stringify({ brief: 'Edited release brief' }))).toBe(true));
+    await waitFor(() => expect((screen.getByLabelText('Brief for Wave A') as HTMLTextAreaElement).value).toBe('Edited release brief'));
+    expect(saved).toBe('Edited release brief');
+  });
+  it('preserves unsaved brief text when the PATCH request fails', async () => {
+    request.mockImplementation(async (config) => {
+      if (config?.url === '/api/v1/auth/session') return { data: { organization_id: currentOrg }, status: 200, statusText: 'OK', headers: {}, config } as never;
+      if (config?.method === 'PATCH') throw new Error('offline');
+      return { data: { data: fixture }, status: 200, statusText: 'OK', headers: {}, config } as never;
+    });
+    setup();
+    const editor = await screen.findByLabelText('Brief for Wave A') as HTMLTextAreaElement;
+    fireEvent.change(editor, { target: { value: 'Unsaved draft' } });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Save brief' })[0]);
+    expect(await screen.findByRole('alert')).toBeTruthy();
+    expect((screen.getByLabelText('Brief for Wave A') as HTMLTextAreaElement).value).toBe('Unsaved draft');
   });
 });
