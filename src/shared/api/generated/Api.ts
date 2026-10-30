@@ -1650,6 +1650,20 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1WorkersLogsList
+     * @summary Worker job log websocket
+     * @request GET:/api/v1/workers/{worker_id}/logs
+     */
+    v1WorkersLogsList: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<any, string | ResponseErrorResponse>({
+        path: `/api/v1/workers/${workerId}/logs`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1WorkersRestartCreate
      * @summary Restart worker
      * @request POST:/api/v1/workers/restart
