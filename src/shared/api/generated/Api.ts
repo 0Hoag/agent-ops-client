@@ -436,6 +436,27 @@ export interface ResponseSuccessResponse {
   status?: number;
 }
 
+export interface WaveListResponse {
+  data?: WaveWave[];
+  meta?: PaginationPaginatorResponse;
+}
+
+export interface WaveRequest {
+  brief?: string;
+  name?: string;
+  state?: string;
+}
+
+export interface WaveWave {
+  brief?: string;
+  created_at?: string;
+  id?: string;
+  name?: string;
+  organization_id?: string;
+  state?: string;
+  updated_at?: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat =
   | "json"
@@ -1494,6 +1515,89 @@ export class Api<SecurityDataType extends unknown> {
         method: "PATCH",
         body: request,
         secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesCreate
+     * @summary Create organization wave
+     * @request POST:/api/v1/waves
+     */
+    v1WavesCreate: (request: WaveRequest, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesDelete
+     * @summary Delete organization wave
+     * @request DELETE:/api/v1/waves/{wave_id}
+     */
+    v1WavesDelete: (waveId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesDetail
+     * @summary Get organization wave
+     * @request GET:/api/v1/waves/{wave_id}
+     */
+    v1WavesDetail: (waveId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesList
+     * @summary List organization waves
+     * @request GET:/api/v1/waves
+     */
+    v1WavesList: (params: RequestParams = {}) =>
+      this.http.request<WaveListResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesPartialUpdate
+     * @summary Update organization wave
+     * @request PATCH:/api/v1/waves/{wave_id}
+     */
+    v1WavesPartialUpdate: (
+      waveId: string,
+      request: WaveRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "PATCH",
+        body: request,
         type: ContentType.Json,
         format: "json",
         ...params,
