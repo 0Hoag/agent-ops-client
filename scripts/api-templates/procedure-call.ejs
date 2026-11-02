@@ -55,6 +55,7 @@ const requestContentKind = {
 // RequestParams["format"]
 const responseContentKind = {
     "JSON": '"json"',
+    "TEXT": '"text"',
     "IMAGE": '"blob"',
     "FORM_DATA": isFetchTemplate ? '"formData"' : '"document"'
 }
@@ -96,5 +97,6 @@ const describeReturnType = () => {
         <%~ securityTmpl ? `secure: ${securityTmpl},` : '' %>
         <%~ bodyContentKindTmpl ? `type: ${bodyContentKindTmpl},` : '' %>
         <%~ responseFormatTmpl ? `format: ${responseFormatTmpl},` : '' %>
+        <%~ responseFormatTmpl === '"text"' ? 'headers: { Accept: "text/plain" },' : '' %>
         ...<%~ _.get(requestConfigParam, "name") %>,
     })<%~ route.namespace ? ',' : '' %>
