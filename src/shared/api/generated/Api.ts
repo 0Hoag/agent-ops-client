@@ -457,6 +457,23 @@ export interface WaveWave {
   updated_at?: string;
 }
 
+export interface WorkerActionAudit {
+  action?: string;
+  actorID?: string;
+  createdAt?: string;
+  id?: string;
+  jobID?: string;
+  occurredAt?: string;
+  organizationID?: string;
+  outcome?: string;
+  wave?: string;
+}
+
+export interface WorkerAuditHistoryResponse {
+  data?: WorkerActionAudit[];
+  meta?: PaginationPaginatorResponse;
+}
+
 export interface WorkerRequest {
   branch?: string;
   brief?: string;
@@ -1628,6 +1645,30 @@ export class Api<SecurityDataType extends unknown> {
         method: "POST",
         body: body,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersAuditHistoryList
+     * @summary List worker action audit history
+     * @request GET:/api/v1/workers/audit-history
+     */
+    v1WorkersAuditHistoryList: (
+      query?: {
+        /** Page */
+        page?: number;
+        /** Items per page */
+        per_page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<WorkerAuditHistoryResponse, ResponseErrorResponse>({
+        path: `/api/v1/workers/audit-history`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
