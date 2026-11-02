@@ -1,7 +1,10 @@
 import { api } from '../../shared/api/client';
-import type { WaveRequest, WaveWave, WorkerRequest } from '../../shared/api/generated/Api';
+import type { WaveRequest, WaveWave, WorkerAuditHistoryResponse, WorkerRequest } from '../../shared/api/generated/Api';
 
 export type WorkerJob = { ID: string; State: string; Request?: WorkerRequest };
+export async function listWorkerAuditHistory(page: number, perPage: number): Promise<WorkerAuditHistoryResponse> {
+  return (await api.api.v1WorkersAuditHistoryList({ page, per_page: perPage })).data;
+}
 export async function startWorker(input: WorkerRequest): Promise<WorkerJob> {
   return (await api.api.v1WorkersStartCreate(input)).data.data as WorkerJob;
 }
