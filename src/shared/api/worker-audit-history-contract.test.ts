@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { http } from '../http';
 import { api } from './client';
 import type { WorkerActionAudit, WorkerAuditHistoryResponse } from './generated/Api';
@@ -7,6 +9,26 @@ describe('generated worker audit history contract', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  it('does not contain duplicate JSON object keys in the API snapshot', () => {
+    const snapshot = readFileSync(fileURLToPath(new URL('./swagger.json', import.meta.url)), 'utf8');
+    const duplicateKeys: string[] = [];
+    const tokens = snapshot.match(/"(?:\\.|[^"\\])*"|[{}\[\]:,]|[^\s{}\[\]:,"]+/g) ?? [];
+    const objects: Set<string>[] = [];
+    for (let index = 0; index < tokens.length; index += 1) {
+      const token = tokens[index];
+      if (token === '{') objects.push(new Set());
+      else if (token === '}') objects.pop();
+      else if (token.startsWith('"') && tokens[index + 1] === ':' && objects.length > 0) {
+        const key = JSON.parse(token) as string;
+        const current = objects[objects.length - 1];
+        if (current.has(key)) duplicateKeys.push(key);
+        current.add(key);
+      }
+    }
+
+    expect(duplicateKeys).toEqual([]);
   });
 
   it('requests paginated audit history and retains audit fields', async () => {
