@@ -1780,6 +1780,23 @@ export class Api<SecurityDataType extends unknown> {
         ...params,
       }),
   };
+  metrics = {
+    /**
+     * No description
+     *
+     * @name MetricsList
+     * @summary Prometheus service metrics
+     * @request GET:/metrics
+     */
+    metricsList: (params: RequestParams = {}) =>
+      this.http.request<string, any>({
+        path: `/metrics`,
+        method: "GET",
+        format: "text",
+        headers: { Accept: "text/plain" },
+        ...params,
+      }),
+  };
   readyz = {
     /**
      * No description
