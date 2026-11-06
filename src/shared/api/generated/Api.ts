@@ -150,6 +150,34 @@ export interface AgentrunTimelineInput {
   steps?: AgentrunRunStep[];
 }
 
+export interface AlertChannelRequest {
+  enabled?: boolean;
+  kind?: string;
+  slack_webhook_url_env_ref?: string;
+  smtp_from_env_ref?: string;
+  smtp_host_env_ref?: string;
+  smtp_password_env_ref?: string;
+  smtp_port_env_ref?: string;
+  smtp_to_env_ref?: string;
+  smtp_username_env_ref?: string;
+  telegram_chat_id_env_ref?: string;
+  telegram_token_env_ref?: string;
+}
+
+export interface AlertChannelResponse {
+  enabled?: boolean;
+  kind?: string;
+  slack_webhook_url_env_ref?: string;
+  smtp_from_env_ref?: string;
+  smtp_host_env_ref?: string;
+  smtp_password_env_ref?: string;
+  smtp_port_env_ref?: string;
+  smtp_to_env_ref?: string;
+  smtp_username_env_ref?: string;
+  telegram_chat_id_env_ref?: string;
+  telegram_token_env_ref?: string;
+}
+
 export interface AlertHistoryResponse {
   data?: AlertOccurrence[];
   meta?: PaginationPaginatorResponse;
@@ -164,6 +192,18 @@ export interface AlertOccurrence {
   repository?: string;
   rule?: string;
   subject?: string;
+}
+
+export interface AlertThresholdRequest {
+  min_cache_hit?: number;
+  pr_stale_seconds?: number;
+  silent_seconds?: number;
+}
+
+export interface AlertThresholdsResponse {
+  min_cache_hit?: number;
+  pr_stale_seconds?: number;
+  silent_seconds?: number;
 }
 
 export interface AuthLoginRequest {
@@ -972,6 +1012,81 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @tags alerts
+     * @name V1AlertsChannelsCreate
+     * @summary Create alert channel
+     * @request POST:/api/v1/alerts/channels
+     */
+    v1AlertsChannelsCreate: (
+      channel: AlertChannelRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertChannelResponse, any>({
+        path: `/api/v1/alerts/channels`,
+        method: "POST",
+        body: channel,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsChannelsDelete
+     * @summary Delete alert channel
+     * @request DELETE:/api/v1/alerts/channels/{kind}
+     */
+    v1AlertsChannelsDelete: (kind: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, any>({
+        path: `/api/v1/alerts/channels/${kind}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsChannelsList
+     * @summary List alert channels
+     * @request GET:/api/v1/alerts/channels
+     */
+    v1AlertsChannelsList: (params: RequestParams = {}) =>
+      this.http.request<AlertChannelResponse[], any>({
+        path: `/api/v1/alerts/channels`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsChannelsUpdate
+     * @summary Update alert channel
+     * @request PUT:/api/v1/alerts/channels/{kind}
+     */
+    v1AlertsChannelsUpdate: (
+      kind: string,
+      channel: AlertChannelRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertChannelResponse, any>({
+        path: `/api/v1/alerts/channels/${kind}`,
+        method: "PUT",
+        body: channel,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1AlertsHistoryList
      * @summary List alert history
      * @request GET:/api/v1/alerts/history
@@ -989,6 +1104,43 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/alerts/history`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsThresholdsList
+     * @summary Get alert thresholds
+     * @request GET:/api/v1/alerts/thresholds
+     */
+    v1AlertsThresholdsList: (params: RequestParams = {}) =>
+      this.http.request<AlertThresholdsResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/thresholds`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsThresholdsUpdate
+     * @summary Update alert thresholds
+     * @request PUT:/api/v1/alerts/thresholds
+     */
+    v1AlertsThresholdsUpdate: (
+      thresholds: AlertThresholdRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertThresholdsResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/thresholds`,
+        method: "PUT",
+        body: thresholds,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
