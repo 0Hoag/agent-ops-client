@@ -8,6 +8,7 @@ import { registerInsights } from './register-insights';
 import { registerMembers } from './register-members';
 import { registerRepositories } from './register-repositories';
 import { registerPricing } from './register-pricing';
+import { registerWaves } from './register-waves';
 import { InvitationPage } from '../modules/members/InvitationPage';
 import { membersPaths } from '../modules/members/paths';
 import { LoginPage } from '../modules/auth/LoginPage';
@@ -50,5 +51,6 @@ export function AppRouter() {
   const members = registerMembers();
   const repositories = registerRepositories();
   const pricing = registerPricing();
-  return <Routes><Route path={health.path} element={health.element} /><Route path={paths.login} element={<LoginPage />} /><Route path={membersPaths.invite} element={<Protected><InvitationPage /></Protected>} /><Route path={members.path} element={<Protected>{members.element}</Protected>} /><Route path={repositories.path} element={<Protected>{repositories.element}</Protected>} /><Route path={pricing.path} element={<Protected>{pricing.element}</Protected>} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.health} replace />} /></Routes>;
+  const waves = registerWaves();
+  return <Routes><Route path={health.path} element={health.element} /><Route path={paths.login} element={<LoginPage />} /><Route path={membersPaths.invite} element={<Protected><InvitationPage /></Protected>} /><Route path={members.path} element={<Protected>{members.element}</Protected>} /><Route path={repositories.path} element={<Protected>{repositories.element}</Protected>} /><Route path={pricing.path} element={<Protected>{pricing.element}</Protected>} /><Route path={waves.path} element={<Protected>{waves.element}</Protected>} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.health} replace />} /></Routes>;
 }

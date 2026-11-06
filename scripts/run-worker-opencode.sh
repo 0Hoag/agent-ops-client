@@ -12,12 +12,11 @@ if [ ! -d "$wt" ]; then
   git -C "$root" worktree add "$wt" -b "$branch" origin/reviews/development
 fi
 
-OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 opencode run \
+( cd "$wt" && OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 opencode run \
   --agent worker \
-  --dir "$wt" \
   --format json \
   --title "$wave" \
-  "$(cat "$brief")" < /dev/null > "$root/.agent-runs/$wave.jsonl"
+  "$(cat "$brief")" < /dev/null > "$root/.agent-runs/$wave.jsonl" )
 
 jq -rs '[.[] | select(.type=="text")] | last | .part.text // ""' \
   "$root/.agent-runs/$wave.jsonl" > "$root/.agent-runs/$wave.md"

@@ -63,11 +63,11 @@ export class HttpClient<SecurityDataType = unknown> {
             method: init?.method,
             headers: init?.headers as Record<string, string>,
             data: init?.body,
-            responseType: "json",
+            responseType: init?.responseType || (init?.headers && (init.headers as Record<string, string>)["Accept"] === "text/plain" ? "text" : "json"),
         };
         const response = await this.instance.request(config);
         const request = this.instance.getUri(config);
-        return new Response(JSON.stringify(response.data), { status: response.status, headers: { "x-request-url": request } });
+        return new Response(config.responseType === "text" ? String(response.data) : JSON.stringify(response.data), { status: response.status, headers: { "x-request-url": request } });
     }
 
     private baseApiParams: RequestParams = {

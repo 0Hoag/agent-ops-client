@@ -1,0 +1,1 @@
+PASS: browser fixture PATCH transitioned todo to in_progress; response reload placed the fixture wave in the previously empty in_progress column. Fixture evidence only; no live backend was used.

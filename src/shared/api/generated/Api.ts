@@ -150,6 +150,22 @@ export interface AgentrunTimelineInput {
   steps?: AgentrunRunStep[];
 }
 
+export interface AlertHistoryResponse {
+  data?: AlertOccurrence[];
+  meta?: PaginationPaginatorResponse;
+}
+
+export interface AlertOccurrence {
+  alertKey?: string;
+  detectedAt?: string;
+  id?: string;
+  message?: string;
+  organizationID?: string;
+  repository?: string;
+  rule?: string;
+  subject?: string;
+}
+
 export interface AuthLoginRequest {
   email?: string;
   password?: string;
@@ -180,10 +196,85 @@ export interface BoardListResponse {
   meta?: BoardListMeta;
 }
 
+export interface BudgetBudget {
+  created_at?: string;
+  ends_at?: string;
+  id?: string;
+  organization_id?: string;
+  repository_id?: string;
+  starts_at?: string;
+  token_limit?: number;
+  updated_at?: string;
+  usd_limit?: number;
+  wave?: string;
+}
+
+export interface BudgetRequest {
+  ends_at?: string;
+  repository_id?: string;
+  starts_at?: string;
+  token_limit?: number;
+  usd_limit?: number;
+  wave?: string;
+}
+
+export interface InsightAnalyticsBucket {
+  actual_cost_usd?: number;
+  cache_hit_rate?: number;
+  cache_write_tokens?: number;
+  cached_input_tokens?: number;
+  equivalent_cost_usd?: number;
+  input_tokens?: number;
+  key?: string;
+  output_tokens?: number;
+  reasoning_tokens?: number;
+  runs?: number;
+  start?: string;
+  unknown_price_count?: number;
+}
+
+export interface InsightAnalyticsResponse {
+  bucket_timestamp?: string;
+  buckets?: InsightAnalyticsBucket[];
+  cache_denominator?: string;
+  from?: string;
+  group_by?: string;
+  period?: string;
+  to?: string;
+  unknown_price_count?: number;
+  week_starts?: string;
+}
+
 export interface InsightCycleMetric {
   completed?: number;
   evidence?: InsightEvidence[];
   median_seconds?: number;
+}
+
+export interface InsightDeliveryCostMetric {
+  actual_cost_usd?: number;
+  cost_per_item_usd?: number;
+  count?: number;
+  eligible?: number;
+  equivalent_cost_usd?: number;
+  unavailable?: number;
+}
+
+export interface InsightDeliveryHistory {
+  complete?: boolean;
+  unavailable?: number;
+}
+
+export interface InsightDeliveryResponse {
+  closed_issues?: InsightDeliveryCostMetric;
+  first_ci_success?: InsightFirstCIMetric;
+  from?: string;
+  harness_comparison?: InsightHarnessMetric[];
+  history?: InsightDeliveryHistory;
+  issue_to_merge_lead_time?: InsightLeadTimeMetric;
+  merged_prs?: InsightDeliveryCostMetric;
+  send_back?: InsightSendBackMetric;
+  to?: string;
 }
 
 export interface InsightEnvelope {
@@ -206,9 +297,25 @@ export interface InsightFirstCIMetric {
   successful?: number;
 }
 
+export interface InsightHarnessMetric {
+  changed_lines?: number;
+  cost_per_changed_line_usd?: number;
+  eligible?: number;
+  equivalent_cost_usd?: number;
+  harness?: string;
+  runs?: number;
+  unavailable?: number;
+}
+
 export interface InsightHistory {
   complete?: boolean;
   reason?: string;
+}
+
+export interface InsightLeadTimeMetric {
+  completed?: number;
+  median_seconds?: number;
+  unavailable?: number;
 }
 
 export interface InsightResponse {
@@ -255,6 +362,12 @@ export interface OrganizationCreateRequest {
 
 export interface OrganizationUpdateRoleRequest {
   role: string;
+}
+
+export interface PaginationPaginatorResponse {
+  page?: number;
+  per_page?: number;
+  total?: number;
 }
 
 export interface RepositorysettingsCreateRequest {
@@ -321,6 +434,52 @@ export interface ResponseMessageResponse {
 export interface ResponseSuccessResponse {
   data?: any;
   status?: number;
+}
+
+export interface WaveListResponse {
+  data?: WaveWave[];
+  meta?: PaginationPaginatorResponse;
+}
+
+export interface WaveRequest {
+  brief?: string;
+  name?: string;
+  state?: string;
+}
+
+export interface WaveWave {
+  brief?: string;
+  created_at?: string;
+  id?: string;
+  name?: string;
+  organization_id?: string;
+  state?: string;
+  updated_at?: string;
+}
+
+export interface WorkerActionAudit {
+  action?: string;
+  actorID?: string;
+  createdAt?: string;
+  id?: string;
+  jobID?: string;
+  occurredAt?: string;
+  organizationID?: string;
+  outcome?: string;
+  wave?: string;
+}
+
+export interface WorkerAuditHistoryResponse {
+  data?: WorkerActionAudit[];
+  meta?: PaginationPaginatorResponse;
+}
+
+export interface WorkerRequest {
+  branch?: string;
+  brief?: string;
+  script?: string;
+  wave?: string;
+  worktree?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -398,14 +557,21 @@ export class HttpClient<SecurityDataType = unknown> {
       method: init?.method,
       headers: init?.headers as Record<string, string>,
       data: init?.body,
-      responseType: "json",
+      responseType:
+        init?.responseType ||
+        (init?.headers &&
+        (init.headers as Record<string, string>)["Accept"] === "text/plain"
+          ? "text"
+          : "json"),
     };
     const response = await this.instance.request(config);
     const request = this.instance.getUri(config);
-    return new Response(JSON.stringify(response.data), {
-      status: response.status,
-      headers: { "x-request-url": request },
-    });
+    return new Response(
+      config.responseType === "text"
+        ? String(response.data)
+        : JSON.stringify(response.data),
+      { status: response.status, headers: { "x-request-url": request } },
+    );
   }
 
   private baseApiParams: RequestParams = {
@@ -806,6 +972,30 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1AlertsHistoryList
+     * @summary List alert history
+     * @request GET:/api/v1/alerts/history
+     */
+    v1AlertsHistoryList: (
+      query?: {
+        /** Page */
+        page?: number;
+        /** Items per page */
+        per_page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertHistoryResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/history`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1AuthLoginCreate
      * @summary Login
      * @request POST:/api/v1/auth/login
@@ -905,6 +1095,162 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/board/ws`,
         method: "GET",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsCreate
+     * @summary Create budget
+     * @request POST:/api/v1/budgets
+     */
+    v1BudgetsCreate: (budget: BudgetRequest, params: RequestParams = {}) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets`,
+        method: "POST",
+        body: budget,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsDelete
+     * @summary Delete budget
+     * @request DELETE:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsDelete: (budgetId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsDetail
+     * @summary Get budget
+     * @request GET:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsDetail: (budgetId: string, params: RequestParams = {}) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsList
+     * @summary List budgets
+     * @request GET:/api/v1/budgets
+     */
+    v1BudgetsList: (params: RequestParams = {}) =>
+      this.http.request<BudgetBudget[], ResponseErrorResponse>({
+        path: `/api/v1/budgets`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags budgets
+     * @name V1BudgetsPartialUpdate
+     * @summary Update budget
+     * @request PATCH:/api/v1/budgets/{budget_id}
+     */
+    v1BudgetsPartialUpdate: (
+      budgetId: string,
+      budget: BudgetRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<BudgetBudget, ResponseErrorResponse>({
+        path: `/api/v1/budgets/${budgetId}`,
+        method: "PATCH",
+        body: budget,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1InsightsAnalyticsList
+     * @summary Get cost and cache analytics
+     * @request GET:/api/v1/insights/analytics
+     */
+    v1InsightsAnalyticsList: (
+      query: {
+        /** Inclusive UTC start date (YYYY-MM-DD) */
+        from: string;
+        /**
+         * Grouping dimension
+         * @default "harness"
+         */
+        group_by?: "harness" | "model" | "wave" | "area";
+        /**
+         * Bucket period
+         * @default "daily"
+         */
+        period?: "daily" | "weekly";
+        /**
+         * Repository UUID
+         * @format uuid
+         */
+        repository_id?: string;
+        /** Inclusive UTC end date (YYYY-MM-DD), max 366 days */
+        to: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<InsightAnalyticsResponse, ResponseErrorResponse>({
+        path: `/api/v1/insights/analytics`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1InsightsDeliveryList
+     * @summary Get delivery quality analytics
+     * @request GET:/api/v1/insights/delivery
+     */
+    v1InsightsDeliveryList: (
+      query: {
+        /** Inclusive UTC start date (YYYY-MM-DD) */
+        from: string;
+        /**
+         * Repository UUID
+         * @format uuid
+         */
+        repository_id?: string;
+        /** Inclusive UTC end date (YYYY-MM-DD), max 366 days */
+        to: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<InsightDeliveryResponse, ResponseErrorResponse>({
+        path: `/api/v1/insights/delivery`,
+        method: "GET",
+        query: query,
+        format: "json",
         ...params,
       }),
 
@@ -1209,6 +1555,89 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1WavesCreate
+     * @summary Create organization wave
+     * @request POST:/api/v1/waves
+     */
+    v1WavesCreate: (request: WaveRequest, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesDelete
+     * @summary Delete organization wave
+     * @request DELETE:/api/v1/waves/{wave_id}
+     */
+    v1WavesDelete: (waveId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesDetail
+     * @summary Get organization wave
+     * @request GET:/api/v1/waves/{wave_id}
+     */
+    v1WavesDetail: (waveId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesList
+     * @summary List organization waves
+     * @request GET:/api/v1/waves
+     */
+    v1WavesList: (params: RequestParams = {}) =>
+      this.http.request<WaveListResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WavesPartialUpdate
+     * @summary Update organization wave
+     * @request PATCH:/api/v1/waves/{wave_id}
+     */
+    v1WavesPartialUpdate: (
+      waveId: string,
+      request: WaveRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/waves/${waveId}`,
+        method: "PATCH",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1WebhooksCreate
      * @summary Ingest provider webhook
      * @request POST:/api/v1/webhooks/{provider}
@@ -1226,6 +1655,114 @@ export class Api<SecurityDataType extends unknown> {
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersAuditHistoryList
+     * @summary List worker action audit history
+     * @request GET:/api/v1/workers/audit-history
+     */
+    v1WorkersAuditHistoryList: (
+      query?: {
+        /** Page */
+        page?: number;
+        /** Items per page */
+        per_page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<WorkerAuditHistoryResponse, ResponseErrorResponse>({
+        path: `/api/v1/workers/audit-history`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersDetail
+     * @summary Get worker job
+     * @request GET:/api/v1/workers/{worker_id}
+     */
+    v1WorkersDetail: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+        path: `/api/v1/workers/${workerId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersLogsList
+     * @summary Worker job log websocket
+     * @request GET:/api/v1/workers/{worker_id}/logs
+     */
+    v1WorkersLogsList: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<any, string | ResponseErrorResponse>({
+        path: `/api/v1/workers/${workerId}/logs`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersRestartCreate
+     * @summary Restart worker
+     * @request POST:/api/v1/workers/restart
+     */
+    v1WorkersRestartCreate: (
+      request: WorkerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/workers/restart`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersStartCreate
+     * @summary Start worker
+     * @request POST:/api/v1/workers/start
+     */
+    v1WorkersStartCreate: (
+      request: WorkerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/workers/start`,
+        method: "POST",
+        body: request,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkersStopCreate
+     * @summary Stop worker
+     * @request POST:/api/v1/workers/{worker_id}/stop
+     */
+    v1WorkersStopCreate: (workerId: string, params: RequestParams = {}) =>
+      this.http.request<ResponseMessageResponse, any>({
+        path: `/api/v1/workers/${workerId}/stop`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
   };
   healthz = {
     /**
@@ -1240,6 +1777,23 @@ export class Api<SecurityDataType extends unknown> {
         path: `/healthz`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+  };
+  metrics = {
+    /**
+     * No description
+     *
+     * @name MetricsList
+     * @summary Prometheus service metrics
+     * @request GET:/metrics
+     */
+    metricsList: (params: RequestParams = {}) =>
+      this.http.request<string, any>({
+        path: `/metrics`,
+        method: "GET",
+        format: "text",
+        headers: { Accept: "text/plain" },
         ...params,
       }),
   };

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http } from '../http';
 import { api } from './client';
+import type { InsightDeliveryResponse } from './generated/Api';
 
 describe('generated API transport', () => {
   afterEach(() => vi.restoreAllMocks());
@@ -17,6 +18,29 @@ describe('generated API transport', () => {
     const response = await api.api.v1BoardList({ repository_id: 'repo-1', page: 2, per_page: 100 });
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/api/v1/board?repository_id=repo-1&page=2&per_page=100' }));
     expect(response.data.meta?.page).toBe(2);
+  });
+
+  it('requests analytics through the generated operation with its filters', async () => {
+    const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: {}, status: 200, statusText: 'OK', headers: {}, config: { headers: {} } } as never);
+    const filters = { repository_id: 'repo-1', group_by: 'model', period: 'weekly', from: '2026-01-01', to: '2026-01-31' } satisfies Parameters<typeof api.api.v1InsightsAnalyticsList>[0];
+    await api.api.v1InsightsAnalyticsList(filters);
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({
+      url: '/api/v1/insights/analytics?repository_id=repo-1&group_by=model&period=weekly&from=2026-01-01&to=2026-01-31',
+      method: 'GET',
+    }));
+  });
+
+  it('requests delivery analytics with repository and date filters and returns its generated response', async () => {
+    const delivery = { merged_prs: { count: 3 }, from: '2026-01-01', to: '2026-01-31' };
+    const request = vi.spyOn(http, 'request').mockResolvedValueOnce({ data: delivery, status: 200, statusText: 'OK', headers: {}, config: { headers: {} } } as never);
+    const filters = { repository_id: 'repo-1', from: '2026-01-01', to: '2026-01-31' } satisfies Parameters<typeof api.api.v1InsightsDeliveryList>[0];
+    const response = await api.api.v1InsightsDeliveryList(filters);
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({
+      url: '/api/v1/insights/delivery?repository_id=repo-1&from=2026-01-01&to=2026-01-31',
+      method: 'GET',
+    }));
+    const typedResponse: InsightDeliveryResponse = response.data;
+    expect(typedResponse.merged_prs?.count).toBe(3);
   });
 
   it('uses the generated JWT login operation and response type', async () => {
