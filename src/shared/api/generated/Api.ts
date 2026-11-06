@@ -166,6 +166,18 @@ export interface AlertOccurrence {
   subject?: string;
 }
 
+export interface AlertThresholdRequest {
+  min_cache_hit?: number;
+  pr_stale_seconds?: number;
+  silent_seconds?: number;
+}
+
+export interface AlertThresholdsResponse {
+  min_cache_hit?: number;
+  pr_stale_seconds?: number;
+  silent_seconds?: number;
+}
+
 export interface AuthLoginRequest {
   email?: string;
   password?: string;
@@ -989,6 +1001,43 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/v1/alerts/history`,
         method: "GET",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsThresholdsList
+     * @summary Get alert thresholds
+     * @request GET:/api/v1/alerts/thresholds
+     */
+    v1AlertsThresholdsList: (params: RequestParams = {}) =>
+      this.http.request<AlertThresholdsResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/thresholds`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags alerts
+     * @name V1AlertsThresholdsUpdate
+     * @summary Update alert thresholds
+     * @request PUT:/api/v1/alerts/thresholds
+     */
+    v1AlertsThresholdsUpdate: (
+      thresholds: AlertThresholdRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AlertThresholdsResponse, ResponseErrorResponse>({
+        path: `/api/v1/alerts/thresholds`,
+        method: "PUT",
+        body: thresholds,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
