@@ -1,5 +1,9 @@
 import { api } from '../../../shared/api/client';
-import type { AlertOccurrence, AlertThresholdRequest, AlertThresholdsResponse } from '../../../shared/api/generated/Api';
+import type { AlertOccurrence, AlertThresholdRequest, AlertThresholdsResponse, AlertChannelRequest, AlertChannelResponse } from '../../../shared/api/generated/Api';
+export async function listAlertChannels(): Promise<AlertChannelResponse[]> { return (await api.api.v1AlertsChannelsList()).data; }
+export async function createAlertChannel(channel: AlertChannelRequest): Promise<AlertChannelResponse> { return (await api.api.v1AlertsChannelsCreate(channel)).data; }
+export async function updateAlertChannel(kind: string, channel: AlertChannelRequest): Promise<AlertChannelResponse> { return (await api.api.v1AlertsChannelsUpdate(kind, channel)).data; }
+export async function deleteAlertChannel(kind: string): Promise<void> { await api.api.v1AlertsChannelsDelete(kind); }
 export async function alertOrganization(): Promise<string> {
   return (await api.api.v1AuthSessionList()).data.organization_id ?? '';
 }

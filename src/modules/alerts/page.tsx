@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { alertOrganization, listAlertHistory } from './services/client';
 import { ThresholdSettings } from './ThresholdSettings';
+import { ChannelSettings } from './ChannelSettings';
 
 export function AlertsPage() {
   const [page, setPage] = useState(1); const [perPage, setPerPage] = useState(20);
@@ -18,7 +19,7 @@ export function AlertsPage() {
   return <section><h1 className="mb-5 text-2xl font-semibold">Alert history</h1>
     {!org && !sessionError && <p role="status">Select an organization to view alert history.</p>}
     {sessionError && <p role="alert">Unable to load alert organization. <button onClick={() => setAttempt((value) => value + 1)}>Retry</button></p>}
-    {org && <><ThresholdSettings organizationId={org} /><label>Items per page<select value={perPage} onChange={(event) => { setPerPage(Number(event.target.value)); setPage(1); }}>{[20, 50, 100].map((size) => <option key={size} value={size}>{size}</option>)}</select></label>
+    {org && <><ChannelSettings organizationId={org} /><ThresholdSettings organizationId={org} /><label>Items per page<select value={perPage} onChange={(event) => { setPerPage(Number(event.target.value)); setPage(1); }}>{[20, 50, 100].map((size) => <option key={size} value={size}>{size}</option>)}</select></label>
       {query.isPending && <p role="status">Loading alert history…</p>}
       {query.isError && <div role="alert">Unable to load alert history: {query.error.message}<button onClick={() => void query.refetch()}>Retry</button></div>}
       {query.data?.data.length === 0 && <p>No alert history found.</p>}
