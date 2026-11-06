@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
+    "test:e2e": "node scripts/product-e2e.mjs",
     "verify:env": "node scripts/verify-env-fixture.mjs",
     "verify:servers": "node scripts/verify-servers.mjs",
     "verify:browser": "node scripts/verify-browser.mjs",
