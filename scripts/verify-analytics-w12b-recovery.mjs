@@ -91,7 +91,7 @@ try {
   assert.equal(await page.getByText('Retrying workflow repeatedly').count(), 0);
   organization = 'org-b';
   await page.evaluate(() => window.dispatchEvent(new Event('organization:changed')));
-  await page.getByRole('option', { name: 'org-b/widgets' }).waitFor();
+  await page.getByRole('option', { name: 'org-b/widgets' }).waitFor({ state: 'attached' });
   assert.equal(await page.getByLabel('Repository', { exact: true }).inputValue(), '');
   assert.equal(await page.getByText('org-a/widgets').count(), 0);
   await page.screenshot({ path: `${evidence}/tenant-b.png`, fullPage: true });
