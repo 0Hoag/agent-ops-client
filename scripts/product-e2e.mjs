@@ -15,7 +15,7 @@ const fixture = mkdtempSync(join(tmpdir(), 'product-e2e-'));
 const backend = join(fixture, 'api-repo');
 const client = join(fixture, 'client');
 const project = `product-e2e-${process.pid}-${randomBytes(4).toString('hex')}`;
-const env = { ...process.env, CLIENT_DIR: client, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(32).toString('hex'), PRODUCT_E2E_EMAIL: 'product@example.test', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex') };
+const env = { ...process.env, CLIENT_DIR: client, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(16).toString('hex'), PRODUCT_E2E_EMAIL: 'product@example.test', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex') };
 const log = [];
 let stage = 'preflight';
 let started = false;
@@ -68,6 +68,8 @@ function cleanup() {
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { try { cleanup(); } finally { process.exit(1); } });
 try {
   console.log(`STAGE ${stage}; evidence: ${artifacts}`);
+  // The API consumes raw environment bytes, not a hex-decoded AES key.
+  assert.equal(Buffer.byteLength(env.REPOSITORY_ENCRYPTION_KEY), 32, 'Repository encryption key must contain exactly 32 raw bytes');
   const browser = await chromium.launch({ headless: true });
   await browser.close();
   stage = 'fixture';
@@ -88,6 +90,8 @@ try {
   const guard = join(client, 'src/app/router.tsx');
   const original = readFileSync(guard, 'utf8');
   const hash = (text) => createHash('sha256').update(text).digest('hex');
+  const files = run('git', ['ls-files', '-z']).stdout.split('\0').filter((path) => path && !['node_modules', '.git', '.agent-runs', 'dist'].includes(path.split('/')[0]));
+  writeFileSync(join(artifacts, 'client-source-hashes.json'), JSON.stringify(Object.fromEntries(files.map((path) => [path, hash(readFileSync(join(client, path)))])), null, 2));
   writeFileSync(join(artifacts, 'sources.json'), JSON.stringify({ api: pin, client: run('git', ['rev-parse', 'HEAD']).stdout.trim(), project, guard: hash(original), spec: hash(readFileSync(join(root, 'scripts/product-e2e.spec.ts'))) }, null, 2));
   stage = 'compose-up';
   started = true;

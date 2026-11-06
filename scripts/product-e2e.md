@@ -40,11 +40,14 @@ Not covered: populated boards/runs/alerts, editors, live logs, clean-machine
 installation, external providers or hosted CI negative-control success until
 that job has actually executed.
 
-## Current verification blocker
+## Fixture encryption key
 
-The first local real-stack run at the pinned API revision stopped during fixture
-setup: `POST /api/v1/repositories` returned HTTP 404 after successful account
-bootstrap, login, organization creation and selection. No browser page assertion
-or broken-guard/restored pass was reached. The suite deliberately fails rather
-than falling back to mocks or SQL. The CI job is wired but its success is not yet
-verified; this is not completion evidence for issue #7.
+The pinned API consumes `REPOSITORY_ENCRYPTION_KEY` as raw environment bytes and
+requires exactly 32 bytes. The runner generates 16 random bytes encoded as 32
+ASCII hex characters and asserts the byte length without printing the secret.
+A 64-character key disables repository route registration and causes a bootstrap
+HTTP 404; this is a fixture configuration error, not a missing backend route.
+
+Local baseline and restored browser runs pass; bypassing the owned route guard
+fails the unchanged suite at `anonymous route guard: /board`. Hosted CI success
+must still be observed independently.
