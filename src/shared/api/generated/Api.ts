@@ -462,6 +462,9 @@ export interface RepositorysettingsCreatedView {
   full_name?: string;
   gitlab_base_url?: string;
   id?: string;
+  last_sync_error?: string;
+  last_sync_status?: string;
+  last_synced_at?: string;
   provider?: string;
   status_mappings?: Record<string, string>;
   webhook_secret?: string;
@@ -500,6 +503,9 @@ export interface RepositorysettingsView {
   full_name?: string;
   gitlab_base_url?: string;
   id?: string;
+  last_sync_error?: string;
+  last_sync_status?: string;
+  last_synced_at?: string;
   provider?: string;
   status_mappings?: Record<string, string>;
   webhook_url?: string;
@@ -1796,6 +1802,23 @@ export class Api<SecurityDataType extends unknown> {
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesSyncCreate
+     * @summary Sync repository
+     * @request POST:/api/v1/repositories/{repository_id}/sync
+     */
+    v1RepositoriesSyncCreate: (
+      repositoryId: string,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<RepositorysettingsViewResponse, any>({
+        path: `/api/v1/repositories/${repositoryId}/sync`,
+        method: "POST",
         ...params,
       }),
 
