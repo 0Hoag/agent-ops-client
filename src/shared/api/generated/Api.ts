@@ -12,6 +12,7 @@
 
 export interface AgentrunAgentRun {
   billing_type?: string;
+  branch?: string;
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   cost_usd?: number;
@@ -57,6 +58,7 @@ export interface AgentrunAggregateResponse {
 
 export interface AgentrunCreateInput {
   billing_type?: string;
+  branch?: string;
   cache_write_tokens?: number;
   cached_input_tokens?: number;
   ended_at: string;
