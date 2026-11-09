@@ -1,26 +1,35 @@
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { paths } from '../paths';
-import { hasToken, listOrganizations, logout, selectOrganization, type Organization } from '../../modules/auth/services/auth';
-import { paths as appPaths } from '../paths';
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { paths } from '../paths';
+import { hasToken, listOrganizations, logout, selectOrganization, type Organization } from '../../modules/auth/services/auth';
+import { api } from '../../shared/api/client';
+
+type Repository = { id: string; full_name: string };
+const nav = [{ label: 'Overview', to: paths.board }, { label: 'Work', to: paths.runs }, { label: 'Usage', to: paths.insights }, { label: 'Settings', to: paths.advanced }];
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [organizationId, setOrganizationId] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [repository, setRepository] = useState(localStorage.getItem('agent-ops-repository') ?? '');
+  const [drawer, setDrawer] = useState(false);
   const [error, setError] = useState('');
-  useEffect(() => { let active = true; const load = () => { if (!hasToken()) return; const token = sessionStorage.getItem('agent-ops-token'); void listOrganizations().then((items) => { if (active && sessionStorage.getItem('agent-ops-token') === token) { setOrganizations(items); setOrganizationId(''); } }).catch(() => { if (active && sessionStorage.getItem('agent-ops-token') === token) setError('Unable to load organizations.'); }); }; const changed = () => { setOrganizationId(''); }; const logoutChanged = () => { setOrganizations([]); setOrganizationId(''); }; const clearTenantData = () => { void queryClient.cancelQueries(); queryClient.clear(); }; window.addEventListener('auth:session-restored', load); window.addEventListener('auth:unauthorized', logoutChanged); window.addEventListener('organization:changed', changed); window.addEventListener('organization:will-change', clearTenantData); return () => { active = false; window.removeEventListener('auth:session-restored', load); window.removeEventListener('auth:unauthorized', logoutChanged); window.removeEventListener('organization:changed', changed); window.removeEventListener('organization:will-change', clearTenantData); }; }, [queryClient]);
-  async function switchOrganization(id: string) {
-    if (!id || id === organizationId) return;
-    setError('');
-    try {
-      await selectOrganization(id);
-      setOrganizationId(id);
-      window.dispatchEvent(new Event('organization:changed'));
-    } catch { setError('Unable to switch organizations. Your current session was retained.'); }
-  }
-  return <div className="flex min-h-screen">{hasToken() && <aside className="w-56 bg-slate-900 p-6 text-white"><h1 className="mb-8 text-xl font-bold">Agent Ops</h1><nav className="grid gap-3"><NavLink to={paths.board} className="rounded px-3 py-2 hover:bg-slate-700">Board</NavLink><NavLink to={paths.waves} className="rounded px-3 py-2 hover:bg-slate-700">Waves</NavLink><NavLink to={paths.runs} className="rounded px-3 py-2 hover:bg-slate-700">Runs</NavLink><NavLink to={paths.budgets} className="rounded px-3 py-2 hover:bg-slate-700">Budgets</NavLink><NavLink to={paths.alerts} className="rounded px-3 py-2 hover:bg-slate-700">Alert history</NavLink><NavLink to={paths.pricing} className="rounded px-3 py-2 hover:bg-slate-700">Model prices</NavLink><NavLink to={paths.insights} className="rounded px-3 py-2 hover:bg-slate-700">Insights</NavLink><NavLink to={appPaths.members} className="rounded px-3 py-2 hover:bg-slate-700">Members</NavLink><NavLink to={paths.repositories} className="rounded px-3 py-2 hover:bg-slate-700">Repository settings</NavLink><NavLink to={paths.health} className="rounded px-3 py-2 hover:bg-slate-700">Health</NavLink>{organizations.length > 0 && <label className="grid gap-1 text-sm">Organization<select aria-label="Organization" className="rounded border bg-slate-800 p-2" value={organizationId} onChange={(event) => void switchOrganization(event.target.value)}><option value="">Select organization</option>{organizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}</select></label>}{error && <p role="alert">{error}</p>}<button className="rounded px-3 py-2 text-left hover:bg-slate-700" onClick={() => { logout(); void queryClient.clear(); navigate(paths.login); }}>Sign out</button></nav></aside>}<main className="min-w-0 flex-1 p-6">{children}</main></div>;
+  useEffect(() => {
+    let active = true;
+    const load = () => { if (!hasToken()) return; const token = sessionStorage.getItem('agent-ops-token'); void listOrganizations().then(async (orgs) => { const session = await api.api.v1AuthSessionList(); if (!active || sessionStorage.getItem('agent-ops-token') !== token) return; setOrganizations(orgs); const id = session.data.organization_id ?? ''; const selected = orgs.find((item) => item.id === id); setOrganizationId(id); setOrganizationName(selected?.name ?? ''); if (id) void api.api.v1RepositoriesList().then((response) => { if (active) setRepositories((response.data.data ?? []) as Repository[]); }).catch(() => { if (active) setRepositories([]); }); }).catch(() => { if (active) setError('Unable to load organization.'); }); };
+    const reset = () => { setOrganizationId(''); setOrganizationName(''); setRepositories([]); };
+    const clear = () => { void queryClient.cancelQueries(); queryClient.clear(); };
+    const signout = () => { setOrganizations([]); reset(); };
+    window.addEventListener('auth:session-restored', load); window.addEventListener('auth:unauthorized', signout); window.addEventListener('organization:changed', load); window.addEventListener('organization:will-change', clear);
+    return () => { active = false; window.removeEventListener('auth:session-restored', load); window.removeEventListener('auth:unauthorized', signout); window.removeEventListener('organization:changed', load); window.removeEventListener('organization:will-change', clear); };
+  }, [queryClient]);
+  async function switchOrganization(id: string) { if (!id || id === organizationId) return; try { await selectOrganization(id); setOrganizationId(id); window.dispatchEvent(new Event('organization:changed')); } catch { setError('Unable to switch organizations. Your current session was retained.'); } }
+  useEffect(() => { if (hasToken()) void listOrganizations().then((items) => setOrganizations(items)).catch(() => undefined); }, []);
+  const authenticated = hasToken();
+  return <div className="min-h-screen md:flex">{authenticated && <><button className="m-3 rounded border p-2 md:hidden" aria-label="Open navigation" onClick={() => setDrawer(!drawer)}>☰</button><aside className={`${drawer ? 'block' : 'hidden'} fixed inset-0 z-20 w-72 bg-slate-900 p-6 text-white md:static md:block md:w-56 md:shrink-0`}><div className="mb-8 flex justify-between"><h1 className="text-xl font-bold">Agent Ops</h1><button aria-label="Close navigation" className="md:hidden" onClick={() => setDrawer(false)}>×</button></div><nav className="grid gap-2">{nav.map((item) => <NavLink key={item.label} to={item.to} onClick={() => setDrawer(false)} className={({ isActive }) => `rounded px-3 py-2 ${isActive ? 'bg-slate-700' : 'hover:bg-slate-700'}`}>{item.label}</NavLink>)}{organizations.length > 0 && <label className="mt-4 grid gap-1 text-sm">Organization<select aria-label="Organization" className="rounded border bg-slate-800 p-2" value={organizationId} onChange={(event) => void switchOrganization(event.target.value)}><option value="">Select organization</option>{organizations.map((org) => <option key={org.id} value={org.id}>{org.name}</option>)}</select></label>}</nav></aside><header className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b bg-white p-4"><strong aria-label="Current organization">{organizationName || 'Organization'}</strong><label>Repository<select aria-label="Repository" className="ml-2 max-w-48 rounded border p-2" value={repository} onChange={(event) => { setRepository(event.target.value); localStorage.setItem('agent-ops-repository', event.target.value); }}><option value="">All repositories</option>{repositories.map((item) => <option key={item.id} value={item.id}>{item.full_name}</option>)}</select></label><details><summary className="cursor-pointer">User menu</summary><button className="p-2" onClick={() => { logout(); void queryClient.clear(); navigate(paths.login); }}>Sign out</button></details>{error && <p role="alert">{error}</p>}</header></> }<main className="min-w-0 flex-1 p-6">{children}</main></div>;
 }

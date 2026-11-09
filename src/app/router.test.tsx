@@ -81,6 +81,8 @@ it('discovers organizations through the authenticated shell after session restor
   await screen.findByRole('heading', { name: 'Issue board' });
   expect(requests.some((request) => request.url?.endsWith('/organizations'))).toBe(true);
   expect(screen.getByLabelText('Organization')).toBeTruthy();
+  expect(screen.getByLabelText('Current organization').textContent).toBe('Organization A');
+  expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual(['Overview', 'Work', 'Usage', 'Settings']);
 });
 it('shows a failed login without reaching protected data', async () => {
   rejectLogin = true;
