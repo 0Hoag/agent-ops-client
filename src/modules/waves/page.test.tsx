@@ -128,7 +128,7 @@ describe('WavesPage', () => {
     await waitFor(() => expect(request.mock.calls.some(([config]) => config?.url === '/api/v1/workers/job-1/stop')).toBe(true));
     fireEvent.click(screen.getByRole('button', { name: 'Restart worker' }));
     await waitFor(() => expect(JSON.parse(request.mock.calls.find(([config]) => config?.url === '/api/v1/workers/restart')?.[0]?.data as string)).toEqual(input));
-    await waitFor(() => expect(screen.getByText('Worker job-1: queued')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Worker job-2: queued')).toBeTruthy());
      await waitFor(() => expect(FakeSocket.sockets.length).toBe(2));
      expect(FakeSocket.sockets[1].url).toContain('/job-2/logs');
   });
