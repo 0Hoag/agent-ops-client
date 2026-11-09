@@ -894,6 +894,23 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1AgentRunPricesMissingList
+     * @summary List models missing an effective price
+     * @request GET:/api/v1/agent-run-prices/missing
+     * @secure
+     */
+    v1AgentRunPricesMissingList: (params: RequestParams = {}) =>
+      this.http.request<ResponseSuccessResponse, any>({
+        path: `/api/v1/agent-run-prices/missing`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1AgentRunPricesPartialUpdate
      * @summary Update model price version
      * @request PATCH:/api/v1/agent-run-prices/{price_id}
