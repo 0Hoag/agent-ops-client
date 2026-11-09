@@ -358,6 +358,39 @@ export interface InsightLeadTimeMetric {
   unavailable?: number;
 }
 
+export interface InsightOverviewAttention {
+  kind?: string;
+  message?: string;
+  model?: string;
+  pr_number?: number;
+  repository_id?: string;
+  run_id?: string;
+}
+
+export interface InsightOverviewPeriod {
+  cache_hit_rate?: number;
+  cache_read_tokens?: number;
+  cache_savings_usd?: number;
+  cache_write_tokens?: number;
+  ci_first_pass_rate?: number;
+  cost_per_merged_pr?: number;
+  from?: string;
+  input_tokens?: number;
+  merged_prs?: number;
+  models_without_price?: string[];
+  output_tokens?: number;
+  rework_rate?: number;
+  runs?: number;
+  spend_usd?: number;
+  to?: string;
+}
+
+export interface InsightOverviewResponse {
+  attention?: InsightOverviewAttention[];
+  current?: InsightOverviewPeriod;
+  previous?: InsightOverviewPeriod;
+}
+
 export interface InsightResponse {
   cycle_time?: InsightCycleMetric;
   first_ci_success?: InsightFirstCIMetric;
@@ -1601,6 +1634,35 @@ export class Api<SecurityDataType extends unknown> {
         method: "PATCH",
         body: request,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1OverviewList
+     * @summary Get overview summary
+     * @request GET:/api/v1/overview
+     */
+    v1OverviewList: (
+      query: {
+        /** Inclusive UTC start date (YYYY-MM-DD) */
+        from: string;
+        /**
+         * Repository UUID
+         * @format uuid
+         */
+        repository_id?: string;
+        /** Inclusive UTC end date (YYYY-MM-DD) */
+        to: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<InsightOverviewResponse, ResponseErrorResponse>({
+        path: `/api/v1/overview`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
