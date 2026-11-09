@@ -1855,14 +1855,16 @@ export class Api<SecurityDataType extends unknown> {
      * @name V1RepositoriesSyncCreate
      * @summary Sync repository
      * @request POST:/api/v1/repositories/{repository_id}/sync
+     * @secure
      */
     v1RepositoriesSyncCreate: (
       repositoryId: string,
       params: RequestParams = {},
     ) =>
-      this.http.request<RepositorysettingsViewResponse, any>({
+      this.http.request<RepositorysettingsViewResponse, ResponseErrorResponse>({
         path: `/api/v1/repositories/${repositoryId}/sync`,
         method: "POST",
+        secure: true,
         ...params,
       }),
 
