@@ -1,18 +1,30 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { http } from '../../shared/http';
 import { WavesPage } from './page';
 
 const request = vi.spyOn(http, 'request');
+class FakeSocket {
+  static sockets: FakeSocket[] = [];
+  listeners: Record<string, ((event: MessageEvent<string>) => void)[]> = {};
+  closed = false;
+  constructor(public url: string) { FakeSocket.sockets.push(this); }
+  addEventListener(type: string, listener: (event: MessageEvent<string>) => void) { this.listeners[type] = [...(this.listeners[type] ?? []), listener]; }
+  removeEventListener(type: string, listener: (event: MessageEvent<string>) => void) { this.listeners[type] = (this.listeners[type] ?? []).filter((item) => item !== listener); }
+  close() { this.closed = true; }
+  emit(data: string) { for (const listener of this.listeners.message ?? []) listener({ data } as MessageEvent<string>); }
+}
 let currentOrg = 'org-a';
 const fixture = [{ id: 'a', name: 'Wave A', brief: 'First', state: 'todo' }, { id: 'b', name: 'Wave B', state: 'in_progress' }];
 function respond(data: unknown) { request.mockImplementation(async (config) => ({ data: config?.url === '/api/v1/auth/session' ? { organization_id: currentOrg, account_id: 'acct' } : config?.url?.includes('/members') ? { data: [{ account_id: 'acct', role: 'owner' }] } : { data }, status: 200, statusText: 'OK', headers: {}, config } as never)); }
 function setup() { const client = new QueryClient({ defaultOptions: { queries: { retry: false } } }); return render(<QueryClientProvider client={client}><WavesPage /></QueryClientProvider>); }
 
 describe('WavesPage', () => {
-  afterEach(() => { cleanup(); vi.clearAllMocks(); currentOrg = 'org-a'; });
+  afterEach(() => { cleanup(); vi.clearAllMocks(); FakeSocket.sockets = []; currentOrg = 'org-a'; });
+  beforeEach(() => { sessionStorage.setItem('agent-ops-token', 'test-token'); });
+  afterEach(() => { sessionStorage.clear(); });
   it('renders fixture waves in their states and creates a wave', async () => {
     respond(fixture);
     setup();
@@ -87,11 +99,13 @@ describe('WavesPage', () => {
     expect((screen.getByLabelText('Brief for Wave A') as HTMLTextAreaElement).value).toBe('Unsaved draft');
   });
   it('starts, refreshes, stops and restarts using the exact launcher request', async () => {
+    vi.stubGlobal('WebSocket', FakeSocket);
     const input = { wave: 'wave-1', branch: 'feature', worktree: '/tmp/worker', script: 'pnpm test', brief: 'Do work' };
     request.mockImplementation(async (config) => {
       if (config?.url === '/api/v1/auth/session') return { data: { organization_id: currentOrg, account_id: 'acct' }, status: 200, statusText: 'OK', headers: {}, config } as never;
-      if (config?.url === '/api/v1/organizations/org-a/members') return { data: { data: [{ account_id: 'acct', role: 'owner' }] }, status: 200, statusText: 'OK', headers: {}, config } as never;
-      if (config?.url === '/api/v1/workers/start' || config?.url === '/api/v1/workers/restart') return { data: { data: { ID: 'job-1', State: 'queued', Request: input } }, status: 200, statusText: 'OK', headers: {}, config } as never;
+      if (config?.url?.includes('/members')) return { data: { data: [{ account_id: 'acct', role: 'owner' }] }, status: 200, statusText: 'OK', headers: {}, config } as never;
+      if (config?.url === '/api/v1/workers/start') return { data: { data: { ID: 'job-1', State: 'queued', Request: input } }, status: 200, statusText: 'OK', headers: {}, config } as never;
+      if (config?.url === '/api/v1/workers/restart') return { data: { data: { ID: 'job-2', State: 'queued', Request: input } }, status: 200, statusText: 'OK', headers: {}, config } as never;
       if (config?.url === '/api/v1/workers/job-1') return { data: { data: { ID: 'job-1', State: 'running', Request: input } }, status: 200, statusText: 'OK', headers: {}, config } as never;
       return { data: { data: fixture }, status: 200, statusText: 'OK', headers: {}, config } as never;
     });
@@ -99,6 +113,14 @@ describe('WavesPage', () => {
     for (const field of Object.keys(input)) fireEvent.change(await screen.findByLabelText(`Worker ${field}`), { target: { value: input[field as keyof typeof input] } });
     fireEvent.click(screen.getByRole('button', { name: 'Start worker' }));
     expect(await screen.findByText('Worker job-1: queued')).toBeTruthy();
+    await waitFor(() => expect(FakeSocket.sockets.length).toBe(1));
+    expect(new URL(FakeSocket.sockets[0].url).pathname).toBe('/api/v1/workers/job-1/logs');
+    FakeSocket.sockets[0].emit(JSON.stringify({ type: 'worker.log', line: 'first emitted' }));
+    FakeSocket.sockets[0].emit(JSON.stringify({ type: 'worker.log', line: 'second emitted' }));
+    FakeSocket.sockets[0].emit(JSON.stringify({ type: 'worker.completed' }));
+    expect(await screen.findByText('second emitted')).toBeTruthy();
+    expect(screen.getByText('Worker completed.')).toBeTruthy();
+    expect(screen.getByLabelText('Worker logs').textContent?.indexOf('first emitted')).toBeLessThan(screen.getByLabelText('Worker logs').textContent?.indexOf('second emitted') ?? 0);
     expect(JSON.parse(request.mock.calls.find(([config]) => config?.url === '/api/v1/workers/start')?.[0]?.data as string)).toEqual(input);
     fireEvent.click(screen.getByRole('button', { name: 'Refresh status' }));
     expect(await screen.findByText('Worker job-1: running')).toBeTruthy();
@@ -106,7 +128,22 @@ describe('WavesPage', () => {
     await waitFor(() => expect(request.mock.calls.some(([config]) => config?.url === '/api/v1/workers/job-1/stop')).toBe(true));
     fireEvent.click(screen.getByRole('button', { name: 'Restart worker' }));
     await waitFor(() => expect(JSON.parse(request.mock.calls.find(([config]) => config?.url === '/api/v1/workers/restart')?.[0]?.data as string)).toEqual(input));
-    await waitFor(() => expect(screen.getByText('Worker job-1: queued')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Worker job-2: queued')).toBeTruthy());
+     await waitFor(() => expect(FakeSocket.sockets.length).toBe(2));
+     expect(FakeSocket.sockets[1].url).toContain('/job-2/logs');
+  });
+  it('closes the log socket on organization change and unmount', async () => {
+    vi.stubGlobal('WebSocket', FakeSocket);
+     request.mockImplementation(async (config) => ({ data: config?.url === '/api/v1/auth/session' ? { organization_id: currentOrg, account_id: 'acct' } : config?.url?.includes('/members') ? { data: [{ account_id: 'acct', role: 'owner' }] } : config?.url === '/api/v1/workers/start' ? { data: { ID: 'job-1', State: 'running' } } : config?.url === '/api/v1/workers/job-1' ? { data: { ID: 'job-1', State: 'running' } } : { data: fixture }, status: 200, statusText: 'OK', headers: {}, config } as never));
+    const view = setup();
+    fireEvent.change(await screen.findByLabelText('Worker wave'), { target: { value: 'wave-1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Start worker' }));
+    await waitFor(() => expect(FakeSocket.sockets.length).toBe(1));
+    currentOrg = 'org-b'; fireEvent(window, new Event('organization:will-change'));
+    await waitFor(() => expect(FakeSocket.sockets[0].closed).toBe(true));
+     fireEvent(window, new Event('organization:changed'));
+     await waitFor(() => expect(FakeSocket.sockets.length).toBe(1));
+    view.unmount();
   });
   it('hides worker actions from members and reports rejected worker actions', async () => {
     request.mockImplementation(async (config) => {
