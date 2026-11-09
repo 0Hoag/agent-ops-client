@@ -554,6 +554,48 @@ export interface WaveWave {
   updated_at?: string;
 }
 
+export interface WorkDetail {
+  item?: WorkItem;
+  runs?: WorkRun[];
+}
+
+export interface WorkItem {
+  author?: string;
+  ci_status?: string;
+  cost_usd?: number;
+  created_at?: string;
+  kind?: string;
+  last_activity?: string;
+  number?: number;
+  runs_count?: number;
+  state?: string;
+  title?: string;
+  tokens?: number;
+  updated_at?: string;
+  url?: string;
+}
+
+export interface WorkListResponse {
+  data?: WorkItem[];
+  meta?: WorkMeta;
+}
+
+export interface WorkMeta {
+  page?: number;
+  per_page?: number;
+  total?: number;
+}
+
+export interface WorkRun {
+  cache_hit?: boolean;
+  cost_usd?: number;
+  ended_at?: string;
+  id?: string;
+  model?: string;
+  started_at?: string;
+  tokens?: number;
+}
+
 export interface WorkerActionAudit {
   action?: string;
   actorID?: string;
@@ -1953,6 +1995,30 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @name V1WorkDetail
+     * @summary Get work detail
+     * @request GET:/api/v1/work/{kind}/{number}
+     */
+    v1WorkDetail: (
+      kind: string,
+      number: number,
+      query: {
+        /** Repository UUID */
+        repository_id: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<WorkDetail, any>({
+        path: `/api/v1/work/${kind}/${number}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name V1WorkersAuditHistoryList
      * @summary List worker action audit history
      * @request GET:/api/v1/workers/audit-history
@@ -2054,6 +2120,34 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<ResponseMessageResponse, any>({
         path: `/api/v1/workers/${workerId}/stop`,
         method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1WorkList
+     * @summary List repository work
+     * @request GET:/api/v1/work
+     */
+    v1WorkList: (
+      query: {
+        /** Page */
+        page?: number;
+        /** Title search */
+        q?: string;
+        /** Repository UUID */
+        repository_id: string;
+        /** State */
+        state?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.http.request<WorkListResponse, any>({
+        path: `/api/v1/work`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
