@@ -473,6 +473,22 @@ export interface RepositorysettingsListResponse {
   status?: number;
 }
 
+export interface RepositorysettingsTestRequest {
+  base_url?: string;
+  full_name?: string;
+  provider?: string;
+  token?: string;
+}
+
+export interface RepositorysettingsTestResponse {
+  data?: RepositorysettingsTestView;
+  status?: number;
+}
+
+export interface RepositorysettingsTestView {
+  project_name?: string;
+}
+
 export interface RepositorysettingsUpdateRequest {
   backfill_token?: string;
   gitlab_base_url?: string;
@@ -1776,6 +1792,28 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<RepositorysettingsViewResponse, ResponseErrorResponse>({
         path: `/api/v1/repositories/${repositoryId}`,
         method: "PATCH",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name V1RepositoriesTestCreate
+     * @summary Test repository provider access
+     * @request POST:/api/v1/repositories/test
+     * @secure
+     */
+    v1RepositoriesTestCreate: (
+      request: RepositorysettingsTestRequest,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<RepositorysettingsTestResponse, ResponseErrorResponse>({
+        path: `/api/v1/repositories/test`,
+        method: "POST",
         body: request,
         secure: true,
         type: ContentType.Json,
