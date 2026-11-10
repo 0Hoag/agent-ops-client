@@ -42,12 +42,13 @@ export async function selectOrganization(organizationId: string) {
   return selectedToken;
 }
 
-export async function validateSession() {
+export async function validateSession(onValidated?: (organizationId: string | undefined) => void) {
   const token = sessionStorage.getItem(tokenKey);
   if (!token) return false;
   try {
-    await authClient.api.v1AuthSessionList();
+    const session = await authClient.api.v1AuthSessionList();
     if (sessionStorage.getItem(tokenKey) !== token) throw new Error('Session changed during validation');
+    onValidated?.(session.data.organization_id);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {

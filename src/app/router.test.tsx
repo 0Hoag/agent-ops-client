@@ -81,6 +81,8 @@ it('discovers organizations through the authenticated shell after session restor
   await screen.findByRole('heading', { name: 'Issue board' });
   expect(requests.some((request) => request.url?.endsWith('/organizations'))).toBe(true);
   expect(screen.getByLabelText('Organization')).toBeTruthy();
+  expect(screen.getByLabelText('Current organization').textContent).toBe('Organization A');
+  expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual(['Overview', 'Work', 'Usage', 'Settings']);
 });
 it('shows a failed login without reaching protected data', async () => {
   rejectLogin = true;
@@ -175,7 +177,7 @@ it('does not render the next protected route using the previous route validation
   await screen.findByText('No repositories available.');
   requests.length = 0;
   rejectSession = true;
-  fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
+  fireEvent.click(screen.getByRole('link', { name: 'Work' }));
   await screen.findByRole('heading', { name: 'Sign in' });
   expect(requests.filter((request) => request.url?.endsWith('/auth/session')).map((request) => request.url)).toEqual(['/api/v1/auth/session']);
 });

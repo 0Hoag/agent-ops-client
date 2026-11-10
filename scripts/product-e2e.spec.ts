@@ -17,6 +17,7 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
     expect(body.meta.total).toBe(0);
   };
   try {
+    await page.setViewportSize({ width: 1280, height: 800 });
     for (const path of ['/board', '/runs', '/alerts']) {
       await page.goto(path);
       await expect(page.getByRole('heading', { name: 'Sign in', exact: true }), `anonymous route guard: ${path}`).toBeVisible();
@@ -41,25 +42,34 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
     expect(repositoryData).toHaveLength(1);
     expect(repositoryData[0].full_name).toBe('product/e2e');
     const board = responseFor('board');
-    await page.getByLabel('Repository', { exact: true }).selectOption(repositoryData[0].id);
+    await page.getByRole('main').getByLabel('Repository', { exact: true }).selectOption(repositoryData[0].id);
     await emptyResponse(await board);
     await expect(page.getByText('No issues on this board.', { exact: true })).toBeVisible();
+    await expect(page.getByLabel('Current organization', { exact: true })).toHaveText('Product E2E');
+    await expect(page.getByRole('main').getByLabel('Repository', { exact: true })).toHaveValue(repositoryData[0].id);
     await page.screenshot({ path: testInfo.outputPath('board.png'), fullPage: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await expect(page.getByRole('main').getByLabel('Repository', { exact: true })).toHaveValue(repositoryData[0].id);
+    await page.screenshot({ path: testInfo.outputPath('board-390.png'), fullPage: true });
+    await page.setViewportSize({ width: 1280, height: 800 });
 
     const runs = responseFor('agent-runs');
-    await page.getByRole('link', { name: 'Runs', exact: true }).click();
+    await page.getByRole('link', { name: 'Work', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Agent runs', exact: true })).toBeVisible();
     await emptyResponse(await runs);
     await expect(page.getByText('No runs recorded.', { exact: true })).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('runs.png'), fullPage: true });
 
     const alerts = responseFor('alerts/history');
-    await page.getByRole('link', { name: 'Alert history', exact: true }).click();
+    await page.getByRole('link', { name: 'Settings', exact: true }).click();
+    await page.getByRole('link', { name: 'Alerts', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Alert history', exact: true })).toBeVisible();
     await emptyResponse(await alerts);
     await expect(page.getByText('No alert history found.', { exact: true })).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('alerts.png'), fullPage: true });
     await expect(page.getByRole('alert')).toHaveCount(0);
+    await page.getByText('User menu', { exact: true }).click();
     await page.getByRole('button', { name: 'Sign out', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Sign in', exact: true })).toBeVisible();
     expect(errors).toEqual([]);
