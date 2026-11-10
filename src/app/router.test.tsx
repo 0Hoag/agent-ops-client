@@ -177,7 +177,7 @@ it('does not render the next protected route using the previous route validation
   await screen.findByText('No repositories available.');
   requests.length = 0;
   rejectSession = true;
-  fireEvent.click(screen.getByRole('link', { name: 'Runs' }));
+  fireEvent.click(screen.getByRole('link', { name: 'Work' }));
   await screen.findByRole('heading', { name: 'Sign in' });
   expect(requests.filter((request) => request.url?.endsWith('/auth/session')).map((request) => request.url)).toEqual(['/api/v1/auth/session']);
 });
