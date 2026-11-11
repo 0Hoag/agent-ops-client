@@ -13,6 +13,7 @@ import { registerBudgets } from './register-budgets';
 import { registerAlerts } from './register-alerts';
 import { registerWaves } from './register-waves';
 import { registerOverview } from './register-overview';
+import { registerWork } from './register-work';
 import { InvitationPage } from '../modules/members/InvitationPage';
 import { membersPaths } from '../modules/members/paths';
 import { LoginPage } from '../modules/auth/LoginPage';
@@ -53,6 +54,7 @@ export function AppRouter() {
   const health = registerHealth();
   const sessions = registerSessions();
   const overview = registerOverview();
+  const work = registerWork();
   const board = registerBoard();
   const runs = registerRuns();
   const insights = registerInsights();
@@ -64,5 +66,5 @@ export function AppRouter() {
   const waves = registerWaves();
   const location = useLocation();
   if (location.pathname === sessions.path) return <Routes><Route path={sessions.path} element={<Protected>{sessions.element}</Protected>} /></Routes>;
-  return <Routes>{process.env.NODE_ENV !== 'production' && <Route path="/ui" element={<UiShowcase />} />}<Route path="/insights" element={<Navigate to={insights.path} replace />} /><Route path={overview.path} element={<Protected>{overview.element}</Protected>} /><Route path={paths.login} element={<LoginPage />} /><Route path={membersPaths.invite} element={<Protected><InvitationPage /></Protected>} /><Route path={paths.advanced} element={<Protected><SettingsPage /></Protected>} /><Route path={members.path} element={<Protected>{members.element}</Protected>} /><Route path={repositories.path} element={<Protected>{repositories.element}</Protected>} /><Route path={pricing.path} element={<Protected>{pricing.element}</Protected>} /><Route path={budgets.path} element={<Protected>{budgets.element}</Protected>} /><Route path={alerts.path} element={<Protected>{alerts.element}</Protected>} /><Route path={health.path} element={<Protected>{health.element}</Protected>} /><Route path={waves.path} element={<Protected>{waves.element}</Protected>} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.board} replace />} /></Routes>;
+  return <Routes><Route path={work.path} element={<Protected>{work.element}</Protected>} />{process.env.NODE_ENV !== 'production' && <Route path="/ui" element={<UiShowcase />} />}<Route path="/insights" element={<Navigate to={insights.path} replace />} /><Route path={overview.path} element={<Protected>{overview.element}</Protected>} /><Route path={paths.login} element={<LoginPage />} /><Route path={membersPaths.invite} element={<Protected><InvitationPage /></Protected>} /><Route path={paths.advanced} element={<Protected><SettingsPage /></Protected>} /><Route path={members.path} element={<Protected>{members.element}</Protected>} /><Route path={repositories.path} element={<Protected>{repositories.element}</Protected>} /><Route path={pricing.path} element={<Protected>{pricing.element}</Protected>} /><Route path={budgets.path} element={<Protected>{budgets.element}</Protected>} /><Route path={alerts.path} element={<Protected>{alerts.element}</Protected>} /><Route path={health.path} element={<Protected>{health.element}</Protected>} /><Route path={waves.path} element={<Protected>{waves.element}</Protected>} /><Route path={board.path} element={<Protected>{board.element}</Protected>} /><Route path={runs.path} element={<Protected>{runs.element}</Protected>} /><Route path={insights.path} element={<Protected>{insights.element}</Protected>} /><Route path="*" element={<Navigate to={paths.board} replace />} /></Routes>;
 }

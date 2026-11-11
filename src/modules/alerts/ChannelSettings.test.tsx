@@ -12,14 +12,14 @@ function mount(organizationId = 'org-a') {
 function setup(role = 'owner', channels: { kind: string; enabled: boolean; slack_webhook_url_env_ref?: string }[] = []) {
   vi.spyOn(api.api, 'v1AuthSessionList').mockResolvedValue({ data: { account_id: 'acct' } } as never);
   vi.spyOn(api.api, 'v1OrganizationsMembersList').mockResolvedValue({ data: { data: [{ account_id: 'acct', role }] } } as never);
-  vi.spyOn(api.api, 'v1AlertsChannelsList').mockResolvedValue({ data: channels } as never);
+  vi.spyOn(api.api, 'v1AlertsChannelsList').mockResolvedValue({ data: { status: 200, data: channels } } as never);
 }
 describe('notification channel settings', () => {
   afterEach(() => { cleanup(); vi.restoreAllMocks(); });
   it('creates, edits, toggles, and deletes environment references without exposing values', async () => {
     setup();
     let saved: { kind: string; enabled: boolean; slack_webhook_url_env_ref?: string }[] = [];
-    vi.spyOn(api.api, 'v1AlertsChannelsList').mockImplementation(async () => ({ data: saved } as never));
+    vi.spyOn(api.api, 'v1AlertsChannelsList').mockImplementation(async () => ({ data: { status: 200, data: saved } } as never));
     vi.spyOn(api.api, 'v1AlertsChannelsCreate').mockImplementation(async (body) => { saved = [{ kind: body.kind ?? '', enabled: body.enabled ?? false, slack_webhook_url_env_ref: body.slack_webhook_url_env_ref }]; return { data: saved[0] } as never; });
     const update = vi.spyOn(api.api, 'v1AlertsChannelsUpdate').mockImplementation(async (kind, body) => { saved = [{ kind, enabled: body.enabled ?? false, slack_webhook_url_env_ref: body.slack_webhook_url_env_ref }]; return { data: saved[0] } as never; });
     const remove = vi.spyOn(api.api, 'v1AlertsChannelsDelete').mockImplementation(async () => { saved = []; return {} as never; });

@@ -64,7 +64,7 @@ it.each(['/usage', '/runs', '/insights'])('opens Usage instead of legacy aggrega
   expect(screen.getByTestId('location').textContent).toBe('/usage');
   expect(screen.queryByText('Run aggregates')).toBeNull();
   expect(screen.getByRole('link', { name: 'Usage' }).getAttribute('href')).toBe('/usage');
-  expect(screen.getByRole('link', { name: 'Work' }).getAttribute('href')).toBe('/board');
+  expect(screen.getByRole('link', { name: 'Work' }).getAttribute('href')).toBe('/work');
 });
 
 it.each(['/board', '/runs', '/insights', '/usage'])('denies missing sessions and clears cached data: %s', async (path) => {
