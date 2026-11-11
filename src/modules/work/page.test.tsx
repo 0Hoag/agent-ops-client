@@ -78,6 +78,31 @@ describe('WorkPage', () => {
     })).toBe(true);
   });
 
+  it('requests no work before repository selection, including filter changes', async () => {
+    setup();
+    await screen.findByRole('option', { name: 'acme/app' });
+    const workRequests = () => request.mock.calls.filter(([config]) => new URL(config.url!, 'http://localhost').pathname.startsWith('/api/v1/work'));
+    expect(workRequests()).toHaveLength(0);
+    expect(screen.queryByText('Loading work…')).toBeNull();
+    fireEvent.change(screen.getByLabelText('Search work'), { target: { value: 'login' } });
+    fireEvent.change(screen.getByLabelText('Status'), { target: { value: 'open' } });
+    expect(screen.getByText('Select a repository to view its work.')).toBeTruthy();
+    expect(screen.queryByText('Loading work…')).toBeNull();
+    expect(workRequests()).toHaveLength(0);
+    await selectRepository();
+    fireEvent.click(await screen.findByRole('button', { name: 'Fix login' }));
+    expect(await screen.findByText('model-x')).toBeTruthy();
+    expect(workRequests().map(([config]) => config.url)).toEqual([
+      '/api/v1/work?repository_id=repo-1&state=open&q=login',
+      '/api/v1/work/issue/7?repository_id=repo-1',
+    ]);
+    fireEvent.change(screen.getByLabelText('Repository'), { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText('Search work'), { target: { value: 'docs' } });
+    expect(screen.getByText('Select a repository to view its work.')).toBeTruthy();
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(workRequests()).toHaveLength(2);
+  });
+
   it('shows repository guidance and explicit empty work', async () => {
     setup({ items: [] });
     expect(screen.getByText('Select a repository to view its work.')).toBeTruthy();
