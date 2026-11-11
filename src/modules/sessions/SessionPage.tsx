@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Card } from '../../shared/ui';
-import { mergeRequestUrl, money, readable, relative, total } from './format';
+import { mergeRequestUrl, money, readable, total } from './format';
+import { ProductTerms, RelativeTime } from '../../shared/ui/ProductTerms';
 import { useRepositories, useSession, useSessionOrganization } from './services';
 import { Timeline } from './Timeline';
 import { SetupLinks } from '../../shared/ui/SetupLinks';
@@ -30,7 +31,8 @@ function Detail({ organizationId }: { organizationId: string }) {
   return <section className="min-w-0 space-y-5" style={{ color: 'var(--text)', overflowWrap: 'anywhere' }}>
     <header><h1 className="text-2xl font-semibold">Session detail</h1><p className="mt-2 text-xl">{money(total(runs.map((run) => run.cost_usd)))} · USD</p><p>Actual recorded cost across {runs.length} {runs.length === 1 ? 'run' : 'runs'} in this session; not an estimate.</p></header>
     <a href="/usage" className="underline">Back to Usage</a>
-    <Card><p>{readable(first.harness, 'Sync tool name')} · {readable(first.branch, 'Sync branch name')} · <time title={first.started_at && Number.isFinite(Date.parse(first.started_at)) ? new Date(first.started_at).toLocaleString() : undefined}>{relative(first.started_at)}</time></p>
+    <ProductTerms />
+    <Card><p>{readable(first.harness, 'Sync tool name')} · {readable(first.branch, 'Sync branch name')} · <RelativeTime value={first.started_at} /></p>
       <h2 className="mt-3 font-semibold">Linked merge requests</h2>
       {repositories.isPending && <p role="status">Loading repository metadata…</p>}
       {repositories.isError && <p role="alert">Unable to load repository metadata. <button onClick={() => void repositories.refetch()}>Retry</button></p>}

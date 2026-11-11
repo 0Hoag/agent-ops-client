@@ -26,11 +26,11 @@ describe('RunsPage', () => {
 
   it('formats server VND and subscription billed/equivalent USD independently', () => {
     const row = { billed_cost_usd: 0, equivalent_cost_usd: 1.25, cost_vnd: 31250, cost_usd: 0 };
-    expect(formatRunCost(row, 'USD')).toBe('$0.0000 (equivalent API USD $1.2500)');
+    expect(formatRunCost(row, 'USD')).toBe('$0.00 (equivalent API USD $1.25)');
     expect(formatRunCost(row, 'VND')).toBe('VND 31,250');
-    expect(formatRunCost({ equivalent_cost_usd: 1.25 }, 'VND')).toBe('Unknown');
-    expect(formatRunCost({}, 'USD')).toBe('Unknown');
-    expect(formatRunCost({ cost_usd: 2.5 }, 'USD')).toBe('$2.5000');
+    expect(formatRunCost({ equivalent_cost_usd: 1.25 }, 'VND')).toBe('VND cost unavailable — check currency pricing in Settings');
+    expect(formatRunCost({}, 'USD')).toBe('Cost unavailable — check model pricing in Settings');
+    expect(formatRunCost({ cost_usd: 2.5 }, 'USD')).toBe('$2.50');
   });
 
   it('renders loading, empty, and error states', async () => {
@@ -56,11 +56,15 @@ describe('RunsPage', () => {
   });
 
   it('renders successful aggregate API rows', async () => {
-    response([{ id: 'x', wave: 'W3', harness: 'Real API Worker', model: 'm', issue_numbers: [30] }], { page: 1, per_page: 20, total: 1 });
+    response([{ id: '09e658f2-36c8-4b43-b913-7aa95640af16', wave: 'W3', harness: 'Claude', branch: 'feat/copy', model: 'm', started_at: '2026-11-11T10:00:00Z', issue_numbers: [30] }], { page: 1, per_page: 20, total: 1 });
     setup();
-    const row = await screen.findByRole('row', { name: /Real API Worker/ });
+    const row = await screen.findByRole('row', { name: /Claude · feat\/copy/ });
     expect(row.textContent).toContain('W3');
     expect(row.textContent).toContain('m');
+    expect(row.textContent).not.toContain('09e658f2');
+    expect(screen.getByTitle('Nov 11, 2026, 10:00:00 AM UTC')).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: 'Tool' })).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: 'Batch' })).toBeTruthy();
   });
 
   it('uses server cost_vnd and explicitly labels subscription equivalent API USD', async () => {
@@ -73,14 +77,15 @@ describe('RunsPage', () => {
     response([{ id: 'filtered', wave: 'W11', harness: 'h', model: 'm' }], { page: 2, per_page: 10, total: 25 });
     setup();
     fireEvent.change(screen.getByRole('textbox', { name: 'Repository' }), { target: { value: 'repo-1' } });
-    fireEvent.change(screen.getByRole('textbox', { name: 'Wave' }), { target: { value: 'W11' } });
-    fireEvent.change(screen.getByRole('textbox', { name: 'Harness' }), { target: { value: 'h' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Batch' }), { target: { value: 'W11' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Tool' }), { target: { value: 'h' } });
     fireEvent.change(screen.getByRole('textbox', { name: 'Model' }), { target: { value: 'm' } });
     fireEvent.change(screen.getByRole('textbox', { name: 'Issue' }), { target: { value: '12' } });
     fireEvent.change(screen.getByRole('textbox', { name: 'Pull request' }), { target: { value: '34' } });
     fireEvent.change(screen.getByRole('textbox', { name: 'Started after' }), { target: { value: '2025-01-01' } });
     fireEvent.change(screen.getByRole('textbox', { name: 'Started before' }), { target: { value: '2025-02-01' } });
-    await screen.findByRole('row', { name: /filtered/ });
+    const row = await screen.findByRole('row', { name: /h · Default branch/ });
+    expect(row.textContent).not.toContain('filtered');
     const config = requestConfig() as { url: string; params: Record<string, unknown> };
     expect(config.url).toBe('/api/v1/agent-runs?page=1&per_page=20&repository_id=repo-1&wave=W11&harness=h&model=m&issue_number=12&pr_number=34&started_after=2025-01-01&started_before=2025-02-01');
     expect(await screen.findByText(/Page 2 · 25 runs/)).toBeTruthy();

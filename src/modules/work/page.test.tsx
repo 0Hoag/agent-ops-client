@@ -67,7 +67,8 @@ describe('WorkPage', () => {
     const row = (await screen.findByRole('button', { name: 'Fix login' })).closest('tr')!;
     expect(within(row).getByText('open / passed')).toBeTruthy();
     expect(within(row).getByText('Sam')).toBeTruthy();
-    expect(within(row).getByText(/\d+d ago/)).toBeTruthy();
+    expect(within(row).getByText(/\d+ days ago/)).toBeTruthy();
+    expect(within(row).getByTitle('Jan 1, 2025, 12:00:00 AM UTC')).toBeTruthy();
     expect(within(row).getByText('2')).toBeTruthy();
     expect(within(row).getByText('$1.25')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Update docs' })).toBeTruthy();
@@ -78,7 +79,7 @@ describe('WorkPage', () => {
     fireEvent.change(screen.getByLabelText('Status'), { target: { value: 'open' } });
     fireEvent.click(await screen.findByRole('button', { name: 'Fix login' }));
     expect(await screen.findByText('model-x')).toBeTruthy();
-    expect(screen.getByText('$0.50 · 120 tokens')).toBeTruthy();
+    expect(screen.getByText('$0.50 USD · 120 tokens')).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Open in GitLab' }).getAttribute('href')).toBe(item.url);
     expect(request.mock.calls.some(([config]) => {
       const url = new URL(config.url!, 'http://localhost');

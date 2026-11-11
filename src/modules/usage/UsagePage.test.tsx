@@ -42,7 +42,7 @@ describe('Usage', () => {
     const table = screen.getByRole('table');
     expect(within(table).getByText('$6.00')).toBeTruthy();
     expect(within(table).getByText('4K')).toBeTruthy();
-    expect(within(table).getByRole('link', { name: /Claude · feat\/usage ·/ }).closest('td')?.getAttribute('title')).toBe(new Date(run.started_at).toLocaleString());
+    expect(within(table).getByRole('link', { name: /Claude · feat\/usage ·/ }).closest('td')?.getAttribute('title')).toBe('Nov 11, 2026, 10:00:00 AM UTC');
     expect(table.textContent).not.toContain('private-');
     expect(screen.queryByText('Run aggregates')).toBeNull();
     fireEvent.change(screen.getByLabelText('Split by'), { target: { value: 'Tool' } });
@@ -95,7 +95,7 @@ describe('Usage', () => {
     await screen.findByText(/Spend unavailable — sync usage/);
     const daily = screen.getByRole('heading', { name: 'Spend by day' }).parentElement!;
     expect(within(daily).getByText('Nov 11, 2026')).toBeTruthy();
-    expect(within(daily).getByText('Unavailable — check model pricing in Settings')).toBeTruthy();
+    expect(within(daily).getByText('Cost unavailable — check model pricing in Settings')).toBeTruthy();
     expect(within(daily).queryByText('$0.00')).toBeNull();
   });
   it('preserves an actual numeric zero from the API', async () => {

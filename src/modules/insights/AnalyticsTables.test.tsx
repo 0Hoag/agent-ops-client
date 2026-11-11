@@ -9,9 +9,9 @@ it('does not turn missing or zero denominators into measured zero; genuine zero 
   const costs = within(screen.getByRole('region', { name: 'Cost and cache trends' })).getAllByRole('row');
   expect(within(costs[1]).getAllByRole('cell')[3].textContent).toBe('Unavailable (denominator unavailable)');
   expect(within(costs[2]).getAllByRole('cell')[3].textContent).toBe('0.0% (denominator unavailable)');
-  expect(screen.getAllByText('$0.0000').length).toBe(2);
+  expect(screen.getAllByText('$0.00').length).toBe(2);
   const delivery = within(screen.getByRole('region', { name: 'Delivery quality' })).getAllByRole('row');
-  expect(delivery.slice(1).map((row) => within(row).getAllByRole('cell')[1].textContent)).toEqual(['Unavailable', '$0.0000 equivalent API cost/item', 'Unavailable', '0.0%', 'Unavailable', 'Unavailable']);
+  expect(delivery.slice(1).map((row) => within(row).getAllByRole('cell')[1].textContent)).toEqual(['Unavailable', '$0.00 equivalent API cost/item', 'Unavailable', '0.0%', 'Unavailable', 'Unavailable']);
 });
 
 it('does not publish delivery rates or lead time as measured when history is incomplete', () => {

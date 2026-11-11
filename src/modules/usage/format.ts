@@ -1,14 +1,8 @@
 import type { AgentrunAgentRun, InsightAnalyticsBucket } from '../../shared/api/generated/Api';
+import { compact, relativeTime } from '../../shared/format';
+export { compact, relativeTime, money } from '../../shared/format';
 
-export const money = (value?: number) => value === undefined ? 'Unavailable — check model pricing in Settings' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(value);
-export const compact = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
 export function sum(values: (number | undefined)[]) { return values.length && values.every((value) => value !== undefined) ? values.reduce<number>((total, value) => total + value!, 0) : undefined; }
-export function relativeTime(value?: string, now = Date.now()) {
-  if (!value || !Number.isFinite(Date.parse(value))) return 'Time unavailable';
-  const hours = (Date.parse(value) - now) / 3600000;
-  const unit = Math.abs(hours) >= 24 ? 'day' : Math.abs(hours) >= 1 ? 'hour' : 'minute';
-  return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(Math.round(unit === 'day' ? hours / 24 : unit === 'hour' ? hours : hours * 60), unit);
-}
 export function sessionName(run: AgentrunAgentRun) { return `${run.harness || 'Agent'} · ${run.branch || 'Default branch'} · ${relativeTime(run.started_at)}`; }
 export function tokens(run: AgentrunAgentRun) {
   const total = sum([run.input_tokens, run.cached_input_tokens, run.cache_write_tokens, run.output_tokens]);

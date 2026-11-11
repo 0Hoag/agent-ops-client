@@ -1,5 +1,6 @@
 import { Card } from '../../shared/ui';
-import { compact, money, pricedSteps, readable, relative } from './format';
+import { compact, money, pricedSteps, readable } from './format';
+import { RelativeTime } from '../../shared/ui/ProductTerms';
 import { useTimeline } from './services';
 
 export function Timeline({ organizationId, runId }: { organizationId: string; runId?: string }) {
@@ -17,7 +18,7 @@ export function Timeline({ organizationId, runId }: { organizationId: string; ru
     const trend = observations ? hits / observations * 100 : undefined;
     return <li key={step.id ?? index}><Card>
       <div className="flex flex-wrap justify-between gap-2"><strong>Step {step.sequence ?? index + 1} · {readable(step.tool_name, 'Sync tool name')}</strong><span>{money(step.cost)} {maximum > 0 && step.cost === maximum && <mark style={{ background: 'var(--surface)', color: 'var(--warn)' }}>Highest cost</mark>}</span></div>
-      <p><time title={step.started_at && Number.isFinite(Date.parse(step.started_at)) ? new Date(step.started_at).toLocaleString() : undefined}>{relative(step.started_at)}</time></p>
+      <p><RelativeTime value={step.started_at} /></p>
       <p>Input {compact(step.input_tokens)} · Cached {compact(step.cached_input_tokens)} · Cache write {compact(step.cache_write_tokens)} · Output {compact(step.output_tokens)} · Reasoning {compact(step.reasoning_tokens)}</p>
       <p>Cache {step.cache_hit === undefined ? 'not reported — sync cache telemetry' : step.cache_hit ? 'hit' : 'miss'} · Cumulative hit rate {trend === undefined ? 'unavailable — sync cache telemetry' : `${Math.round(trend)}% (${hits}/${observations} reported steps)`}</p>
       {trend !== undefined && <meter className="w-full" aria-label={`Cache hit trend at step ${index + 1}`} min={0} max={100} value={trend}>{Math.round(trend)}%</meter>}
