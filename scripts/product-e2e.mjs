@@ -7,7 +7,8 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { chromium } from 'playwright';
 
-const pin = '4b554f6cb0a05c6bee65f790ebbad9255096294d';
+// Merged Work endpoints (#482) plus their real SQL count/pagination fix (#488).
+const pin = '9b6bad46cce57cc08c3b09b7665ffe495f67455f';
 const root = process.cwd();
 const artifacts = resolve(process.env.PRODUCT_E2E_EVIDENCE || '.agent-runs/product-e2e', `${Date.now()}-${process.pid}`);
 mkdirSync(artifacts, { recursive: true });
