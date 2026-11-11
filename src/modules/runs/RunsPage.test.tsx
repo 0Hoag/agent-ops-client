@@ -40,6 +40,7 @@ describe('RunsPage', () => {
     expect(screen.getByText('Loading runs…').textContent).toContain('Loading runs');
     resolve?.({ data: { data: [] } });
     expect((await screen.findByText('No runs recorded.')).textContent).toBe('No runs recorded.');
+    expect(screen.getByRole('link', { name: 'Send the first agent session' }).getAttribute('href')).toBe('/settings/advanced#agent-setup');
     expect(requestConfig().url).toBe('/api/v1/agent-runs/aggregate');
     view.unmount();
 

@@ -31,6 +31,7 @@ describe('BoardPage live lifecycle', () => {
     await screen.findByRole('option', { name: 'one/repo' });
     fireEvent.change(select, { target: { value: 'repo-1' } });
     await screen.findByText('No issues on this board.');
+    expect(screen.getByRole('link', { name: 'Connect a repository' }).getAttribute('href')).toBe('/settings/advanced#repositories');
     expect(subscribeMock).toHaveBeenLastCalledWith('repo-1', expect.any(Function));
     const invalidate = vi.spyOn(client, 'invalidateQueries');
     notify?.();

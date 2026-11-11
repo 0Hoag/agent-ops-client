@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 import { useQuery } from '@tanstack/react-query';
 import { alertOrganization, listAlertHistory } from './services/client';
 import { ThresholdSettings } from './ThresholdSettings';
@@ -23,6 +24,7 @@ export function AlertsPage() {
       {query.isPending && <p role="status">Loading alert history…</p>}
       {query.isError && <div role="alert">Unable to load alert history: {query.error.message}<button onClick={() => void query.refetch()}>Retry</button></div>}
       {query.data?.data.length === 0 && <p>No alert history found.</p>}
+      {query.data?.data.length === 0 && <SetupLinks />}
       {query.data?.data.map((item) => <article className="mb-3 border bg-white p-4" key={item.id}><h2 className="font-semibold">{item.rule || 'Alert'}</h2><p>{item.message}</p><p>{item.detectedAt} · {item.repository || '—'} · {item.subject || '—'}</p></article>)}
       <div className="flex gap-3"><button disabled={page <= 1 || query.isFetching} onClick={() => setPage((value) => value - 1)}>Previous</button><span>Page {page}</span><button disabled={query.isFetching || !query.data || page * perPage >= query.data.total} onClick={() => setPage((value) => value + 1)}>Next</button></div>
     </>}

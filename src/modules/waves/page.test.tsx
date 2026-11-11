@@ -65,6 +65,7 @@ describe('WavesPage', () => {
     respond([]);
     setup();
     expect(await screen.findByText('No waves found.')).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
     expect(screen.getByRole('region', { name: 'in_progress waves' })).toBeTruthy();
     expect(screen.getByRole('region', { name: 'done waves' })).toBeTruthy();
   });

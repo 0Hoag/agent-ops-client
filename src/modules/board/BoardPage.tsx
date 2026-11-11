@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 import { useQueryClient } from '@tanstack/react-query';
 import { ciLabel, groupIssues, statuses, useBoard, useRepositories } from './services/board';
 import { subscribeToBoard } from './services/liveBoard';
@@ -26,6 +27,7 @@ export function BoardPage() {
   return <section><header className="mb-5 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-2xl font-semibold">Issue board</h1><p className="text-sm text-slate-600">Repository work and linked pull request checks</p></div><label className="grid gap-1 text-sm">Repository{repositories.isError ? <span role="alert" className="text-rose-700">Unable to load repositories: {repositories.error.message}</span> : <select aria-label="Repository" className="min-w-64 rounded border bg-white p-2" value={repositoryId} onChange={(event) => { setRepositoryId(event.target.value); setPage(1); }} disabled={repositories.isPending || !repositories.data?.length}><option value="">Select a repository</option>{repositories.data?.map((repo) => <option key={repo.id} value={repo.id}>{repo.full_name}</option>)}</select>}</label></header>
     {repositories.isPending && <div aria-label="Loading repositories" className="grid grid-cols-2 gap-3 md:grid-cols-5">{statuses.map((status) => <div key={status} className="h-48 animate-pulse rounded bg-slate-200" />)}</div>}
     {!repositories.isPending && !repositories.isError && !repositories.data?.length && <p className="rounded bg-white p-6 text-slate-600">No repositories available.</p>}
+    {(repositories.data?.length === 0 || (repositoryId && board.data && allIssues.length === 0)) && <SetupLinks />}
     {repositoryId && board.isPending && <p role="status" className="p-6">Loading board…</p>}
     {repositoryId && board.isError && <p role="alert" className="rounded bg-rose-50 p-4 text-rose-800">Unable to load board: {board.error.message}</p>}
     {repositoryId && board.data && allIssues.length === 0 && <p className="rounded bg-white p-6 text-slate-600">No issues on this board.</p>}

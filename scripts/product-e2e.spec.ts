@@ -78,8 +78,7 @@ test('anonymous route guard and real login, board, usage, alerts', async ({ page
     expect(analyticsData.buckets).toEqual([]);
     expect(analyticsData.period).toBe('daily');
     expect(analyticsData.group_by).toBe('harness');
-    await expect(page.getByText('No usage in this period. Choose a wider date range or connect a repository.', { exact: true })).toHaveCount(2);
-    await expect(page.getByRole('link', { name: 'connect a repository', exact: true }).first()).toHaveAttribute('href', '/repositories');
+    await expect(page.getByText('No usage in this period. Choose a wider date range or complete setup.', { exact: true })).toHaveCount(2);
     await page.screenshot({ path: testInfo.outputPath('usage.png'), fullPage: true });
 
     const legacyRuns = responseFor('agent-runs');
@@ -87,8 +86,23 @@ test('anonymous route guard and real login, board, usage, alerts', async ({ page
     await expect(page).toHaveURL(/\/usage$/);
     await expect(page.getByRole('heading', { name: 'Usage', exact: true })).toBeVisible();
     await emptyResponse(await legacyRuns);
-    await expect(page.getByText('No usage in this period. Choose a wider date range or connect a repository.', { exact: true })).toHaveCount(2);
+    await expect(page.getByText('No usage in this period. Choose a wider date range or complete setup.', { exact: true })).toHaveCount(2);
     await page.screenshot({ path: testInfo.outputPath('runs.png'), fullPage: true });
+
+    for (const [name, hash, tab] of [
+      ['Connect a repository', 'repositories', 'Repositories'],
+      ['Send the first agent session', 'agent-setup', 'Agent setup'],
+      ['Set model prices', 'model-prices', 'Model prices'],
+    ]) {
+      const links = page.getByRole('link', { name, exact: true });
+      await expect(links).toHaveCount(2);
+      for (const link of await links.all()) await expect(link).toHaveAttribute('href', `/settings/advanced#${hash}`);
+      await links.first().click();
+      await expect(page).toHaveURL(new RegExp(`/settings/advanced#${hash}$`));
+      await expect(page.getByRole('tab', { name: tab, exact: true })).toHaveAttribute('aria-selected', 'true');
+      await page.getByRole('link', { name: 'Usage', exact: true }).click();
+      await expect(page.getByText('No usage in this period. Choose a wider date range or complete setup.', { exact: true })).toHaveCount(2);
+    }
 
     const alerts = responseFor('alerts/history');
     await page.getByRole('link', { name: 'Settings', exact: true }).click();

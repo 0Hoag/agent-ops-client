@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { BudgetRequest } from '../../shared/api/generated/Api';
 import { budgetSession, createBudget, deleteBudget, listBudgets, updateBudget } from './services/client';
@@ -36,7 +37,7 @@ export function BudgetsPage() {
     const input = { ...draft, ends_at: draft.ends_at || '', repository_id: draft.repository_id?.trim() || '', wave: draft.wave?.trim() || '' };
     if (editing) update.mutate({ id: editing, input }); else create.mutate(input);
   };
-  return <section><h1 className="mb-5 text-2xl font-semibold">Budgets</h1>{!org && !sessionError && <p role="status">Select an organization to view budgets.</p>}{sessionError && <p role="alert">Unable to load budget permissions. <button onClick={() => setAttempt((value) => value + 1)}>Retry</button></p>}{org && query.isPending && <p role="status">Loading budgets…</p>}{org && query.isError && <p role="alert">Unable to load budgets: {query.error.message} <button onClick={() => void query.refetch()}>Retry</button></p>}{query.data?.length === 0 && <p>No budgets configured.</p>}
+  return <section><h1 className="mb-5 text-2xl font-semibold">Budgets</h1>{!org && !sessionError && <p role="status">Select an organization to view budgets.</p>}{sessionError && <p role="alert">Unable to load budget permissions. <button onClick={() => setAttempt((value) => value + 1)}>Retry</button></p>}{org && query.isPending && <p role="status">Loading budgets…</p>}{org && query.isError && <p role="alert">Unable to load budgets: {query.error.message} <button onClick={() => void query.refetch()}>Retry</button></p>}{query.data?.length === 0 && <><p>No budgets configured.</p><SetupLinks /></>}
     {query.data?.map((item) => <article className="mb-3 border bg-white p-4" key={item.id}><p>{item.starts_at} – {item.ends_at || 'No end date'}</p><p>Repository: {item.repository_id || 'All repositories'}; Wave: {item.wave || 'All waves'}</p><p>Token limit: {item.token_limit ?? '—'}; USD limit: {item.usd_limit ?? '—'}</p>{canEdit && <><button onClick={() => { setDraft({ starts_at: item.starts_at?.slice(0, 10), ends_at: item.ends_at?.slice(0, 10), repository_id: item.repository_id, wave: item.wave, token_limit: item.token_limit, usd_limit: item.usd_limit }); setEditing(item.id ?? ''); }}>Edit</button><button className="ml-3" disabled={remove.isPending} onClick={() => item.id && remove.mutate(item.id)}>Delete</button></>}</article>)}
     {validation && <p role="alert">{validation}</p>}
     {org && !canEdit && <p>Read-only: only organization owners and admins can edit budgets.</p>}

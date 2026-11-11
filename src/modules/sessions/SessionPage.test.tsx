@@ -34,6 +34,12 @@ beforeEach(() => {
   });
 });
 afterEach(() => { cleanup(); vi.clearAllMocks(); });
+it('links an unavailable session to ingestion and live setup progress', async () => {
+  mode = 'empty'; setup();
+  await screen.findByText(/not available in the current organization/);
+  expect(screen.getByRole('link', { name: 'Send the first agent session' }).getAttribute('href')).toBe('/settings/advanced#agent-setup');
+  expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
+});
 it('opens detail from Usage using internal identifiers only', () => {
   render(<Sessions runs={[run]} />);
   expect(screen.getByRole('link').getAttribute('href')).toBe('/usage/sessions?run=private-run&repository=private-repo');

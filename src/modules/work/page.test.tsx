@@ -46,6 +46,14 @@ async function selectRepository() {
 }
 
 describe('WorkPage', () => {
+  it('links missing setup steps without changing work selection', async () => {
+    setup({ items: [] });
+    await selectRepository();
+    await screen.findByText('No work found.');
+    expect(screen.getByRole('link', { name: 'Send the first agent session' }).getAttribute('href')).toBe('/settings/advanced#agent-setup');
+    expect(screen.getByRole('link', { name: 'Connect a repository' }).getAttribute('href')).toBe('/settings/advanced#repositories');
+    expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
+  });
   afterEach(() => {
     cleanup();
     clients.splice(0).forEach((client) => client.clear());
