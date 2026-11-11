@@ -45,26 +45,26 @@ describe('InsightsPage generated transport', () => {
     const sum = (key: 'input' | 'cached' | 'output' | 'reasoning' | 'write' | 'billed' | 'lines') => observations.map((row) => row[key]).reduce((a, b) => a + b);
     const rows = within(screen.getByRole('region', { name: 'Cost and cache trends' })).getAllByRole('row');
     expect(within(rows[1]).getAllByRole('cell').map((cell) => cell.textContent)).toEqual([
-      '2026-10-01 · runner-a', `$${sum('billed').toFixed(4)}`, `$${cost.toFixed(4)}`,
+      'Oct 1, 2026, 12:00:00 AM UTC · runner-a', `$${sum('billed').toFixed(2)}`, `$${cost.toFixed(2)}`,
       `${(sum('cached') / sum('input') * 100).toFixed(1)}% (input tokens)`,
       `${sum('input')} / ${sum('cached')} / ${sum('output')} / ${sum('reasoning')} / ${sum('write')}`, String(observations.length), String(excludedObservations.filter((row) => row.price === undefined).length),
     ]);
-    expect(screen.getByText(/Unknown prices:/).textContent).toContain(`Unknown prices: ${excludedObservations.length}.`);
+    expect(screen.getByText(/Missing prices:/).textContent).toContain(`Missing prices: ${excludedObservations.length}. Set missing model prices in Settings.`);
     const delivery = within(screen.getByRole('region', { name: 'Delivery quality' }));
     const cells = delivery.getAllByRole('row').slice(1).map((row) => within(row).getAllByRole('cell').map((cell) => cell.textContent));
     const sent = observations.filter((row) => row.sentBack).length;
     const green = observations.filter((row) => row.green).length;
     const median = observations.map((row) => row.lead).sort((a, b) => a - b).reduce((a, b) => a + b) / observations.length;
     expect(cells).toEqual([
-      ['Cost per merged PR', `$${(cost / observations.length).toFixed(4)} equivalent API cost/item`, `${observations.length} items · ${observations.length} eligible · ${excludedObservations.length} unavailable`],
-      ['Cost per closed issue', `$${(cost / closedIssues.length).toFixed(4)} equivalent API cost/item`, `${closedIssues.length} items · ${closedIssues.length} eligible · 0 unavailable`],
-      ['Send-back rate', `${(sent / observations.length * 100).toFixed(1)}%`, `${sent} / ${observations.length}`],
-      ['First CI success', `${(green / observations.length * 100).toFixed(1)}%`, `${green} / ${observations.length}`],
+      ['Cost per merged PR', `$${(cost / observations.length).toFixed(2)} equivalent API cost/item`, `${observations.length} items · ${observations.length} eligible · ${excludedObservations.length} unavailable`],
+      ['Cost per closed issue', `$${(cost / closedIssues.length).toFixed(2)} equivalent API cost/item`, `${closedIssues.length} items · ${closedIssues.length} eligible · 0 unavailable`],
+      ['Rework rate', `${(sent / observations.length * 100).toFixed(1)}%`, `${sent} / ${observations.length}`],
+      ['First-pass CI success', `${(green / observations.length * 100).toFixed(1)}%`, `${green} / ${observations.length}`],
       ['Issue-to-merge lead time', `${(median / 86400).toFixed(1)} days median`, `${observations.length} completed · ${excludedObservations.length} unavailable`],
-      ['runner-a cost / observed changed line (USD/line)', `$${(cost / sum('lines')).toFixed(4)}`, `${observations.length} eligible · ${sum('lines')} observed lines · ${excludedObservations.filter((row) => row.lines === undefined).length} excluded`],
+      ['runner-a cost / observed changed line (USD/line)', `$${(cost / sum('lines')).toFixed(3)}`, `${observations.length} eligible · ${sum('lines')} observed lines · ${excludedObservations.filter((row) => row.lines === undefined).length} excluded`],
     ]);
     expect(delivery.getByText(/History unavailable:/).textContent).toContain(`${excludedObservations.filter((row) => row.history === undefined).length}.`);
-    const legacyRate = screen.getByRole('heading', { name: 'Send-back rate' });
+    const legacyRate = screen.getByRole('heading', { name: 'Rework rate' });
     expect(legacyRate.parentElement?.textContent).toContain('50.0%');
     expect(screen.getByText('N/A — no eligible records')).toBeTruthy();
     expect(screen.getByText('N/A — no completed issues')).toBeTruthy();
@@ -79,7 +79,7 @@ describe('InsightsPage generated transport', () => {
     fireEvent.change(screen.getByLabelText('Period'), { target: { value: 'weekly' } });
     for (const group of ['model', 'wave', 'area', 'harness']) {
       fireEvent.change(screen.getByLabelText('Group by'), { target: { value: group } });
-      await screen.findByText(`Cost and cache trends (weekly, grouped by ${group})`);
+      await screen.findByText(`Cost and cache trends (weekly, grouped by ${group === 'harness' ? 'tool' : group === 'wave' ? 'batch' : group})`);
       expect(requests.mock.calls.some(([config]) => {
         const url = new URL(config.url!, 'http://fixture');
         return url.pathname.endsWith('/analytics') && ['repository_id=repo-1', 'from=2026-09-01', 'to=2026-10-31', 'period=weekly', `group_by=${group}`].every((part) => url.search.includes(part));
@@ -103,9 +103,9 @@ describe('InsightsPage generated transport', () => {
     cleanup(); mode = 'empty'; setup();
     await screen.findByText('No analytics observations for this period.');
     expect(screen.getByRole('link', { name: 'Set model prices' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
-    expect(screen.getByText('History incomplete; affected metrics may be unavailable.')).toBeTruthy();
+    expect(screen.getByText('History incomplete; sync delivery history to calculate affected metrics.')).toBeTruthy();
     expect(screen.getAllByText('Unavailable').length).toBeGreaterThan(4);
-    expect(screen.queryByText('$0.0000')).toBeNull();
+    expect(screen.queryByText('$0.00')).toBeNull();
     cleanup(); mode = 'no-repos'; setup();
     await screen.findByText('No repositories available.');
     cleanup(); mode = 'repo-error'; setup();
@@ -121,8 +121,8 @@ describe('InsightsPage generated transport', () => {
     await screen.findByRole('region', { name: 'Delivery quality' });
     await screen.findByRole('region', { name: 'Cost and cache trends' });
     cleanup(); mode = 'unknown'; setup(); await selectRepository();
-    expect(screen.getAllByText('Unknown — incomplete history').length).toBe(3);
-    expect(screen.getByText('History is incomplete: webhook gap. Metrics affected by missing history are unknown.')).toBeTruthy();
+    expect(screen.getAllByText('Sync delivery history to calculate').length).toBe(3);
+    expect(screen.getByText('History is incomplete: webhook gap. Sync delivery history to calculate affected metrics.')).toBeTruthy();
   });
 
   it('hides tenant A immediately, resets repository selection, and rejects late A responses after switching to B', async () => {

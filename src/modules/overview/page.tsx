@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../shared/api/client';
 import { useDailySpend, useOverview } from './services';
 import { Checklist } from './Checklist';
+import { money } from '../../shared/format';
+import { ProductTerms } from '../../shared/ui/ProductTerms';
 
 type Preset = 'Today' | '7 days' | '30 days';
 function range(preset: Preset) {
@@ -11,9 +13,8 @@ function range(preset: Preset) {
   if (preset !== 'Today') start.setDate(start.getDate() - (preset === '7 days' ? 6 : 29));
   return { from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) };
 }
-function money(value?: number) { return value === undefined ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value); }
 function metric(current?: number, previous?: number, format: (value?: number) => string = (value) => value === undefined ? '—' : `${(value * 100).toFixed(1)}%`) {
-  if (current === undefined) return { value: '—', change: 'Previous period unavailable' };
+  if (current === undefined) return { value: 'Sync usage and delivery history', change: 'Check model pricing in Settings' };
   if (previous === undefined) return { value: format(current), change: 'Previous period unavailable' };
   const delta = current - previous;
   return { value: format(current), change: `${delta > 0 ? '+' : ''}${format(delta)} vs previous period` };
@@ -45,6 +46,7 @@ export function OverviewPage() {
   const max = Math.max(0, ...series.map((item) => Number(item.actual_cost_usd ?? 0)));
   if (switching) return <p role="status">Loading overview session…</p>;
   return <section className="min-w-0">
+    <ProductTerms />
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-2xl font-semibold">Overview</h1><p className="mt-1 text-slate-600">{current?.spend_usd === undefined ? 'Spend unavailable' : `${money(current.spend_usd)} spent`}{current?.cache_savings_usd !== undefined ? ` · ${money(current.cache_savings_usd)} saved with cache` : ''}</p></div><label className="grid gap-1 text-sm">Repository<select aria-label="Repository" className="rounded border bg-white p-2" value={repo} onChange={(event) => { setRepo(event.target.value); localStorage.setItem('agent-ops-repository', event.target.value); }}><option value="">All repositories</option>{(repositories.data ?? []).filter((item) => item.id && item.full_name).map((item) => <option key={item.id} value={item.id}>{item.full_name}</option>)}</select></label></header>
     {session.isError && <p role="alert">Unable to load session: {session.error.message} <button onClick={() => void session.refetch()}>Retry</button></p>}
     {session.isPending && <p role="status">Loading overview…</p>}

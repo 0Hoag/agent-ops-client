@@ -40,9 +40,9 @@ describe('worker audit history', () => {
       return { data: { data: [] }, status: 200, statusText: 'OK', headers: {}, config } as never;
     });
     setup();
-    expect(await screen.findByText('Unable to load worker audit history.')).toBeTruthy();
+    expect(await screen.findByText('Unable to load agent audit history.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('No worker actions found.')).toBeTruthy();
+    expect(await screen.findByText('No agent actions found.')).toBeTruthy();
   });
   it('clears rows during organization switch and rejects a late old-organization response', async () => {
     let releaseOld!: (value: never) => void;

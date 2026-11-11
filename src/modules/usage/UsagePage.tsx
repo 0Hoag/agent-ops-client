@@ -5,6 +5,7 @@ import { dateRange, useUsage, useUsageSession } from './services';
 import { dailyCosts, groupCosts, money, sum } from './format';
 import { CostList, MergeRequests, Sessions } from './Evidence';
 import { SetupLinks } from '../../shared/ui/SetupLinks';
+import { ProductTerms } from '../../shared/ui/ProductTerms';
 
 function State({ query, name }: { query: { isPending: boolean; isError: boolean; refetch: () => unknown }; name: string }) {
   return query.isError ? <p role="alert">Unable to load {name}. Check your connection. <button onClick={() => void query.refetch()}>Retry</button></p> : query.isPending ? <p role="status">Loading {name}…</p> : null;
@@ -28,6 +29,7 @@ function Dashboard({ organizationId }: { organizationId: string }) {
   const total = analytics.data?.unknown_price_count ? undefined : sum(daily.map((row) => row.cost));
   const splits = groupCosts(runs.data ?? [], (run) => split === 'Model' ? run.model || 'Model not reported' : split === 'Tool' ? run.harness || 'Tool not reported' : repositoryName(run.repository_id), (run) => run.cost_usd);
   return <section className="min-w-0 space-y-5" style={{ color: 'var(--text)' }}>
+    <ProductTerms />
     <header><h1 className="text-2xl font-semibold">Usage</h1><p className="mt-2">{analytics.data ? total === undefined ? 'Spend unavailable — sync usage and configure model prices in Settings' : `${money(total)} spent` : 'Spend over time, session costs and cache savings'} · USD</p></header>
     <div className="flex min-w-0 flex-wrap gap-3">
       <label className="grid min-w-0 gap-1">Date range<DateRangePicker value={preset} onChange={(event) => { setPreset(event.target.value); if (event.target.value !== 'Custom') setDates(dateRange(event.target.value)); }} /></label>

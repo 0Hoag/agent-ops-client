@@ -32,6 +32,6 @@ export function SettingsPage() {
       <p>Run this command to connect your agent:</p><code className="break-all rounded bg-slate-100 p-3">{command}</code><button className="w-fit rounded border p-2" onClick={() => void navigator.clipboard.writeText(command)}>Copy command</button>
       <a className="underline" href="/#getting-started">Check first session progress</a>
     </div>}
-     {tab === 'Advanced' && <nav className="grid max-w-sm gap-2">{[['Waves', '/waves'], ['Workers', '/work'], ['Logs', '/runs'], ['Budgets', '/budgets'], ['Alerts', '/alerts']].map(([label, href]) => <a className="rounded border p-3" key={href} href={href}>{label}</a>)}</nav>}
+     {tab === 'Advanced' && <nav className="grid max-w-sm gap-2">{[['Batches', '/waves'], ['Agents', '/work'], ['Logs', '/runs'], ['Budgets', '/budgets'], ['Alerts', '/alerts']].map(([label, href]) => <a className="rounded border p-3" key={href} href={href}>{label}</a>)}</nav>}
   </section>;
 }

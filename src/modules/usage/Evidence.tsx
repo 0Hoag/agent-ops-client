@@ -1,5 +1,6 @@
 import type { AgentrunAgentRun } from '../../shared/api/generated/Api';
 import { groupCosts, money, sessionName, sessionRows, tokens } from './format';
+import { exactTime } from '../../shared/format';
 
 export function CostList({ rows }: { rows: { name: string; cost?: number }[] }) {
   const max = Math.max(0, ...rows.map((row) => row.cost ?? 0));
@@ -11,5 +12,5 @@ export function MergeRequests({ runs, repositoryName }: { runs: AgentrunAgentRun
   return <><p className="mb-3 text-sm">Attributed session costs in this period; includes open and closed merge requests.</p>{top.length ? <CostList rows={top} /> : <p>No priced merge requests. Link sessions to a merge request and configure model pricing in Settings.</p>}{rows.some((row) => row.cost === undefined) && <p>Some merge requests cannot be ranked: configure missing model prices in Settings.</p>}</>;
 }
 export function Sessions({ runs }: { runs: AgentrunAgentRun[] }) {
-  return <table className="w-full table-fixed text-left text-sm"><thead><tr><th className="w-1/2 pb-3">Session</th><th>Cost (USD)</th><th>Tokens</th></tr></thead><tbody>{sessionRows(runs).map((run, index) => <tr key={run.id ?? index} className="border-t"><td className="break-words py-3 pr-2" title={run.started_at ? new Date(run.started_at).toLocaleString() : undefined}>{run.id ? <a className="underline" href={`/usage/sessions?${new URLSearchParams({ run: run.id, ...(run.repository_id ? { repository: run.repository_id } : {}) })}`}>{sessionName(run)}</a> : <>{sessionName(run)} · Sync run identity to open detail</>}<small className="block">{run.model || 'Model not reported'}</small></td><td className="break-words pr-2">{money(run.cost_usd)}</td><td className="break-words">{tokens(run)}</td></tr>)}</tbody></table>;
+  return <table className="w-full table-fixed text-left text-sm"><thead><tr><th className="w-1/2 pb-3">Session</th><th>Cost (USD)</th><th>Tokens</th></tr></thead><tbody>{sessionRows(runs).map((run, index) => <tr key={run.id ?? index} className="border-t"><td className="break-words py-3 pr-2" title={exactTime(run.started_at)}>{run.id ? <a className="underline" href={`/usage/sessions?${new URLSearchParams({ run: run.id, ...(run.repository_id ? { repository: run.repository_id } : {}) })}`}>{sessionName(run)}</a> : <>{sessionName(run)} · Sync run identity to open detail</>}<small className="block">{run.model || 'Model not reported'}</small></td><td className="break-words pr-2">{money(run.cost_usd)}</td><td className="break-words">{tokens(run)}</td></tr>)}</tbody></table>;
 }

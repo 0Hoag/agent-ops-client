@@ -56,7 +56,7 @@ it('explains actual session cost, real MR URL, sorted tools, incremental expensi
   expect(screen.getAllByRole('meter')[1].getAttribute('value')).toBe('50');
   expect(screen.getAllByText('Step 2 · Run tests')[0].parentElement?.textContent).toContain('$3.00');
   expect(document.body.textContent).not.toContain('private-');
-  expect(document.querySelector('time')?.title).toBe(new Date(run.started_at).toLocaleString());
+  expect(document.querySelector('time')?.title).toBe('Nov 11, 2026, 10:00:00 AM UTC');
 });
 it('hides previous tenant immediately and keys queries by validated organization', async () => {
   const client = setup(); await screen.findByText('$6.00 · USD');
@@ -76,7 +76,7 @@ it('handles loading, retry and empty session states', async () => {
 });
 it('does not invent zero when cost or telemetry is missing', async () => {
   mode = 'missing'; setup();
-  await screen.findAllByText(/Cost unavailable — configure model pricing/);
+  await screen.findAllByText(/Cost unavailable — check model pricing/);
   await waitFor(() => expect(screen.getByText(/Cumulative hit rate unavailable/)).toBeTruthy());
   expect(document.body.textContent).not.toContain('$0.00');
 });

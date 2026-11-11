@@ -59,13 +59,13 @@ export function useInsights(repositoryId: string, organizationId: string) {
 }
 
 export function formatPercent(rate: number, denominator: number, complete: boolean): string {
-  if (!complete) return 'Unknown — incomplete history';
+  if (!complete) return 'Sync delivery history to calculate';
   if (denominator === 0) return 'N/A — no eligible records';
   return `${(rate * 100).toFixed(1)}%`;
 }
 
 export function formatCycleTime(completed: number, seconds: number, complete: boolean): string {
-  if (!complete) return 'Unknown — incomplete history';
+  if (!complete) return 'Sync delivery history to calculate';
   if (completed === 0) return 'N/A — no completed issues';
   const days = seconds / 86400;
   return `${days.toFixed(1)} days`;
