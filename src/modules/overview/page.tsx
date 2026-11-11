@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../shared/api/client';
 import { useDailySpend, useOverview } from './services';
+import { Checklist } from './Checklist';
 
 type Preset = 'Today' | '7 days' | '30 days';
 function range(preset: Preset) {
@@ -23,26 +24,31 @@ export function OverviewPage() {
   const [repo, setRepo] = useState(localStorage.getItem('agent-ops-repository') ?? '');
   const [dates, setDates] = useState(() => range('7 days'));
   const [generation, setGeneration] = useState(0);
+  const [switching, setSwitching] = useState(false);
   useEffect(() => {
-    const changed = () => setGeneration((value) => value + 1);
+    const suspend = () => setSwitching(true);
+    const changed = () => { setGeneration((value) => value + 1); setSwitching(false); };
+    window.addEventListener('organization:will-change', suspend);
     window.addEventListener('organization:changed', changed);
-    window.addEventListener('auth:unauthorized', changed);
-    return () => { window.removeEventListener('organization:changed', changed); window.removeEventListener('auth:unauthorized', changed); };
+    window.addEventListener('auth:unauthorized', suspend);
+    return () => { window.removeEventListener('organization:will-change', suspend); window.removeEventListener('organization:changed', changed); window.removeEventListener('auth:unauthorized', suspend); };
   }, []);
-  const session = useQuery({ queryKey: ['overview-session', generation], queryFn: async () => (await api.api.v1AuthSessionList()).data });
+  const session = useQuery({ queryKey: ['overview-session', generation], queryFn: async () => (await api.api.v1AuthSessionList()).data, enabled: !switching });
   const organizationId = session.data?.organization_id ?? '';
   const repositories = useQuery({ queryKey: ['overview-repositories', organizationId, generation], queryFn: async () => (await api.api.v1RepositoriesList()).data.data ?? [], enabled: Boolean(organizationId) });
   const filters = { ...dates, repository_id: repo || undefined };
   const query = useOverview(organizationId, filters);
-  const daily = useDailySpend(filters);
+  const daily = useDailySpend(organizationId, filters);
   const current = query.data?.current;
   const previous = query.data?.previous;
   const series = daily.data?.buckets ?? [];
   const max = Math.max(0, ...series.map((item) => Number(item.actual_cost_usd ?? 0)));
-  return <section>
+  if (switching) return <p role="status">Loading overview session…</p>;
+  return <section className="min-w-0">
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-2xl font-semibold">Overview</h1><p className="mt-1 text-slate-600">{current?.spend_usd === undefined ? 'Spend unavailable' : `${money(current.spend_usd)} spent`}{current?.cache_savings_usd !== undefined ? ` · ${money(current.cache_savings_usd)} saved with cache` : ''}</p></div><label className="grid gap-1 text-sm">Repository<select aria-label="Repository" className="rounded border bg-white p-2" value={repo} onChange={(event) => { setRepo(event.target.value); localStorage.setItem('agent-ops-repository', event.target.value); }}><option value="">All repositories</option>{(repositories.data ?? []).filter((item) => item.id && item.full_name).map((item) => <option key={item.id} value={item.id}>{item.full_name}</option>)}</select></label></header>
     {session.isError && <p role="alert">Unable to load session: {session.error.message} <button onClick={() => void session.refetch()}>Retry</button></p>}
     {session.isPending && <p role="status">Loading overview…</p>}
+    {organizationId && <Checklist key={`${organizationId}-${generation}`} organizationId={organizationId} />}
     <div className="mb-5 flex flex-wrap gap-2" aria-label="Date range presets">{(['Today', '7 days', '30 days'] as const).map((item) => <button key={item} aria-pressed={preset === item} className="rounded border px-3 py-2" onClick={() => { setPreset(item); setDates(range(item)); }}>{item}</button>)}</div>
     {query.isPending && <p role="status">Loading overview data…</p>}{query.isError && <p role="alert">Unable to load overview: {query.error.message} <button onClick={() => void query.refetch()}>Retry</button></p>}
     {query.data && <>

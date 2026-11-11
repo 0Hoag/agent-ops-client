@@ -3,6 +3,7 @@ import { Card } from '../../shared/ui';
 import { mergeRequestUrl, money, readable, relative, total } from './format';
 import { useRepositories, useSession, useSessionOrganization } from './services';
 import { Timeline } from './Timeline';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 
 export function SessionPage() {
   const { session, switching, generation } = useSessionOrganization();
@@ -15,10 +16,10 @@ function Detail({ organizationId }: { organizationId: string }) {
   const runId = params.get('run') || '';
   const query = useSession(organizationId, runId, params.get('repository') || undefined);
   const repositories = useRepositories(organizationId);
-  if (!runId) return <p>Select a session from <a href="/usage" className="underline">Usage</a> to inspect its cost.</p>;
+  if (!runId) return <div><p>Select a session from <a href="/usage" className="underline">Usage</a> to inspect its cost.</p><SetupLinks /></div>;
   if (query.isError) return <p role="alert">Unable to load session. Check your connection. <button onClick={() => void query.refetch()}>Retry</button></p>;
   if (query.isPending) return <p role="status">Loading session costs…</p>;
-  if (!query.data.length) return <p>This session is not available in the current organization. <a href="/usage" className="underline">Choose a session in Usage</a>.</p>;
+  if (!query.data.length) return <div><p>This session is not available in the current organization. <a href="/usage" className="underline">Choose a session in Usage</a>.</p><SetupLinks /></div>;
   const runs = query.data;
   const first = runs[0];
   const links = new Map<string, { repositoryId?: string; number: number }>();

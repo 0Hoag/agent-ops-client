@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 import { formatCycleTime, formatPercent, useInsights, useRepositories, useAnalytics, useDelivery, useInsightSession } from './services/insights';
 import { CostCache, Delivery } from './AnalyticsTables';
 
@@ -29,6 +30,7 @@ function Dashboard({ organizationId }: { organizationId: string }) {
     {analytics.isError && <p role="alert">Unable to load cost/cache analytics: {analytics.error.message} <button onClick={() => void analytics.refetch()}>Retry</button></p>}
     {validDates && analytics.isPending && <p role="status">Loading cost/cache analytics…</p>}
     {validDates && analytics.data && <CostCache data={analytics.data} />}
+    {(repositories.data?.length === 0 || (validDates && analytics.data?.buckets?.length === 0)) && <SetupLinks />}
     {validDates && delivery.isPending && <p role="status">Loading delivery analytics…</p>}{delivery.isError && <p role="alert">Unable to load delivery analytics: {delivery.error.message} <button onClick={() => void delivery.refetch()}>Retry</button></p>}
     {validDates && delivery.data && <Delivery data={delivery.data} />}
     {repositories.isPending && <p role="status" className="p-6">Loading repositories…</p>}

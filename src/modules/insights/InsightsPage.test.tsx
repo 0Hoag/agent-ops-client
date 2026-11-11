@@ -102,6 +102,7 @@ describe('InsightsPage generated transport', () => {
     expect(screen.getByText('Loading delivery analytics…')).toBeTruthy();
     cleanup(); mode = 'empty'; setup();
     await screen.findByText('No analytics observations for this period.');
+    expect(screen.getByRole('link', { name: 'Set model prices' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
     expect(screen.getByText('History incomplete; affected metrics may be unavailable.')).toBeTruthy();
     expect(screen.getAllByText('Unavailable').length).toBeGreaterThan(4);
     expect(screen.queryByText('$0.0000')).toBeNull();

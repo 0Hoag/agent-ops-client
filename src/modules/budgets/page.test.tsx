@@ -37,6 +37,11 @@ function setup() {
 }
 
 describe('BudgetsPage', () => {
+  it('links an empty budget list to live setup progress', async () => {
+    setup(); budgets = [];
+    await screen.findByText('No budgets configured.');
+    expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
+  });
   afterEach(() => { cleanup(); vi.restoreAllMocks(); http.defaults.adapter = originalAdapter; calls.length = 0; writes.length = 0; role = 'owner'; });
   it('renders budgets and hides editing controls for read-only members', async () => {
     role = 'viewer'; setup();

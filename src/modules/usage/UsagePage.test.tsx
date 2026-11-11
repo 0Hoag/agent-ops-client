@@ -78,7 +78,9 @@ describe('Usage', () => {
     await screen.findByText('Loading sessions…'); cleanup();
     mode = 'empty'; setup();
     await screen.findAllByText(/No usage in this period/);
-    expect(screen.getAllByRole('link', { name: 'connect a repository' })[0].getAttribute('href')).toBe('/repositories'); cleanup();
+    expect(screen.getAllByRole('link', { name: 'Connect a repository' })[0].getAttribute('href')).toBe('/settings/advanced#repositories');
+    expect(screen.getAllByRole('link', { name: 'Send the first agent session' })[0].getAttribute('href')).toBe('/settings/advanced#agent-setup');
+    expect(screen.getAllByRole('link', { name: 'Set model prices' })[0].getAttribute('href')).toBe('/settings/advanced#model-prices'); cleanup();
     mode = 'error'; setup();
     await screen.findByText(/Unable to load sessions/);
     expect(screen.getAllByRole('button', { name: 'Retry' }).length).toBeGreaterThan(0);

@@ -4,6 +4,7 @@ import { Card, DateRangePicker, Select } from '../../shared/ui';
 import { dateRange, useUsage, useUsageSession } from './services';
 import { dailyCosts, groupCosts, money, sum } from './format';
 import { CostList, MergeRequests, Sessions } from './Evidence';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 
 function State({ query, name }: { query: { isPending: boolean; isError: boolean; refetch: () => unknown }; name: string }) {
   return query.isError ? <p role="alert">Unable to load {name}. Check your connection. <button onClick={() => void query.refetch()}>Retry</button></p> : query.isPending ? <p role="status">Loading {name}…</p> : null;
@@ -46,4 +47,4 @@ function Dashboard({ organizationId }: { organizationId: string }) {
     </>}
   </section>;
 }
-function Empty() { return <p>No usage in this period. Choose a wider date range or <a className="underline" href="/repositories">connect a repository</a>.</p>; }
+function Empty() { return <div><p>No usage in this period. Choose a wider date range or complete setup.</p><SetupLinks /></div>; }

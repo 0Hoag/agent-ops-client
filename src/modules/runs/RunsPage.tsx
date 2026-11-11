@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SetupLinks } from '../../shared/ui/SetupLinks';
 import type { AgentrunAgentRun, AgentrunRunStep } from '../../shared/api/generated/Api';
 import { useRunAggregates, useRuns, useRunTimeline } from './services/runs';
 import { formatCacheHit, formatRunCost } from './run-format';
@@ -32,6 +33,7 @@ export function RunsPage() {
     {runs.isPending && <p role="status" className="p-6">Loading runs…</p>}
     {runs.isError && <p role="alert" className="rounded bg-rose-50 p-4 text-rose-800">Unable to load runs: {runs.error.message}</p>}
     {runs.data && runs.data.data.length === 0 && <p className="rounded bg-white p-6 text-slate-600">No runs recorded.</p>}
+    {runs.data?.data.length === 0 && <SetupLinks />}
     {runs.data && runs.data.data.length > 0 && <><p>Page {runs.data.meta.page} · {runs.data.meta.total} runs</p><div className="overflow-x-auto rounded bg-white"><table className="w-full text-left text-sm"><thead className="bg-slate-100"><tr>{['Run', 'Wave', 'Harness', 'Model', 'Issue', 'Pull request', 'CI', 'Started'].map((heading) => <th className="p-3" key={heading}>{heading}</th>)}</tr></thead><tbody>{runs.data.data.map((run) => <tr className="border-t" key={run.id}><td className="p-3"><button className="text-blue-700 underline" onClick={() => update('run', run.id ?? '')}>{run.id}</button></td><td className="p-3">{run.wave ?? '—'}</td><td className="p-3">{run.harness ?? '—'}</td><td className="p-3">{run.model ?? '—'}</td><td className="p-3">{(run.relations?.issues ?? []).map((issue) => <a key={issue.number} className="mr-2 text-blue-700 underline" href={`https://github.com/${issue.repository_id}/issues/${issue.number}`}>#{issue.number} {issue.title}</a>)}</td><td className="p-3">{(run.relations?.pull_requests ?? []).map((pr) => <a key={pr.number} className="mr-2 text-blue-700 underline" href={`https://github.com/${pr.repository_id}/pull/${pr.number}`}>#{pr.number} {pr.title}</a>)}</td><td className="p-3">{(run.relations?.ci ?? []).map((ci) => <span key={`${ci.external_id}-${ci.sha}`}>{ci.status ?? 'Unknown'} · {ci.conclusion ?? 'Unknown'}</span>)}</td><td className="p-3">{run.started_at ?? '—'}</td></tr>)}</tbody></table></div><div className="flex gap-3"><button disabled={runs.data.meta.page <= 1} onClick={() => update('page', String(runs.data!.meta.page - 1))}>Previous</button><button disabled={runs.data.meta.page * runs.data.meta.per_page >= runs.data.meta.total} onClick={() => update('page', String(runs.data!.meta.page + 1))}>Next</button></div></>}
      {selected && <><h2 className="text-xl font-semibold">Run {selected.id}</h2><RunDetail run={selected} /></>}
     {aggregates.isError && <p role="alert">Unable to load run aggregates: {aggregates.error.message}</p>}
