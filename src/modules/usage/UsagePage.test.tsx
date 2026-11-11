@@ -39,7 +39,7 @@ describe('Usage', () => {
     const table = screen.getByRole('table');
     expect(within(table).getByText('$6.00')).toBeTruthy();
     expect(within(table).getByText('4K')).toBeTruthy();
-    expect(within(table).getByText(/Claude · feat\/usage ·/).getAttribute('title')).toBe(new Date(run.started_at).toLocaleString());
+    expect(within(table).getByRole('link', { name: /Claude · feat\/usage ·/ }).closest('td')?.getAttribute('title')).toBe(new Date(run.started_at).toLocaleString());
     expect(table.textContent).not.toContain('private-');
     expect(screen.queryByText('Run aggregates')).toBeNull();
     fireEvent.change(screen.getByLabelText('Split by'), { target: { value: 'Tool' } });
