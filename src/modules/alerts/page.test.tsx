@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { api } from '../../shared/api/client';
+import { http } from '../../shared/http';
 import { AlertsPage } from './page';
 
 let request: MockInstance<typeof api.api.v1AlertsHistoryList>;
@@ -20,6 +21,30 @@ describe('AlertsPage', () => {
     vi.spyOn(api.api, 'v1AlertsThresholdsList').mockResolvedValue({ data: { min_cache_hit: 0.8, silent_seconds: 300, pr_stale_seconds: 86400 } } as never);
   });
   afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+  it('renders empty history with the real empty channels HTTP envelope', async () => {
+    request.mockRestore();
+    const transport = vi.spyOn(http, 'request').mockImplementation(async (config) => {
+      const url = new URL(config.url!, 'http://localhost');
+      expect(config.method).toBe('GET');
+      if (url.pathname === '/api/v1/alerts/channels') return { status: 200, data: { status: 200, data: [] } };
+      if (url.pathname === '/api/v1/alerts/history') {
+        expect(url.searchParams.get('page')).toBe('1');
+        expect(url.searchParams.get('per_page')).toBe('20');
+        return { status: 200, data: { data: null, meta: { total: 0 } } };
+      }
+      throw new Error(`Unexpected request: ${config.url}`);
+    });
+    const client = setup();
+    try {
+      expect(await screen.findByText('No notification channels configured.')).toBeTruthy();
+      expect(await screen.findByText('No alert history found.')).toBeTruthy();
+      expect(screen.getByRole('heading', { name: 'Alert history' })).toBeTruthy();
+      expect(screen.queryAllByRole('alert')).toHaveLength(0);
+      expect(transport).toHaveBeenCalledTimes(2);
+    } finally {
+      client.clear();
+    }
+  });
   it('renders history and pages to the next result set', async () => {
     request.mockImplementation(async (query) => ({ data: { data: [{ id: query?.page === 2 ? 'two' : 'one', rule: query?.page === 2 ? 'Second rule' : 'First rule', message: 'Detected issue', detectedAt: '2026-01-01', repository: 'acme/repo' }], meta: { total: 21 } } } as never));
     setup();
