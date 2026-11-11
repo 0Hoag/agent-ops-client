@@ -76,3 +76,12 @@ client repository's `.agent-runs/178-member-identities/`.
 - No API implementation, API client-pin update, tenant-isolation backend proof,
   QA #179 layout change, or CI result is included. Client contract must merge
   before the separate API pin handoff.
+- Optional legacy stub runners were also attempted through the heavy wrapper:
+  `node src/modules/members/verify-organization-switch.mjs` failed waiting for
+  its post-selection request listener (30 seconds), and
+  `node src/modules/members/verify-permission-control.mjs` failed because its
+  fixture rejects the existing layout's `GET /api/v1/repositories` request.
+  Their member fixtures now carry emails, but neither legacy scenario is claimed
+  passing. The crashed permission runner's preview group, sentinel and listener
+  were identified by PID/cwd and explicitly removed; port 59469 was verified
+  closed. These failures do not affect the separate real-API acceptance above.
