@@ -21,6 +21,9 @@ describe('PricingPage', () => {
     const update = vi.spyOn(api.api, 'v1AgentRunPricesPartialUpdate').mockResolvedValue({ data: {} } as never);
     renderPage();
     await screen.findByText('model-a');
+    expect(screen.getByRole('table').classList.contains('responsive-table')).toBe(true);
+    expect(screen.getByText('model-a').getAttribute('data-label')).toBe('Model');
+    expect(screen.getByText('2026-01-01').getAttribute('data-label')).toBe('Effective date');
     expect(list).toHaveBeenCalledTimes(1);
     fireEvent.change(screen.getByLabelText('Model'), { target: { value: 'model-b' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create version' }));

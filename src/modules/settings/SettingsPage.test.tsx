@@ -37,4 +37,24 @@ describe('SettingsPage', () => {
 
     expect(screen.getByRole('link', { name: /^Alerts$/ }).getAttribute('href')).toBe('/alerts');
   });
+
+  it('provides a labelled tablist, roving focus and an associated panel', () => {
+    render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
+    const first = screen.getByRole('tab', { name: 'Repositories' });
+    expect(screen.getByRole('tablist', { name: 'Settings tabs' }).contains(first)).toBe(true);
+    expect(first.tabIndex).toBe(0);
+    expect(screen.getByRole('tab', { name: 'Agent setup' }).tabIndex).toBe(-1);
+    first.focus();
+    fireEvent.keyDown(first, { key: 'ArrowLeft' });
+    const advanced = screen.getByRole('tab', { name: 'Advanced', selected: true });
+    expect(document.activeElement).toBe(advanced);
+    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe(advanced.id);
+    expect(advanced.getAttribute('aria-controls')).toBe(screen.getByRole('tabpanel').id);
+    fireEvent.keyDown(advanced, { key: 'Home' });
+    expect(document.activeElement).toBe(first);
+    fireEvent.keyDown(first, { key: 'ArrowRight' });
+    expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Agent setup', selected: true }));
+    fireEvent.keyDown(document.activeElement!, { key: 'End' });
+    expect(document.activeElement).toBe(advanced);
+  });
 });

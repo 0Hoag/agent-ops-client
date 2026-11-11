@@ -1,0 +1,219 @@
+Already up to date
+Done in 246ms using pnpm v11.21.0
+$ tsc --noEmit
+$ eslint src
+$ vitest run
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 /Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility
+
+stderr | src/modules/sessions/SessionPage.test.tsx > links an unavailable session to ingestion and live setup progress
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/modules/runs/RunsPage.test.tsx > RunsPage > renders loading, empty, and error states
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/modules/runs/RunsPage.test.tsx > RunsPage > renders loading, empty, and error states
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+stderr | src/modules/runs/RunsPage.test.tsx > RunsPage > renders production cache arithmetic and distinguishes known zero from unknown cost
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+ ✓ src/modules/budgets/page.test.tsx (4 tests) 299ms
+ ✓ src/modules/sessions/SessionPage.test.tsx (7 tests) 378ms
+stderr | src/app/router.test.tsx > opens Usage instead of legacy aggregates: /usage
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/modules/overview/page.test.tsx (8 tests) 530ms
+ ✓ src/modules/runs/RunsPage.test.tsx (6 tests) 571ms
+ ✓ src/modules/work/page.test.tsx (7 tests) 623ms
+stderr | src/app/router.test.tsx > opens Usage instead of legacy aggregates: /usage
+Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["usage","org-a","daily",{"from":"2026-11-05","to":"2026-11-11"}]
+
+stderr | src/modules/usage/UsagePage.test.tsx > Usage > registers Usage as primary analytics and redirects legacy Runs
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/modules/usage/UsagePage.test.tsx (9 tests) 641ms
+stderr | src/app/router.test.tsx > opens Usage instead of legacy aggregates: /runs
+Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["usage","org-a","daily",{"from":"2026-11-05","to":"2026-11-11"}]
+
+stderr | src/app/router.test.tsx > opens Usage instead of legacy aggregates: /insights
+Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["usage","org-a","daily",{"from":"2026-11-05","to":"2026-11-11"}]
+
+ ✓ src/modules/insights/InsightsPage.test.tsx (4 tests) 885ms
+ ✓ src/modules/waves/page.test.tsx (10 tests) 933ms
+ ✓ src/app/router.test.tsx (18 tests) 746ms
+ ✓ src/modules/waves/audit-history.test.tsx (3 tests) 341ms
+stderr | src/modules/alerts/page.test.tsx > AlertsPage > renders history and pages to the next result set
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+ ✓ src/modules/alerts/ChannelSettings.test.tsx (4 tests) 263ms
+stderr | src/modules/alerts/page.test.tsx > AlertsPage > offers retry on failure and refetches
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+ ✓ src/modules/alerts/ThresholdSettings.test.tsx (4 tests) 168ms
+stderr | src/modules/alerts/page.test.tsx > AlertsPage > clears previous organization history before loading another organization
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+stderr | src/modules/alerts/page.test.tsx
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+ ✓ src/modules/alerts/page.test.tsx (4 tests) 312ms
+ ✓ src/modules/repositories/page.test.tsx (4 tests) 463ms
+ ✓ src/modules/auth/services/session-identity.test.ts (6 tests) 43ms
+ ✓ src/modules/board/BoardPage.test.tsx (2 tests) 176ms
+ ✓ src/modules/pricing/PricingPage.test.tsx (2 tests) 326ms
+   ✓ PricingPage > lists versions and permits owner to create and edit through generated requests 316ms
+ ✓ src/modules/settings/SettingsPage.test.tsx (6 tests) 301ms
+stderr | VirtualConsole.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/virtual-console.js:29:45)
+Error: AggregateError
+    at Object.dispatchError (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+    at Request.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+    at Request.emit (node:events:531:35)
+    at ClientRequest.<anonymous> (/Users/zeross/agent-ops-client-wt/test/w18s-visual-accessibility/node_modules/.pnpm/jsdom@25.0.1_supports-color@7.2.0/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:127:14)
+    at ClientRequest.emit (node:events:519:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at Socket.socketErrorListener (node:_http_client:575:5)
+    at Socket.emit (node:events:519:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3) undefined
+
+ ✓ src/shared/http.test.ts (3 tests) 15ms
+ ✓ src/shared/format.test.tsx (3 tests) 42ms
+ ✓ src/modules/auth/services/auth.test.ts (9 tests) 5ms
+ ✓ src/modules/insights/AnalyticsTables.test.tsx (2 tests) 168ms
+ ✓ src/shared/ui.test.tsx (2 tests) 82ms
+stderr | src/app/router.ui.test.tsx > exposes the UI showcase outside production and redirects its route in production
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/app/router.ui.test.tsx (1 test) 67ms
+stderr | src/modules/members/MembersPage.test.tsx > keeps account and role labels when member rows reflow on mobile
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/app/layout/AppLayout.test.tsx > keeps the header above the content in one flexible column beside navigation
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/app/layout/AppLayout.test.tsx (1 test) 59ms
+ ✓ src/modules/members/MembersPage.test.tsx (1 test) 115ms
+ ✓ src/shared/api/client.test.ts (5 tests) 8ms
+ ✓ src/shared/api/worker-audit-history-contract.test.ts (3 tests) 6ms
+ ✓ src/modules/board/services/liveBoard.test.ts (3 tests) 5ms
+ ✓ src/shared/api/alert-channel-contract.test.ts (1 test) 6ms
+ ✓ src/app/UiShowcase.test.tsx (1 test) 183ms
+ ✓ src/modules/usage/Evidence.test.tsx (1 test) 89ms
+ ✓ src/shared/api/repository-sync-contract.test.ts (1 test) 3ms
+ ✓ src/modules/board/services/board.test.ts (3 tests) 3ms
+ ✓ src/shared/api/worker-contract.test.ts (1 test) 6ms
+ ✓ src/shared/api/alert-history-contract.test.ts (1 test) 4ms
+ ✓ src/shared/api/work-contract.test.ts (2 tests) 2ms
+ ✓ src/modules/repositories/services/repositories.test.ts (2 tests) 14ms
+ ✓ src/shared/api/alert-threshold-contract.test.ts (1 test) 7ms
+ ✓ src/shared/api/wave-contract.test.ts (1 test) 10ms
+ ✓ src/modules/runs/services/runs.test.ts (4 tests) 9ms
+ ✓ src/shared/api/budget-contract.test.ts (1 test) 23ms
+ ✓ src/shared/api/repository-connection-test-contract.test.ts (1 test) 2ms
+ ✓ src/shared/api/branch-contract.test.ts (1 test) 1ms
+ ✓ src/modules/budgets/services/client.test.ts (1 test) 3ms
+ ✓ src/modules/alerts/services/client.test.ts (2 tests) 3ms
+ ✓ src/modules/repositories/form.test.ts (2 tests) 3ms
+ ✓ src/shared/api/missing-price-contract.test.ts (2 tests) 6ms
+ ✓ src/modules/usage/format.test.ts (2 tests) 70ms
+ ✓ src/shared/api/overview-contract.test.ts (1 test) 5ms
+ ✓ src/modules/insights/services/insights.test.ts (1 test) 2ms
+ ✓ src/shared/api/repository-delete-contract.test.ts (1 test) 5ms
+ ✓ src/shared/env.test.ts (1 test) 1ms
+ ✓ src/modules/pricing/services/pricing.test.ts (2 tests) 2ms
+ ✓ src/shared/api/metrics-contract.test.ts (1 test) 12ms
+ ✓ src/modules/health/services/health.test.ts (1 test) 5ms
+ ✓ src/shared/api/text-response-generator.test.ts (1 test) 1379ms
+   ✓ text/plain Swagger generation > generates a text decoder and returns Prometheus content through the shared transport 1378ms
+
+ Test Files  57 passed (57)
+      Tests  181 passed (181)
+   Start at  20:54:56
+   Duration  5.90s (transform 1.60s, setup 0ms, collect 11.19s, tests 10.43s, environment 14.03s, prepare 3.47s)
+
+$ pnpm typecheck && NODE_ENV=production RSPACK_MODE=production rspack build
+$ tsc --noEmit
+WARNING in ⚠ asset size limit: The following asset(s) exceed the recommended size limit (244.141 KiB). This can impact web performance.
+  │ Assets:
+  │   main.js (445.274 KiB)
+
+WARNING in ⚠ entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244.141 KiB). This can impact web performance.
+  │ Entrypoints:
+  │   main (474.400 KiB)
+  │       main.js
+  │       main.css
+
+WARNING in ⚠ Rspack performance recommendations:
+  │ You can limit the size of your bundles by using import() to lazy load some parts of your application.
+  │ For more info visit https://rspack.rs/guide/optimization/code-splitting
+
+Rspack compiled with 3 warnings in 380 ms

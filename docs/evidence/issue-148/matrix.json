@@ -1,0 +1,2021 @@
+[
+  {
+    "page": "overview",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "overview-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "overview-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "overview-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "overview-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "work-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "work-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "work-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "work-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "usage-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "usage-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "usage-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "usage-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "session-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "session-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "session-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "session-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "onboarding-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "onboarding-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "onboarding-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "onboarding-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-agent",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-agent-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-agent",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-agent-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-agent",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-agent-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-agent",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-agent-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-prices",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-prices-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(8)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-prices",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-prices-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(8)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-prices",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-prices-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(8)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-prices",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-prices-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(8)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-members",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-members-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(3)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-members",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-members-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(3)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-members",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-members-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(3)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-members",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-members-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "nodes": [
+          {
+            "target": [
+              "th:nth-child(3)"
+            ],
+            "failureSummary": "Fix any of the following:\n  Element does not have text that is visible to screen readers"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-advanced",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-advanced-populated-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "landmark-unique",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "aside > nav"
+            ],
+            "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-advanced",
+    "state": "populated",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-advanced-populated-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings-advanced",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 1280,
+    "screenshot": "settings-advanced-dark-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "landmark-unique",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "aside > nav"
+            ],
+            "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings-advanced",
+    "state": "dark",
+    "source": "real Compose API",
+    "width": 390,
+    "screenshot": "settings-advanced-dark-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "overview-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "overview-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "work-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "work-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "usage-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "landmark-unique",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "section:nth-child(4) > div > .mt-3[aria-label=\"Setup next steps\"]"
+            ],
+            "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "usage-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "landmark-unique",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "section:nth-child(4) > div > .mt-3[aria-label=\"Setup next steps\"]"
+            ],
+            "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "session-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "session-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "page-has-heading-one",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "html"
+            ],
+            "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "settings-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "settings-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "onboarding-empty-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "empty",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "onboarding-empty-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "overview-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "overview-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "work-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "work-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "usage-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "usage-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "session-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "session-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "page-has-heading-one",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "html"
+            ],
+            "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "settings-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "settings-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "error",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "onboarding-error-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "error",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "onboarding-error-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "overview-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "overview",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "overview-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "work-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "work",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "work-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "usage-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "usage",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "usage-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "session-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "session",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "session-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [
+      {
+        "id": "page-has-heading-one",
+        "impact": "moderate",
+        "nodes": [
+          {
+            "target": [
+              "html"
+            ],
+            "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+          }
+        ]
+      }
+    ],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "settings-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "settings",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "settings-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 1280,
+    "screenshot": "onboarding-loading-1280.png",
+    "overflow": {
+      "viewport": 1280,
+      "document": 1280,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 0,
+      "headerBottom": 71,
+      "mainTop": 71,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ]
+  },
+  {
+    "page": "onboarding",
+    "state": "loading",
+    "source": "route fixture",
+    "width": 390,
+    "screenshot": "onboarding-loading-390.png",
+    "overflow": {
+      "viewport": 390,
+      "document": 390,
+      "scrollRegions": [],
+      "offenders": []
+    },
+    "layout": {
+      "headerTop": 66,
+      "headerBottom": 173,
+      "mainTop": 173,
+      "aligned": true
+    },
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast",
+      "label-content-name-mismatch"
+    ]
+  }
+]
