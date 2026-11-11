@@ -57,7 +57,17 @@ async function signIn() {
   fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
 }
 
-it.each(['/board', '/runs', '/insights'])('denies missing sessions and clears cached data: %s', async (path) => {
+it.each(['/usage', '/runs', '/insights'])('opens Usage instead of legacy aggregates: %s', async (path) => {
+  sessionStorage.setItem('agent-ops-token', 'issued-token');
+  mount(path);
+  await screen.findByRole('heading', { name: 'Usage' });
+  expect(screen.getByTestId('location').textContent).toBe('/usage');
+  expect(screen.queryByText('Run aggregates')).toBeNull();
+  expect(screen.getByRole('link', { name: 'Usage' }).getAttribute('href')).toBe('/usage');
+  expect(screen.getByRole('link', { name: 'Work' }).getAttribute('href')).toBe('/work');
+});
+
+it.each(['/board', '/runs', '/insights', '/usage'])('denies missing sessions and clears cached data: %s', async (path) => {
   const client = mount(path);
   await screen.findByRole('heading', { name: 'Sign in' });
   expect(client.getQueryCache().getAll()).toHaveLength(0);
@@ -177,7 +187,7 @@ it('does not render the next protected route using the previous route validation
   await screen.findByText('No repositories available.');
   requests.length = 0;
   rejectSession = true;
-  fireEvent.click(screen.getByRole('link', { name: 'Work' }));
+  fireEvent.click(screen.getByRole('link', { name: 'Usage' }));
   await screen.findByRole('heading', { name: 'Sign in' });
   expect(requests.filter((request) => request.url?.endsWith('/auth/session')).map((request) => request.url)).toEqual(['/api/v1/auth/session']);
 });

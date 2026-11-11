@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright/test';
 import { writeFileSync } from 'node:fs';
 
-test('anonymous route guard and real login, board, runs, alerts', async ({ page }, testInfo) => {
+test('anonymous route guard and real login, board, usage, alerts', async ({ page }, testInfo) => {
   const requests: { method: string; path: string; status: number }[] = [];
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -18,7 +18,7 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
   };
   try {
     await page.setViewportSize({ width: 1280, height: 800 });
-    for (const path of ['/board', '/work', '/runs', '/alerts']) {
+    for (const path of ['/board', '/work', '/usage', '/runs', '/alerts']) {
       await page.goto(path);
       await expect(page.getByRole('heading', { name: 'Sign in', exact: true }), `anonymous route guard: ${path}`).toBeVisible();
       await expect(page).toHaveURL(/\/login$/);
@@ -67,10 +67,27 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
     await page.setViewportSize({ width: 1280, height: 800 });
 
     const runs = responseFor('agent-runs');
-    await page.goto('/runs');
-    await expect(page.getByRole('heading', { name: 'Agent runs', exact: true })).toBeVisible();
+    const analytics = responseFor('insights/analytics');
+    await page.getByRole('link', { name: 'Usage', exact: true }).click();
+    await expect(page).toHaveURL(/\/usage$/);
+    await expect(page.getByRole('heading', { name: 'Usage', exact: true })).toBeVisible();
     await emptyResponse(await runs);
-    await expect(page.getByText('No runs recorded.', { exact: true })).toBeVisible();
+    const analyticsResponse = await analytics;
+    expect(analyticsResponse.status()).toBe(200);
+    const analyticsData = (await analyticsResponse.json()).data;
+    expect(analyticsData.buckets).toEqual([]);
+    expect(analyticsData.period).toBe('daily');
+    expect(analyticsData.group_by).toBe('harness');
+    await expect(page.getByText('No usage in this period. Choose a wider date range or connect a repository.', { exact: true })).toHaveCount(2);
+    await expect(page.getByRole('link', { name: 'connect a repository', exact: true }).first()).toHaveAttribute('href', '/repositories');
+    await page.screenshot({ path: testInfo.outputPath('usage.png'), fullPage: true });
+
+    const legacyRuns = responseFor('agent-runs');
+    await page.goto('/runs');
+    await expect(page).toHaveURL(/\/usage$/);
+    await expect(page.getByRole('heading', { name: 'Usage', exact: true })).toBeVisible();
+    await emptyResponse(await legacyRuns);
+    await expect(page.getByText('No usage in this period. Choose a wider date range or connect a repository.', { exact: true })).toHaveCount(2);
     await page.screenshot({ path: testInfo.outputPath('runs.png'), fullPage: true });
 
     const alerts = responseFor('alerts/history');

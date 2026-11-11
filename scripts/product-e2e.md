@@ -19,8 +19,12 @@ into a disposable directory, copies this client, and uses the documented
 ephemeral loopback ports, with a unique Compose project and fresh database.
 It creates an organization and repository through supported authenticated API
 operations, then logs in and selects the organization in the actual browser.
-Board, runs and alert history must render their explicit empty states and return
-successful empty API pages. No mocks, SQL inserts, developer credentials or
+Board, Usage sessions and alert history must render their explicit empty states
+and return successful empty API pages. Usage is reached through its primary
+navigation link, checks `/usage`, and also verifies the real daily analytics
+response's empty buckets, period and grouping. Work remains the board entry;
+the legacy `/runs` redirect is still checked for anonymous access.
+No mocks, SQL inserts, developer credentials or
 injected browser sessions are used.
 
 `--control` runs the same spec with identical credentials, data and URLs three
@@ -39,6 +43,10 @@ CI runs the identical command with the control and uploads evidence even on fail
 Not covered: populated boards/runs/alerts, editors, live logs, clean-machine
 installation, external providers or hosted CI negative-control success until
 that job has actually executed.
+The pinned API predates `/overview` (returns 404), so this suite does not prove
+Usage cache savings. Analytics uses a `data` envelope on the wire; the suite
+checks that envelope, but empty fixtures do not prove populated Usage rendering
+or that the client unwraps analytics correctly.
 
 ## Fixture encryption key
 
