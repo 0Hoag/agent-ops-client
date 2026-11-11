@@ -7,7 +7,7 @@ import { hasToken, listOrganizations, logout, selectOrganization, validateSessio
 import { api } from '../../shared/api/client';
 
 type Repository = { id: string; full_name: string };
-const nav = [{ label: 'Overview', to: paths.board }, { label: 'Work', to: paths.runs }, { label: 'Usage', to: paths.insights }, { label: 'Settings', to: paths.advanced }];
+const nav = [{ label: 'Overview', to: paths.board }, { label: 'Work', to: '/board' }, { label: 'Usage', to: paths.insights }, { label: 'Settings', to: paths.advanced }];
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
