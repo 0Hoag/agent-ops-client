@@ -1,0 +1,32 @@
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "b7ba1ba5-9e24-4ba9-863b-dbf2340f8f01",
+      "organization_id": "54970346-b312-4e15-ba8d-fc61a41808b4",
+      "account_id": "fca6d668-ed69-4cf8-9a0d-2e96938b87f8",
+      "role": "owner",
+      "created_at": "2026-11-11T14:32:40.105658Z",
+      "updated_at": "2026-11-11T14:32:40.105658Z",
+      "email": "owner.members178@example.test"
+    },
+    {
+      "id": "a6c6ee60-6351-480b-8a7a-1eab5bb767e4",
+      "organization_id": "54970346-b312-4e15-ba8d-fc61a41808b4",
+      "account_id": "8b71cf90-f298-4d4b-a7b3-39fddeebb4df",
+      "role": "member",
+      "created_at": "2026-11-11T14:32:40.126689Z",
+      "updated_at": "2026-11-11T14:32:40.126689Z",
+      "email": "alice.members178@example.test"
+    },
+    {
+      "id": "2c3a8eef-cecb-4a0f-bbfa-55d6576c2855",
+      "organization_id": "54970346-b312-4e15-ba8d-fc61a41808b4",
+      "account_id": "31c159e6-6afe-40ac-8a7c-7b2d32d8cab7",
+      "role": "member",
+      "created_at": "2026-11-11T14:32:40.133754Z",
+      "updated_at": "2026-11-11T14:32:40.133754Z",
+      "email": "bob.members178@example.test"
+    }
+  ]
+}

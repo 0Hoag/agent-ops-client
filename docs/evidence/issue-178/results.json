@@ -1,0 +1,61 @@
+{
+  "api": "bbc16354bb04ea6ad3fc5c84acc723c7eccfdab6",
+  "viewports": [
+    {
+      "width": 1280,
+      "seriousCritical": [],
+      "overflow": false,
+      "correctRoleAndRemoveTargets": true,
+      "mutations": [
+        {
+          "method": "PATCH",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/8b71cf90-f298-4d4b-a7b3-39fddeebb4df",
+          "body": "{\"role\":\"viewer\"}"
+        },
+        {
+          "method": "PATCH",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/31c159e6-6afe-40ac-8a7c-7b2d32d8cab7",
+          "body": "{\"role\":\"admin\"}"
+        },
+        {
+          "method": "DELETE",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/8b71cf90-f298-4d4b-a7b3-39fddeebb4df",
+          "body": null
+        },
+        {
+          "method": "DELETE",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/31c159e6-6afe-40ac-8a7c-7b2d32d8cab7",
+          "body": null
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "seriousCritical": [],
+      "overflow": false,
+      "correctRoleAndRemoveTargets": true,
+      "mutations": [
+        {
+          "method": "PATCH",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/8b71cf90-f298-4d4b-a7b3-39fddeebb4df",
+          "body": "{\"role\":\"viewer\"}"
+        },
+        {
+          "method": "PATCH",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/31c159e6-6afe-40ac-8a7c-7b2d32d8cab7",
+          "body": "{\"role\":\"admin\"}"
+        },
+        {
+          "method": "DELETE",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/8b71cf90-f298-4d4b-a7b3-39fddeebb4df",
+          "body": null
+        },
+        {
+          "method": "DELETE",
+          "url": "http://127.0.0.1:59143/api/v1/organizations/54970346-b312-4e15-ba8d-fc61a41808b4/members/31c159e6-6afe-40ac-8a7c-7b2d32d8cab7",
+          "body": null
+        }
+      ]
+    }
+  ]
+}
