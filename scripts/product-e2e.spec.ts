@@ -63,6 +63,7 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
 
     const alerts = responseFor('alerts/history');
     await page.getByRole('link', { name: 'Settings', exact: true }).click();
+    await page.getByRole('tab', { name: 'Advanced', exact: true }).click();
     await page.getByRole('link', { name: 'Alerts', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Alert history', exact: true })).toBeVisible();
     await emptyResponse(await alerts);
