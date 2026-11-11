@@ -7,7 +7,7 @@ import { UsagePage } from './UsagePage';
 import { registerInsights } from '../../app/register-insights';
 import { registerRuns } from '../../app/register-runs';
 import { MemoryRouter } from 'react-router-dom';
-import { getSessions } from './services';
+import { dateRange, getSessions } from './services';
 
 const requests = vi.spyOn(http, 'request');
 let mode = 'data';
@@ -21,7 +21,7 @@ function respond(config: { url?: string }) {
   else if (url.pathname.endsWith('/repositories')) data = { data: [{ id: 'repo-1', full_name: 'team/widgets' }] };
   else if (url.pathname.endsWith('/agent-runs')) data = { data: mode === 'empty' ? [] : [run, { ...run, id: 'run-2', cost_usd: 2 }] };
   else if (url.pathname.endsWith('/overview')) data = { current: mode === 'missing' ? {} : { cache_savings_usd: 1.5 } };
-  else data = { buckets: mode === 'empty' ? [] : [{ start: '2026-11-11', actual_cost_usd: 4 }, { start: '2026-11-11', actual_cost_usd: 2 }] };
+  else data = { data: { unknown_price_count: mode === 'unknown' ? 1 : 0, buckets: mode === 'empty' ? [] : [{ start: '2026-11-11', actual_cost_usd: mode === 'missing-cost' ? undefined : mode === 'zero' ? 0 : 4, unknown_price_count: mode === 'unknown' ? 1 : 0 }, { start: '2026-11-11', actual_cost_usd: mode === 'zero' ? 0 : 2 }] } };
   return Promise.resolve({ data, status: 200, headers: {}, config } as never);
 }
 function setup() {
@@ -34,6 +34,9 @@ describe('Usage', () => {
   it('adds real daily costs, cache savings, splits and MR costs; combines session runs without exposing IDs', async () => {
     setup();
     await screen.findByText('$6.00 spent · USD');
+    const daily = screen.getByRole('heading', { name: 'Spend by day' }).parentElement!;
+    expect(within(daily).getByText('Nov 11, 2026')).toBeTruthy();
+    expect(within(daily).getByText('$6.00')).toBeTruthy();
     expect(screen.getByText('$1.50 saved with cache')).toBeTruthy();
     expect(screen.getByText('team/widgets · MR #42')).toBeTruthy();
     const table = screen.getByRole('table');
@@ -56,10 +59,11 @@ describe('Usage', () => {
       const url = new URL(config.url!, 'http://fixture');
       return url.pathname.endsWith('/agent-runs') && url.searchParams.get('repository_id') === 'repo-1' && url.searchParams.get('started_after')?.endsWith('T00:00:00Z') && url.searchParams.get('started_before')?.endsWith('T23:59:59.999999999Z');
     })).toBe(true));
-    expect(requests.mock.calls.some(([config]) => {
+    const today = dateRange('Today');
+    await waitFor(() => expect(requests.mock.calls.some(([config]) => {
       const url = new URL(config.url!, 'http://fixture');
-      return url.pathname.endsWith('/analytics') && url.searchParams.get('period') === 'daily' && url.searchParams.get('group_by') === 'harness' && url.searchParams.get('repository_id') === 'repo-1' && url.searchParams.get('from') === url.searchParams.get('to');
-    })).toBe(true);
+      return url.pathname.endsWith('/analytics') && url.searchParams.get('period') === 'daily' && url.searchParams.get('group_by') === 'harness' && url.searchParams.get('repository_id') === 'repo-1' && url.searchParams.get('from') === today.from && url.searchParams.get('to') === today.to;
+    })).toBe(true));
     expect(screen.queryByRole('textbox')).toBeNull();
     fireEvent.change(screen.getByLabelText('Date range'), { target: { value: 'Custom' } });
     fireEvent.change(screen.getByLabelText('From date'), { target: { value: '2099-01-01' } });
@@ -83,6 +87,20 @@ describe('Usage', () => {
     mode = 'missing'; setup();
     expect(await screen.findByText(/Savings unavailable. Sync token usage/)).toBeTruthy();
     expect(screen.queryByText('$0.00 saved with cache')).toBeNull();
+  });
+  it.each(['unknown', 'missing-cost'])('keeps %s daily spend unavailable instead of inventing zero', async (value) => {
+    mode = value; setup();
+    await screen.findByText(/Spend unavailable — sync usage/);
+    const daily = screen.getByRole('heading', { name: 'Spend by day' }).parentElement!;
+    expect(within(daily).getByText('Nov 11, 2026')).toBeTruthy();
+    expect(within(daily).getByText('Unavailable — check model pricing in Settings')).toBeTruthy();
+    expect(within(daily).queryByText('$0.00')).toBeNull();
+  });
+  it('preserves an actual numeric zero from the API', async () => {
+    mode = 'zero'; setup();
+    await screen.findByText('$0.00 spent · USD');
+    const daily = screen.getByRole('heading', { name: 'Spend by day' }).parentElement!;
+    expect(within(daily).getByText('$0.00')).toBeTruthy();
   });
   it('registers Usage as primary analytics and redirects legacy Runs', () => {
     expect(registerInsights().path).toBe('/usage');
