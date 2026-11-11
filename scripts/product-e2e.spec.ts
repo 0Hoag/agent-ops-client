@@ -18,7 +18,7 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
   };
   try {
     await page.setViewportSize({ width: 1280, height: 800 });
-    for (const path of ['/board', '/runs', '/alerts']) {
+    for (const path of ['/board', '/work', '/runs', '/alerts']) {
       await page.goto(path);
       await expect(page.getByRole('heading', { name: 'Sign in', exact: true }), `anonymous route guard: ${path}`).toBeVisible();
       await expect(page).toHaveURL(/\/login$/);
@@ -54,8 +54,20 @@ test('anonymous route guard and real login, board, runs, alerts', async ({ page 
     await page.screenshot({ path: testInfo.outputPath('board-390.png'), fullPage: true });
     await page.setViewportSize({ width: 1280, height: 800 });
 
-    const runs = responseFor('agent-runs');
     await page.getByRole('link', { name: 'Work', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Work', exact: true })).toBeVisible();
+    const work = responseFor('work');
+    await page.getByRole('main').getByLabel('Repository', { exact: true }).selectOption(repositoryData[0].id);
+    await emptyResponse(await work);
+    await expect(page.getByText('No work found.', { exact: true })).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath('work-1280.png'), fullPage: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath('work-390.png'), fullPage: true });
+    await page.setViewportSize({ width: 1280, height: 800 });
+
+    const runs = responseFor('agent-runs');
+    await page.goto('/runs');
     await expect(page.getByRole('heading', { name: 'Agent runs', exact: true })).toBeVisible();
     await emptyResponse(await runs);
     await expect(page.getByText('No runs recorded.', { exact: true })).toBeVisible();
