@@ -1,7 +1,8 @@
 import { api } from '../../../shared/api/client';
-import type { OrganizationAcceptInvitationRequest, OrganizationCreateInvitationRequest, OrganizationUpdateRoleRequest } from '../../../shared/api/generated/Api';
+import type { OrganizationAcceptInvitationRequest, OrganizationCreateInvitationRequest, OrganizationMember, OrganizationUpdateRoleRequest } from '../../../shared/api/generated/Api';
 
-export interface Membership { id: string; organization_id: string; account_id: string; role: string; }
+/** Member identity and membership fields from the published API contract. */
+export type Membership = OrganizationMember & { id: string; organization_id: string; account_id: string; role: string; };
 export interface InvitationResult { token: string; link: string; }
 
 /** Lists memberships for a single organization. */

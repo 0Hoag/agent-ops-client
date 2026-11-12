@@ -10,7 +10,7 @@ let browser;
 const requests = [];
 let releaseDelayedA;
 const delayedA = new Promise((resolve) => { releaseDelayedA = resolve; });
-const member = (org, account, role) => ({ id: `${org}-${account}`, organization_id: org, account_id: account, role });
+const member = (org, account, role) => ({ id: `${org}-${account}`, organization_id: org, account_id: account, email: `${account}@example.test`, role });
 const response = (body) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
 try {
   let ready = false;
@@ -56,18 +56,18 @@ try {
 
   await page.goto(`${base}/members`);
   await page.getByRole('heading', { name: 'Members' }).waitFor();
-  await page.getByLabel('Organization').selectOption('org-a');
+  await page.getByLabel('Organization', { exact: true }).selectOption('org-a');
   await page.waitForRequest((request) => request.url().endsWith('/organizations/org-a/members'));
   await page.getByText('Loading members…').waitFor();
   await page.screenshot({ path: 'artifacts/members/members-loading.png', fullPage: true });
-  await page.getByLabel('Organization').selectOption('org-b');
-  await page.getByText('b-only-member').waitFor();
-  assert.equal(await page.getByText('a-only-member').count(), 0, 'org A member remained visible after real organization switch');
-  assert.equal(await page.getByText('owner-b').count(), 1, 'org B members not loaded');
+  await page.getByLabel('Organization', { exact: true }).selectOption('org-b');
+  await page.getByText('b-only-member@example.test').waitFor();
+  assert.equal(await page.getByText('a-only-member@example.test').count(), 0, 'org A member remained visible after real organization switch');
+  assert.equal(await page.getByText('owner-b@example.test', { exact: true }).count(), 1, 'org B members not loaded');
   assert.equal(sessionStorageValue(await page.evaluate(() => sessionStorage.getItem('agent-ops-token'))), 'token-org-b');
   releaseDelayedA();
   await delay(250);
-  assert.equal(await page.getByText('a-only-member').count(), 0, 'delayed org A response reintroduced stale member');
+  assert.equal(await page.getByText('a-only-member@example.test').count(), 0, 'delayed org A response reintroduced stale member');
   await page.screenshot({ path: 'artifacts/members/organization-switched.png', fullPage: true });
   assert(requests.some((item) => item.path.endsWith('/auth/select-organization')));
   assert(requests.some((item) => item.path.endsWith('/organizations/org-a/members') && item.authorization === 'Bearer token-org-a'));

@@ -435,6 +435,16 @@ export interface OrganizationCreateRequest {
   name: string;
 }
 
+export interface OrganizationMember {
+  account_id?: string;
+  created_at?: string;
+  email?: string;
+  id?: string;
+  organization_id?: string;
+  role?: string;
+  updated_at?: string;
+}
+
 export interface OrganizationUpdateRoleRequest {
   role: string;
 }
@@ -705,12 +715,15 @@ export class HttpClient<SecurityDataType = unknown> {
     };
     const response = await this.instance.request(config);
     const request = this.instance.getUri(config);
-    return new Response(
-      config.responseType === "text"
+    const body = [204, 205, 304].includes(response.status)
+      ? null
+      : config.responseType === "text"
         ? String(response.data)
-        : JSON.stringify(response.data),
-      { status: response.status, headers: { "x-request-url": request } },
-    );
+        : JSON.stringify(response.data);
+    return new Response(body, {
+      status: response.status,
+      headers: { "x-request-url": request },
+    });
   }
 
   private baseApiParams: RequestParams = {
@@ -875,21 +888,22 @@ export class HttpClient<SecurityDataType = unknown> {
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 
-      const data = !responseFormat
-        ? r
-        : await response[responseFormat]()
-            .then((data) => {
-              if (r.ok) {
-                r.data = data;
-              } else {
-                r.error = data;
-              }
-              return r;
-            })
-            .catch((e) => {
-              r.error = e;
-              return r;
-            });
+      const data =
+        !responseFormat || response.body === null
+          ? r
+          : await response[responseFormat]()
+              .then((data) => {
+                if (r.ok) {
+                  r.data = data;
+                } else {
+                  r.error = data;
+                }
+                return r;
+              })
+              .catch((e) => {
+                r.error = e;
+                return r;
+              });
 
       if (cancelToken) {
         this.abortControllers.delete(cancelToken);
@@ -1692,7 +1706,12 @@ export class Api<SecurityDataType extends unknown> {
       organizationId: string,
       params: RequestParams = {},
     ) =>
-      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+      this.http.request<
+        ResponseSuccessResponse & {
+          data?: OrganizationMember[];
+        },
+        ResponseErrorResponse
+      >({
         path: `/api/v1/organizations/${organizationId}/members`,
         method: "GET",
         format: "json",
