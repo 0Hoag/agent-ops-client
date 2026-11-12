@@ -1,0 +1,9 @@
+{
+  "mobileNavigation": "Tab order + Enter to Work; closed after activation",
+  "focus": {
+    "outline": "solid",
+    "width": "2px"
+  },
+  "settingsTabs": "ArrowRight, End, Home select and focus tabs",
+  "mainFlows": "1280/390: date preset; Usage → Session → Usage; onboarding → Agent setup; Work → detail, all keyboard activated"
+}

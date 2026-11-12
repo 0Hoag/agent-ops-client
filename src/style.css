@@ -3,3 +3,17 @@
 :root[data-theme='dark'] { color-scheme: dark; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --muted: #94a3b8; --line: #334155; --accent: #818cf8; --good: #4ade80; --warn: #fbbf24; --bad: #f87171; }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: inherit; background: var(--bg); color: var(--text); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Legacy neutral utilities must follow the same theme as token-based panels. */
+:root[data-theme='dark'] :is(.bg-white, .bg-slate-50, .bg-slate-100) { background-color: var(--surface); }
+:root[data-theme='dark'] :is(.text-slate-500, .text-slate-600) { color: var(--muted); }
+:root[data-theme='dark'] .text-blue-700 { color: var(--accent); }
+@media (width < 640px) {
+  .responsive-table { display: block; min-width: 0; }
+  .responsive-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .responsive-table tbody { display: block; }
+  .responsive-table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .responsive-table td { display: grid; gap: 4px; padding: 12px; overflow-wrap: anywhere; }
+  .responsive-table td:first-child { grid-column: 1 / -1; }
+  .responsive-table td::before { content: attr(data-label); font-weight: 600; }
+}

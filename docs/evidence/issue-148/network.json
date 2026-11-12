@@ -1,0 +1,1767 @@
+[
+  {
+    "path": "/api/v1/auth/login",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/select-organization",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs/cecc4c9b-d3ba-412c-8220-e2cd2c8ada14/timeline",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": "empty"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 503,
+    "fixture": "error"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations/3489e80c-6176-4009-b937-6128e4bd1fad/members",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": "loading"
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs/cecc4c9b-d3ba-412c-8220-e2cd2c8ada14/timeline",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work/issue/148",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs/cecc4c9b-d3ba-412c-8220-e2cd2c8ada14/timeline",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-runs",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/agent-run-prices/missing",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/insights/analytics",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/overview",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/auth/session",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/organizations",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/repositories",
+    "status": 200,
+    "fixture": null
+  },
+  {
+    "path": "/api/v1/work/issue/148",
+    "status": 200,
+    "fixture": null
+  }
+]

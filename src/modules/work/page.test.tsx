@@ -71,6 +71,8 @@ describe('WorkPage', () => {
     expect(within(row).getByTitle('Jan 1, 2025, 12:00:00 AM UTC')).toBeTruthy();
     expect(within(row).getByText('2')).toBeTruthy();
     expect(within(row).getByText('$1.25')).toBeTruthy();
+    expect(screen.getByRole('table').classList.contains('responsive-table')).toBe(true);
+    expect(within(row).getAllByRole('cell').map((cell) => cell.getAttribute('data-label'))).toEqual(['Work', 'Status / CI', 'Author', 'Age', 'Runs', 'Cost']);
     expect(screen.getByRole('button', { name: 'Update docs' })).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Search work'), { target: { value: 'login' } });
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Update docs' })).toBeNull());

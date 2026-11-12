@@ -34,11 +34,11 @@ export function MembersPage() {
   return <section><h1 className="mb-5 text-2xl font-semibold">Members</h1>
     {members.isPending && <p role="status">Loading members…</p>}{members.isError && <p role="alert">Unable to load members: {members.error.message}</p>}
     {members.data?.length === 0 && <p>No members found.</p>}
-    {members.data && <div className="overflow-x-auto"><table className="w-full bg-white text-left text-sm"><thead><tr><th className="p-3">Account</th><th className="p-3">Role</th><th><span className="sr-only">Actions</span></th></tr></thead><tbody>{members.data.map((member) => {
+    {members.data && <div className="overflow-x-auto"><table className="responsive-table w-full bg-white text-left text-sm"><thead><tr><th className="p-3">Account</th><th className="p-3">Role</th><th><span className="sr-only">Actions</span></th></tr></thead><tbody>{members.data.map((member) => {
       const email = member.email?.trim();
       return <tr className="border-t" key={member.account_id}>
-        <td className="p-3 [overflow-wrap:anywhere]">{email || <><span>Identity unavailable</span><p>Reload members. If the identity is still missing, contact your organization administrator before changing this membership.</p><button className="underline" onClick={() => void members.refetch()}>Reload members</button></>}</td>
-        <td className="p-3">{member.role}</td>
+        <td data-label="Account" className="p-3 [overflow-wrap:anywhere]">{email || <><span>Identity unavailable</span><p>Reload members. If the identity is still missing, contact your organization administrator before changing this membership.</p><button className="underline" onClick={() => void members.refetch()}>Reload members</button></>}</td>
+        <td data-label="Role" className="p-3">{member.role}</td>
         <td className="p-3">{email && canManage && member.account_id !== session.data?.account_id && <><select aria-label={`Role for ${email}`} value={member.role} onChange={(event) => update.mutate({ id: member.account_id, value: event.target.value })}>{roles.map((item) => <option key={item}>{item}</option>)}</select><button className="ml-3" aria-label={`Remove ${email}`} onClick={() => remove.mutate(member.account_id)}>Remove</button></>}</td>
       </tr>;
     })}</tbody></table></div>}

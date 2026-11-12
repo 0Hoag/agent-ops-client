@@ -28,6 +28,14 @@ function setup(members: { account_id: string; email?: string; role: string }[] =
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe('member identities', () => {
+  it('keeps account and role labels when member rows reflow on mobile', async () => {
+    setup();
+    expect((await screen.findByText('owner@example.test')).getAttribute('data-label')).toBe('Account');
+    expect(screen.getByText('owner').getAttribute('data-label')).toBe('Role');
+    expect(screen.getByRole('table').classList.contains('responsive-table')).toBe(true);
+    expect(screen.getByRole('button', { name: 'Create invitation link' })).toBeTruthy();
+  });
+
   it('associates distinct real emails and role/remove actions with the correct account IDs', async () => {
     const request = setup();
     for (const [email, id, role] of [['alice@example.test', alice, 'admin'], ['bob@example.test', bob, 'member']]) {

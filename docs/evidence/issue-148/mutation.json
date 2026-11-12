@@ -1,0 +1,6 @@
+{
+  "path": "src/modules/settings/SettingsPage.tsx",
+  "original": "40e738f353fc74ca6e24b07f8e2e474c110da70a529e2ab7776108b054792fa6",
+  "broken": "40ef7135bc1e9289fb2af6f4b2cb2da1384eb5ecc7ef8d834eb665ae5dcd5a1a",
+  "mutation": "Remove required tablist parent from Settings tabs"
+}
