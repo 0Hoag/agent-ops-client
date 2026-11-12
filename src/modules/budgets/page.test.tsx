@@ -19,14 +19,14 @@ function setup() {
     const url = String(config.url);
     if (url.endsWith('/api/v1/auth/session')) return response(config, { account_id: 'acct-1', organization_id: 'org-1' });
     if (url.endsWith('/api/v1/organizations/org-1/members')) return response(config, { data: [{ account_id: 'acct-1', role }] });
-    if (url.endsWith('/api/v1/budgets') && config.method === 'get') { calls.push('list'); return response(config, [...budgets]); }
+    if (url.endsWith('/api/v1/budgets') && config.method === 'get') { calls.push('list'); return response(config, { data: [...budgets] }); }
     if (url.endsWith('/api/v1/budgets') && config.method === 'post') {
       calls.push('create'); const input = JSON.parse(config.data as string) as BudgetRequest; writes.push(input);
-      const created = { id: 'budget-2', ...input }; budgets.push(created); return response(config, created);
+      const created = { id: 'budget-2', ...input }; budgets.push(created); return response(config, { data: created });
     }
     if (url.endsWith('/api/v1/budgets/budget-2') && config.method === 'patch') {
       calls.push('update'); const input = JSON.parse(config.data as string) as BudgetRequest; writes.push(input);
-      budgets = budgets.map((budget) => budget.id === 'budget-2' ? { ...budget, ...input } : budget); return response(config, budgets[1]);
+      budgets = budgets.map((budget) => budget.id === 'budget-2' ? { ...budget, ...input } : budget); return response(config, { data: budgets[1] });
     }
     if (url.endsWith('/api/v1/budgets/budget-2') && config.method === 'delete') { calls.push('delete'); budgets = budgets.filter((budget) => budget.id !== 'budget-2'); return response(config, {}); }
     return response(config, {});
