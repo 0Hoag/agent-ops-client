@@ -3,6 +3,7 @@ import { RepositoriesPage } from '../repositories/page';
 import { PricingPage } from '../pricing/PricingPage';
 import { MembersPage } from '../members/MembersPage';
 import { useSetupRepositories } from './services';
+import { AgentSetupCommand } from './components/AgentSetupCommand';
 
 const tabs = ['Repositories', 'Agent setup', 'Model prices', 'Members', 'Advanced'] as const;
 type Tab = typeof tabs[number];
@@ -18,7 +19,6 @@ export function SettingsPage() {
   }, []);
   const [repository, setRepository] = useState(localStorage.getItem('agent-ops-repository') ?? '');
   const { session, repositories } = useSetupRepositories(tab === 'Agent setup');
-  const command = `agent-ops watch --repository ${repository || '<repository>'} --token ${sessionStorage.getItem('agent-ops-token') ? '••••••••' : '<token>'}`;
   return <section className="min-w-0 p-4"><h1 className="mb-2 text-2xl font-semibold">Settings</h1><p className="mb-5 text-slate-600">Manage connected repositories, agents, prices and access.</p>
     <div role="tablist" aria-label="Settings tabs" className="mb-6 flex flex-wrap gap-2">{tabs.map((item, index) => <button key={item} id={`settings-tab-${tabHash(item)}`} role="tab" aria-controls="settings-panel" aria-selected={tab === item} tabIndex={tab === item ? 0 : -1} className="rounded border px-3 py-2" onClick={() => { setTab(item); window.location.hash = tabHash(item); }} onKeyDown={(event) => {
       const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : undefined;
@@ -36,7 +36,7 @@ export function SettingsPage() {
       {repositories.isError && <p role="alert">Unable to load repositories. <button onClick={() => void repositories.refetch()}>Retry</button></p>}
       {repositories.data?.length === 0 && <a className="underline" href="/settings/advanced#repositories">Connect a repository first</a>}
       <label className="grid min-w-0 gap-1">Repository<select aria-label="Repository" className="min-w-0 max-w-full rounded border p-2" value={repository} onChange={(event) => { setRepository(event.target.value); localStorage.setItem('agent-ops-repository', event.target.value); }}><option value="">Select repository</option>{repositories.data?.map((repo) => <option key={repo.id} value={repo.id}>{repo.full_name}</option>)}</select></label>
-      <p>Run this command to connect your agent:</p><code className="break-all rounded bg-slate-100 p-3">{command}</code><button className="w-fit rounded border p-2" onClick={() => void navigator.clipboard.writeText(command)}>Copy command</button>
+      <AgentSetupCommand repository={repositories.isSuccess && !repositories.isFetching && !session.isError && repositories.data?.some((repo) => repo.id === repository) ? repository : ''} />
       <a className="underline" href="/#getting-started">Check first session progress</a>
     </div>}
      {tab === 'Advanced' && <nav className="grid max-w-sm gap-2">{[['Batches', '/waves'], ['Agents', '/work'], ['Logs', '/runs'], ['Budgets', '/budgets'], ['Alerts', '/alerts']].map(([label, href]) => <a className="rounded border p-3" key={href} href={href}>{label}</a>)}</nav>}

@@ -9,7 +9,20 @@ describe('SettingsPage', () => {
   beforeEach(() => {
     vi.spyOn(http, 'request').mockImplementation(async (config) => ({ data: config.url?.includes('/auth/session') ? { organization_id: 'org-a' } : { data: [] }, status: 200 }));
   });
-  afterEach(() => { cleanup(); window.location.hash = ''; vi.restoreAllMocks(); localStorage.clear(); });
+  afterEach(() => { cleanup(); window.location.hash = ''; vi.restoreAllMocks(); localStorage.clear(); sessionStorage.clear(); });
+
+  it('never presents a masked login credential as an ingestion command', async () => {
+    window.location.hash = 'agent-setup';
+    sessionStorage.setItem('agent-ops-token', 'disposable-login-token');
+    vi.spyOn(http, 'request').mockImplementation(async (config) => ({
+      data: config.url?.includes('/auth/session') ? { organization_id: 'org-a' } : { data: [{ id: 'repo-a', full_name: 'team/widgets' }] }, status: 200,
+    }));
+    render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
+    await screen.findByRole('option', { name: 'team/widgets' });
+    fireEvent.change(screen.getByLabelText('Repository'), { target: { value: 'repo-a' } });
+    expect(screen.getByRole('tabpanel').textContent).not.toMatch(/••••|<token>|--token/);
+    expect(screen.getByText(/deployment administrator/)).toBeTruthy();
+  });
 
   it('loads connected repositories for the ingestion destination and generates its command', async () => {
     window.location.hash = 'agent-setup';
@@ -19,8 +32,20 @@ describe('SettingsPage', () => {
     render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
     await screen.findByRole('option', { name: 'team/widgets' });
     fireEvent.change(screen.getByLabelText('Repository'), { target: { value: 'repo-a' } });
-    expect(screen.getByText(/agent-ops watch --repository repo-a/)).toBeTruthy();
+    expect((screen.getByRole('button', { name: 'Copy command' }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText('Transcript file path'), { target: { value: '/sessions/example.jsonl' } });
+    expect(screen.getByText(/agentops push.*--repository-id 'repo-a'/)).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Check first session progress' }).getAttribute('href')).toBe('/#getting-started');
+  });
+
+  it('does not prepare a command for a stale stored repository', async () => {
+    window.location.hash = 'agent-setup';
+    localStorage.setItem('agent-ops-repository', 'old-org-repository');
+    render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
+    await screen.findByRole('link', { name: 'Connect a repository first' });
+    fireEvent.change(screen.getByLabelText('Transcript file path'), { target: { value: '/sessions/example.jsonl' } });
+    expect((screen.getByRole('button', { name: 'Copy command' }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByText(/agentops push/)).toBeNull();
   });
 
   it.each([['agent-setup', 'Agent setup'], ['model-prices', 'Model prices'], ['repositories', 'Repositories']])('opens the %s deep link', (hash, name) => {
