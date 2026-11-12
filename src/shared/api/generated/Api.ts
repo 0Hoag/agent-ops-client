@@ -435,6 +435,16 @@ export interface OrganizationCreateRequest {
   name: string;
 }
 
+export interface OrganizationMember {
+  account_id?: string;
+  created_at?: string;
+  email?: string;
+  id?: string;
+  organization_id?: string;
+  role?: string;
+  updated_at?: string;
+}
+
 export interface OrganizationUpdateRoleRequest {
   role: string;
 }
@@ -1696,7 +1706,12 @@ export class Api<SecurityDataType extends unknown> {
       organizationId: string,
       params: RequestParams = {},
     ) =>
-      this.http.request<ResponseSuccessResponse, ResponseErrorResponse>({
+      this.http.request<
+        ResponseSuccessResponse & {
+          data?: OrganizationMember[];
+        },
+        ResponseErrorResponse
+      >({
         path: `/api/v1/organizations/${organizationId}/members`,
         method: "GET",
         format: "json",

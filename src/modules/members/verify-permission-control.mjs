@@ -122,11 +122,11 @@ async function scenario(expectFailure) {
       const url = new URL(request.url());
       if (url.pathname.endsWith('/auth/session')) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ email: 'viewer@example.test', account_id: 'viewer-1', organization_id: 'org-1' }) });
       if (url.pathname.endsWith('/organizations')) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [{ id: 'org-1', name: 'Organization 1' }] }) });
-      if (url.pathname.endsWith('/organizations/org-1/members')) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [{ id: 'membership-viewer', organization_id: 'org-1', account_id: 'viewer-1', role: 'viewer' }, { id: 'membership-peer', organization_id: 'org-1', account_id: 'peer-1', role: 'member' }] }) });
+      if (url.pathname.endsWith('/organizations/org-1/members')) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [{ id: 'membership-viewer', organization_id: 'org-1', account_id: 'viewer-1', email: 'viewer@example.test', role: 'viewer' }, { id: 'membership-peer', organization_id: 'org-1', account_id: 'peer-1', email: 'peer@example.test', role: 'member' }] }) });
       throw new Error(`unexpected API request ${request.method()} ${url.pathname}`);
     });
     await page.goto(`http://127.0.0.1:${port}/members`);
-    await page.getByText('peer-1').waitFor();
+    await page.getByText('peer@example.test', { exact: true }).waitFor();
     owned = captureOwned([{ name: 'preview', pid: server.pid }, { name: 'browser', pid: browserPid }]);
     // This is deliberately the same user-facing assertion for baseline and mutant builds.
     const inviteVisible = await page.getByRole('button', { name: 'Create invitation link' }).count();
