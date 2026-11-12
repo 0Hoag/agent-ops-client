@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../shared/api/client';
 
-export type WorkFilters = { repository_id: string; state?: string; q?: string };
+/** The API returns its fixed page size in meta.per_page. */
+export type WorkFilters = { repository_id: string; state?: string; q?: string; page?: number };
 export function useWorkRepositories() {
   return useQuery({ queryKey: ['work-repositories'], queryFn: () => api.api.v1RepositoriesList().then(({ data }) => data.data ?? []) });
 }
