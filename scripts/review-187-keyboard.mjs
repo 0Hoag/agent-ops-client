@@ -33,16 +33,14 @@ export async function keyboardReview(page, base, repository, width, theme) {
   results.push('Work navigation activated by keyboard; mobile drawer closed');
   const repo = page.locator('main').getByRole('combobox', { name: 'Repository', exact: true });
   await focus(repo);
-  await page.keyboard.press('Home');
-  await page.keyboard.press('ArrowDown');
+  await page.keyboard.type('review-183/hosting');
   await page.keyboard.press('Tab');
   assert.equal(await repo.inputValue(), repository);
   const search = page.getByRole('textbox', { name: 'Search work' });
   await focus(search);
   await page.keyboard.type('Improve hosting deployment 1');
   await focus(page.getByRole('combobox', { name: 'Status', exact: true }));
-  await page.keyboard.press('Home');
-  await page.keyboard.press('ArrowDown');
+  await page.keyboard.type('Open');
   await page.keyboard.press('Tab');
   assert.equal(await page.getByRole('combobox', { name: 'Status', exact: true }).inputValue(), 'open');
   await page.waitForLoadState('networkidle');
