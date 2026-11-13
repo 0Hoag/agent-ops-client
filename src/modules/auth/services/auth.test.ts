@@ -6,7 +6,13 @@ vi.mock('./client', () => ({ authClient: { api: { v1AuthLoginCreate: loginCall, 
 import { hasToken, login, logout, validateSession, listOrganizations, selectOrganization } from './auth';
 
 describe('authentication service', () => {
-  beforeEach(() => { const store = new Map<string, string>(); vi.stubGlobal('sessionStorage', { getItem: (key: string) => store.get(key) ?? null, setItem: (key: string, value: string) => store.set(key, value), removeItem: (key: string) => store.delete(key), clear: () => store.clear() }); vi.stubGlobal('window', { dispatchEvent: vi.fn() }); loginCall.mockReset(); sessionCall.mockReset(); organizationsCall.mockReset(); selectCall.mockReset(); });
+  beforeEach(() => {
+    for (const name of ['sessionStorage', 'localStorage']) {
+      const store = new Map<string, string>();
+      vi.stubGlobal(name, { getItem: (key: string) => store.get(key) ?? null, setItem: (key: string, value: string) => store.set(key, value), removeItem: (key: string) => store.delete(key), clear: () => store.clear() });
+    }
+    vi.stubGlobal('window', { dispatchEvent: vi.fn() }); loginCall.mockReset(); sessionCall.mockReset(); organizationsCall.mockReset(); selectCall.mockReset();
+  });
   it('stores a successful login token and validates using Authorization-enabled shared client', async () => {
     loginCall.mockResolvedValue({ data: { token: 'jwt-test' } });
     sessionCall.mockResolvedValue({ data: { email: 'test@example.com', organization_id: 'org-a' } });
@@ -34,8 +40,10 @@ describe('authentication service', () => {
   });
   it('logs out by removing the token', () => {
     sessionStorage.setItem('agent-ops-token', 'jwt');
+    localStorage.setItem('agent-ops-repository', 'repo-a');
     logout();
     expect(hasToken()).toBe(false);
+    expect(localStorage.getItem('agent-ops-repository')).toBeNull();
   });
   it('fails if a mutation skips session validation after login', async () => {
     loginCall.mockResolvedValue({ data: { token: 'jwt-test' } });
@@ -50,8 +58,10 @@ describe('authentication service', () => {
     organizationsCall.mockResolvedValue({ data: { data: [{ id: 'org-a', name: 'A' }] } });
     expect(await listOrganizations()).toEqual([{ id: 'org-a', name: 'A' }]);
     selectCall.mockRejectedValue(new Error('selection failed'));
+    localStorage.setItem('agent-ops-repository', 'repo-a');
     await expect(selectOrganization('org-a')).rejects.toThrow('selection failed');
     expect(sessionStorage.getItem('agent-ops-token')).toBe('account-token');
+    expect(localStorage.getItem('agent-ops-repository')).toBe('repo-a');
   });
   it('replaces the account token only after successful selection', async () => {
     sessionStorage.setItem('agent-ops-token', 'account-token');
