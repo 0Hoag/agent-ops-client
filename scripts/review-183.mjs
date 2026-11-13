@@ -9,7 +9,10 @@ import { spawnSync } from 'node:child_process';
 const root = process.cwd();
 const backend = '/Users/zeross/agent-ops';
 const baselineRevision = '6bf1525350b9976432d04ed259a4b0b2c791ac14';
-const artifacts = resolve('.agent-runs/W18R8-browser-183');
+const overviewReview = process.argv.includes('--overview-195');
+const compare = process.argv.includes('--compare') || overviewReview;
+const browserScript = overviewReview ? 'scripts/review-195-browser.mjs' : 'scripts/review-183-browser.mjs';
+const artifacts = resolve(overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
 mkdirSync(artifacts, { recursive: true });
 const project = `w18r8-183-${process.pid}`;
 const env = { ...process.env, CLIENT_DIR: root, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(16).toString('hex'), AGENT_RUN_TOKEN: randomBytes(24).toString('hex'), PRODUCT_E2E_EMAIL: 'review-183@example.invalid', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex'), PRODUCT_E2E_ARTIFACTS: artifacts };
@@ -58,14 +61,14 @@ try {
   env.PRODUCTION_CLIENT_PORT = await port();
   env.POSTGRES_HOST_PORT = await port();
   env.PRODUCT_E2E_URL = `http://127.0.0.1:${env.PRODUCTION_CLIENT_PORT}`;
-  if (process.argv.includes('--compare')) {
+  if (compare) {
     const baseline = `${artifacts}/baseline-source`;
     for (const path of run('git', ['ls-files', '-z']).split('\0').filter(Boolean)) {
       mkdirSync(dirname(`${baseline}/${path}`), { recursive: true });
       cpSync(`${root}/${path}`, `${baseline}/${path}`);
     }
-    for (const path of ['src/modules/budgets/services/client.ts', 'src/modules/pricing/PricingPage.tsx']) {
-      writeFileSync(`${baseline}/${path}`, run('git', ['show', `${baselineRevision}:${path}`]) + '\n');
+    for (const path of overviewReview ? ['src/modules/overview/page.tsx'] : ['src/modules/budgets/services/client.ts', 'src/modules/pricing/PricingPage.tsx']) {
+      writeFileSync(`${baseline}/${path}`, run('git', ['show', `${overviewReview ? 'aa63b861dc23ac9b09b610c004ebafce518da273' : baselineRevision}:${path}`]) + '\n');
     }
     env.CLIENT_DIR = baseline;
     env.W18_ASSERT_FIXES = '1';
@@ -114,11 +117,11 @@ try {
   writeFileSync(`${artifacts}/seed.sql`, sql);
   run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-v', 'ON_ERROR_STOP=1'], { input: sql });
   stage = 'browser';
-  if (process.argv.includes('--compare')) {
+  if (compare) {
     env.PRODUCT_E2E_ARTIFACTS = `${artifacts}/before`;
     mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
-    const before = run('node', ['scripts/review-183-browser.mjs'], { expectedStatus: 1 });
-    assert.match(before, /Budgets regression: expected empty state, not a blank page/);
+    const before = run('node', [browserScript], { expectedStatus: 1 });
+    assert.match(before, overviewReview ? /Overview spend must disclose missing model prices beside its headline/ : /Budgets regression: expected empty state, not a blank page/);
     stage = 'build-fixed-client-same-database';
     env.CLIENT_DIR = root;
     compose('up', '-d', '--build', '--wait', 'client');
@@ -126,7 +129,7 @@ try {
     env.PRODUCT_E2E_ARTIFACTS = `${artifacts}/after`;
     mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
   }
-  run('node', ['scripts/review-183-browser.mjs']);
+  run('node', [browserScript]);
   console.log('PASS real-browser review');
 } catch (error) {
   logs.push(`FAIL stage=${stage}: ${redact(error.stack || String(error))}`); save();

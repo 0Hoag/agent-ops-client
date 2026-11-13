@@ -19,11 +19,11 @@ function respond(config: { url?: string }) {
   else if (url.pathname.endsWith('/agent-run-prices/missing')) data = { data: mode === 'missing-price' ? ['model-a'] : [] };
   else if (url.pathname.endsWith('/agent-run-prices')) data = { data: mode === 'empty' || organization === 'org-b' ? [] : [{ model: 'model-a', effective_date: mode === 'future-price' ? '2099-01-01' : `${new Date().toISOString().slice(0, 10)}T00:00:00Z` }] };
   else if (url.pathname.endsWith('/overview')) data = { data: {
-    current: { spend_usd: 12.5, cost_per_merged_pr: 6.25, cache_hit_rate: 0.4, rework_rate: 0.1 },
+    current: { spend_usd: 12.5, cost_per_merged_pr: 6.25, cache_hit_rate: 0.4, rework_rate: 0.1, models_without_price: mode === 'partial' ? ['review-unpriced'] : [] },
     previous: { spend_usd: 10, cost_per_merged_pr: 5, cache_hit_rate: 0.3, rework_rate: 0.2 },
-    attention: [{ message: 'Repeated failures', run_id: 'run-1' }],
+    attention: mode === 'partial' ? Array.from({ length: 75 }, (_, index) => ({ kind: 'stale_pr', repository_id: 'repo-1', pr_number: index + 1, message: 'open pull request has had no activity for at least 3 days' })) : [{ message: 'Repeated failures', run_id: 'run-1' }],
   } };
-  else data = { data: { buckets: [{ start: '2026-10-01', actual_cost_usd: 12.5 }] } };
+  else data = { data: { buckets: [{ start: '2026-10-01', actual_cost_usd: 12.5, unknown_price_count: mode === 'partial' ? 1 : 0 }, ...(mode === 'partial' ? [{ start: '2026-10-02' }] : [])] } };
   return Promise.resolve({ data, status: 200, headers: {}, config } as never);
 }
 function setup() {
@@ -36,6 +36,31 @@ describe('OverviewPage', () => {
   beforeEach(() => { mode = 'data'; organization = 'org-a'; localStorage.clear(); requests.mockImplementation(respond); });
   afterEach(() => { cleanup(); vi.clearAllMocks(); });
 
+  it('qualifies the unchanged priced subtotal beside the headline with missing models and pricing action', async () => {
+    mode = 'partial'; setup();
+    await screen.findByText(/priced subtotal · Partial spend/);
+    const headline = await screen.findByRole('region', { name: 'Spend summary' });
+    expect(headline.textContent).toContain('$12.50 priced subtotal · Partial spend');
+    expect(headline.textContent).toContain('Excludes unpriced usage: review-unpriced');
+    expect(within(headline).getByRole('link', { name: 'Set model prices' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
+    expect(screen.getByLabelText('Daily spend chart').textContent).toContain('Oct 1');
+    expect(screen.getByLabelText('Daily spend chart').textContent).toContain('Not priced');
+    expect(screen.getByLabelText('Daily spend chart').textContent).not.toContain('$0.00');
+    expect(screen.queryByText('+$2.50 vs previous period')).toBeNull();
+  });
+
+  it('summarizes 75 attention records in a keyboard-native disclosure without losing any record', async () => {
+    mode = 'partial'; setup();
+    const attention = await screen.findByRole('region', { name: 'Needs attention' });
+    const disclosure = attention.querySelector('details')!;
+    expect(disclosure).toBeTruthy();
+    expect(disclosure.open).toBe(false);
+    expect(disclosure.querySelector('summary')?.textContent).toBe('75 merge requests inactive for 3+ days');
+    fireEvent.click(disclosure.querySelector('summary')!);
+    expect(within(attention).getAllByRole('listitem')).toHaveLength(75);
+    expect(within(attention).getByText('PR #75')).toBeTruthy();
+  });
+
   it('renders current and previous metrics, daily spend, and attention from API data', async () => {
     setup();
     await screen.findByText('+$2.50 vs previous period');
@@ -43,6 +68,7 @@ describe('OverviewPage', () => {
     expect(screen.getByText('$6.25')).toBeTruthy();
     expect(screen.getByText('40.0%')).toBeTruthy();
     expect(screen.getByText('10.0%')).toBeTruthy();
+    fireEvent.click(screen.getByText('1 other attention item'));
     expect(screen.getByText('Repeated failures')).toBeTruthy();
     expect(screen.getByRole('link', { name: 'View run' }).getAttribute('href')).toBe('/runs/run-1');
     expect(screen.getByLabelText('Daily spend chart').textContent).toContain('$12.50');
