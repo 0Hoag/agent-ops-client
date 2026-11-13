@@ -17,10 +17,10 @@ export function AlertsPage() {
     return () => { generation++; window.removeEventListener('organization:will-change', clear); window.removeEventListener('organization:changed', refresh); };
   }, [attempt]);
   const query = useQuery({ queryKey: ['alert-history', org, page, perPage], queryFn: () => listAlertHistory(page, perPage), enabled: !!org });
-  return <section><h1 className="mb-5 text-2xl font-semibold">Alert history</h1>
+  return <section><h1 className="mb-2 text-2xl font-semibold">Alerts</h1><p className="mb-5">Review issues that need your attention, configure where notifications go, and set the thresholds that trigger alerts.</p>
     {!org && !sessionError && <p role="status">Select an organization to view alert history.</p>}
     {sessionError && <p role="alert">Unable to load alert organization. <button onClick={() => setAttempt((value) => value + 1)}>Retry</button></p>}
-    {org && <><ChannelSettings organizationId={org} /><ThresholdSettings organizationId={org} /><label>Items per page<select value={perPage} onChange={(event) => { setPerPage(Number(event.target.value)); setPage(1); }}>{[20, 50, 100].map((size) => <option key={size} value={size}>{size}</option>)}</select></label>
+    {org && <><ChannelSettings organizationId={org} /><ThresholdSettings organizationId={org} /><h2 className="mb-3 text-xl font-semibold">Alert history</h2><label>Items per page<select value={perPage} onChange={(event) => { setPerPage(Number(event.target.value)); setPage(1); }}>{[20, 50, 100].map((size) => <option key={size} value={size}>{size}</option>)}</select></label>
       {query.isPending && <p role="status">Loading alert history…</p>}
       {query.isError && <div role="alert">Unable to load alert history: {query.error.message}<button onClick={() => void query.refetch()}>Retry</button></div>}
       {query.data?.data.length === 0 && <p>No alert history found.</p>}

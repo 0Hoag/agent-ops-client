@@ -19,6 +19,7 @@ function setup() {
     const url = String(config.url);
     if (url.endsWith('/api/v1/auth/session')) return response(config, { account_id: 'acct-1', organization_id: 'org-1' });
     if (url.endsWith('/api/v1/organizations/org-1/members')) return response(config, { data: [{ account_id: 'acct-1', role }] });
+    if (url.endsWith('/api/v1/repositories')) return response(config, { data: [{ id: 'repo-1', full_name: 'team/widgets' }] });
     if (url.endsWith('/api/v1/budgets') && config.method === 'get') { calls.push('list'); return response(config, { data: [...budgets] }); }
     if (url.endsWith('/api/v1/budgets') && config.method === 'post') {
       calls.push('create'); const input = JSON.parse(config.data as string) as BudgetRequest; writes.push(input);
@@ -37,6 +38,18 @@ function setup() {
 }
 
 describe('BudgetsPage', () => {
+  it('names repository scopes and does not silently broaden an unavailable scope', async () => {
+    setup(); budgets = [{ id: 'budget-1', starts_at: '2026-01-01', repository_id: 'repo-1', wave: 'Release' }];
+    expect(await screen.findByText('Repository: team/widgets; Batch: Release')).toBeTruthy();
+    budgets = [{ ...budgets[0], repository_id: 'removed-repo' }];
+    fireEvent(window, new Event('organization:changed'));
+    expect(await screen.findByText('Repository: Repository unavailable; Batch: Release')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    expect((screen.getByRole('combobox', { name: 'Repository' }) as HTMLSelectElement).value).toBe('removed-repo');
+    fireEvent.click(screen.getByRole('button', { name: 'Update budget' }));
+    expect(screen.getByRole('alert').textContent).toContain('Choose an available repository');
+    expect(writes).toEqual([]);
+  });
   it('links an empty budget list to live setup progress', async () => {
     setup(); budgets = [];
     await screen.findByText('No budgets configured.');
@@ -55,21 +68,22 @@ describe('BudgetsPage', () => {
     expect(await screen.findByText(/2026-01-01/)).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Start date'), { target: { value: '2026-02-01' } });
     fireEvent.change(screen.getByLabelText('End date'), { target: { value: '2026-03-01' } });
-    fireEvent.change(screen.getByLabelText('Repository ID'), { target: { value: 'repo-1' } });
-    fireEvent.change(screen.getByLabelText('Wave'), { target: { value: 'W13' } });
+    await screen.findByRole('option', { name: 'team/widgets' });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Repository' }), { target: { value: 'repo-1' } });
+    fireEvent.change(screen.getByLabelText('Batch'), { target: { value: 'W13' } });
     fireEvent.change(screen.getByLabelText('USD limit'), { target: { value: '0.75' } });
     fireEvent.change(screen.getByLabelText('Token limit'), { target: { value: '250' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create budget' }));
     await waitFor(() => expect(calls).toContain('create'));
     await waitFor(() => expect(calls.filter((call) => call === 'list').length).toBeGreaterThanOrEqual(2));
     expect(client.getQueryData(['budgets', 'org-1'])).toBeTruthy();
-    expect(writes[0]).toEqual({ starts_at: '2026-02-01', ends_at: '2026-03-01', repository_id: 'repo-1', wave: 'W13', token_limit: 250, usd_limit: 0.75 });
+    expect(writes[0]).toEqual({ starts_at: '2026-02-01T00:00:00Z', ends_at: '2026-03-01T00:00:00Z', repository_id: 'repo-1', wave: 'W13', token_limit: 250, usd_limit: 0.75 });
     expect(await screen.findByText(/Token limit: 250; USD limit: 0.75/)).toBeTruthy();
     fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[1]);
     expect((screen.getByLabelText('End date') as HTMLInputElement).value).toBe('2026-03-01');
-    expect((screen.getByLabelText('Repository ID') as HTMLInputElement).value).toBe('repo-1');
+    expect((screen.getByRole('combobox', { name: 'Repository' }) as HTMLSelectElement).value).toBe('repo-1');
     fireEvent.change(screen.getByLabelText('Token limit'), { target: { value: '0' } });
-    fireEvent.change(screen.getByLabelText('Wave'), { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText('Batch'), { target: { value: '' } });
     fireEvent.click(screen.getByRole('button', { name: 'Update budget' }));
     expect(await screen.findByText(/Token limit: 0; USD limit: 0.75/)).toBeTruthy();
     expect(writes[1]).toEqual({ ...writes[0], token_limit: 0, wave: '' });

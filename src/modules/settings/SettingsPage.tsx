@@ -39,7 +39,7 @@ export function SettingsPage() {
       <AgentSetupCommand repository={repositories.isSuccess && !repositories.isFetching && !session.isError && repositories.data?.some((repo) => repo.id === repository) ? repository : ''} />
       <a className="underline" href="/#getting-started">Check first session progress</a>
     </div>}
-     {tab === 'Advanced' && <nav className="grid max-w-sm gap-2">{[['Batches', '/waves'], ['Agents', '/work'], ['Logs', '/runs'], ['Budgets', '/budgets'], ['Alerts', '/alerts']].map(([label, href]) => <a className="rounded border p-3" key={href} href={href}>{label}</a>)}</nav>}
+     {tab === 'Advanced' && <div className="grid max-w-xl gap-3"><h2 className="text-lg font-semibold">Coordinate batches and manage limits</h2><p>Start and control agents for a batch, set budgets, or choose when to receive notifications.</p><nav aria-label="Advanced controls" className="grid gap-2">{[['Batches', '/waves'], ['Agents', '/waves#agents'], ['Logs', '/waves#logs'], ['Budgets', '/budgets'], ['Alerts', '/alerts']].map(([label, href]) => <a className="rounded border p-3" key={href} href={href}>{label}</a>)}</nav><p>Agents and live logs are available for jobs started from batch controls (owner or admin required). The API does not provide a global agent inventory or a standalone log browser.</p></div>}
     </div>
   </section>;
 }

@@ -40,6 +40,7 @@ describe('AlertsPage', () => {
       expect(await screen.findByText('No alert history found.')).toBeTruthy();
       expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
       expect(screen.getByRole('heading', { name: 'Alert history' })).toBeTruthy();
+      expect(screen.getByText(/Review issues that need your attention/)).toBeTruthy();
       expect(screen.queryAllByRole('alert')).toHaveLength(0);
       expect(transport).toHaveBeenCalledTimes(2);
     } finally {

@@ -61,6 +61,8 @@ describe('SettingsPage', () => {
     fireEvent.click(screen.getByRole('tab', { name: /^Advanced$/ }));
 
     expect(screen.getByRole('link', { name: /^Alerts$/ }).getAttribute('href')).toBe('/alerts');
+    expect(screen.getByRole('link', { name: /^Agents$/ }).getAttribute('href')).toBe('/waves#agents');
+    expect(screen.getByRole('link', { name: /^Logs$/ }).getAttribute('href')).toBe('/waves#logs');
   });
 
   it('provides a labelled tablist, roving focus and an associated panel', () => {

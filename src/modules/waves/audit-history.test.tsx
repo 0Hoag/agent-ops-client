@@ -12,7 +12,7 @@ function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(<QueryClientProvider client={client}><WavesPage /></QueryClientProvider>);
 }
-describe('worker audit history', () => {
+describe('agent audit history', () => {
   afterEach(() => { cleanup(); vi.clearAllMocks(); organization = 'org-a'; });
   it('renders persisted-shaped audit rows and requests paginated pages', async () => {
     let pageTwo: unknown;
@@ -59,7 +59,7 @@ describe('worker audit history', () => {
     organization = 'org-b'; fireEvent(window, new Event('organization:will-change'));
     expect(screen.queryByText('Ada')).toBeNull();
     fireEvent(window, new Event('organization:changed'));
-    await waitFor(() => expect(screen.getByText('Select an organization to view waves.')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Select an organization to view batches.')).toBeTruthy());
     oldPending = false;
     expect(await screen.findByText('Bob')).toBeTruthy();
     releaseOld({ data: { data: [record], meta: { page: 1, per_page: 10, total: 1 } }, status: 200, statusText: 'OK', headers: {}, config: {} } as never);

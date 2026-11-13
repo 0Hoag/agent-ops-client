@@ -18,7 +18,7 @@ describe('alert threshold settings', () => {
     membership();
     const update = vi.spyOn(api.api, 'v1AlertsThresholdsUpdate').mockRejectedValueOnce(new Error('denied')).mockResolvedValue({ data: values } as never);
     mount();
-    const cache = await screen.findByLabelText('Minimum cache-hit rate (%)') as HTMLInputElement;
+     const cache = await screen.findByLabelText('Minimum cache-hit rate (0–1)') as HTMLInputElement;
     expect(cache.value).toBe('0.8');
     fireEvent.change(cache, { target: { value: '1.2' } }); fireEvent.click(screen.getByRole('button', { name: 'Save thresholds' }));
     expect((await screen.findByRole('alert')).textContent).toContain('between 0 and 1'); expect(update).not.toHaveBeenCalled();
@@ -28,7 +28,7 @@ describe('alert threshold settings', () => {
     await waitFor(() => expect(update).toHaveBeenLastCalledWith({ min_cache_hit: 0.82, silent_seconds: 300, pr_stale_seconds: 86400 }));
   });
   it('keeps member/viewer and unknown membership read-only', async () => {
-    membership('viewer'); mount(); await screen.findByLabelText('Minimum cache-hit rate (%)');
+     membership('viewer'); mount(); await screen.findByLabelText('Minimum cache-hit rate (0–1)');
     expect(screen.queryByRole('button', { name: 'Save thresholds' })).toBeNull();
   });
   it('does not treat an unverifiable membership as editable', async () => {
