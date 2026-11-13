@@ -73,3 +73,14 @@ it('preserves explicit generated-client authorization and defaults to the stored
   expect(received).toEqual(['Bearer tenant-b', 'Bearer tenant-a']);
   expect(sessionStorage.getItem(tokenKey)).toBe('tenant-a');
 });
+
+it('rejects malformed JSON before it can masquerade as successful typed API data', async () => {
+  http.defaults.adapter = async (config) => ({ data: '{invalid-json-private-body', status: 200, statusText: 'OK', headers: {}, config });
+  await expect(api.healthz.healthzList()).rejects.toThrow('The server returned an unreadable response. Please try again.');
+});
+
+it('still accepts valid JSON objects and explicit text responses', async () => {
+  http.defaults.adapter = async (config) => ({ data: config.responseType === 'text' ? 'plain text' : '{"status":"ok"}', status: 200, statusText: 'OK', headers: {}, config });
+  expect((await api.healthz.healthzList()).data).toEqual({ status: 'ok' });
+  expect((await http.get('/text', { responseType: 'text' })).data).toBe('plain text');
+});
