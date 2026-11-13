@@ -9,10 +9,11 @@ export async function listBudgetRepositories() { return (await api.api.v1Reposit
 
 export async function listBudgets(): Promise<BudgetBudget[]> { return ((await api.api.v1BudgetsList()).data as unknown as BudgetEnvelope<BudgetBudget[] | null>).data ?? []; }
 function apiDates(input: BudgetRequest): BudgetRequest {
+  const { ends_at, ...rest } = input;
   return {
-    ...input,
+    ...rest,
     ...(input.starts_at && /^\d{4}-\d{2}-\d{2}$/.test(input.starts_at) ? { starts_at: `${input.starts_at}T00:00:00Z` } : {}),
-    ...(input.ends_at && /^\d{4}-\d{2}-\d{2}$/.test(input.ends_at) ? { ends_at: `${input.ends_at}T00:00:00Z` } : {}),
+    ...(ends_at ? { ends_at: /^\d{4}-\d{2}-\d{2}$/.test(ends_at) ? `${ends_at}T00:00:00Z` : ends_at } : {}),
   };
 }
 

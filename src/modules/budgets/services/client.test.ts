@@ -22,10 +22,17 @@ describe('budget transport', () => {
     expect(list).toHaveBeenCalledOnce(); expect(create).toHaveBeenCalledWith(wire); expect(update).toHaveBeenCalledWith('b1', wire); expect(remove).toHaveBeenCalledWith('b1');
   });
 
-  it('preserves timestamps, empty dates and other fields', async () => {
-    const input = { starts_at: '2026-01-02T12:30:00+02:00', ends_at: '', token_limit: 123, usd_limit: 0.75, repository_id: 'repo', wave: 'wave-1' };
-    const create = vi.spyOn(api.api, 'v1BudgetsCreate').mockResolvedValue({ data: { data: input } } as never);
+  it('preserves timestamps and omits an empty optional end date', async () => {
+    const wire = { starts_at: '2026-01-02T12:30:00+02:00', token_limit: 123, usd_limit: 0.75, repository_id: 'repo', wave: 'wave-1' };
+    const input = { ...wire, ends_at: '' };
+    const create = vi.spyOn(api.api, 'v1BudgetsCreate').mockImplementation(async (body) => {
+      if (body.ends_at === '') throw new Error('invalid budget');
+      return { data: { data: body } } as never;
+    });
+    const update = vi.spyOn(api.api, 'v1BudgetsPartialUpdate').mockResolvedValue({ data: { data: wire } } as never);
     await createBudget(input);
-    expect(create).toHaveBeenCalledWith(input);
+    await updateBudget('b1', input);
+    expect(create).toHaveBeenCalledWith(wire);
+    expect(update).toHaveBeenCalledWith('b1', wire);
   });
 });

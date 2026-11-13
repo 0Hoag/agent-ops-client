@@ -10,8 +10,8 @@ describe('alert history transport', () => {
   });
   it('uses generated threshold GET and PUT methods without changing wire values', async () => {
     const values = { min_cache_hit: 0.8, silent_seconds: 300, pr_stale_seconds: 86400 };
-    const get = vi.spyOn(api.api, 'v1AlertsThresholdsList').mockResolvedValue({ data: values } as never);
-    const put = vi.spyOn(api.api, 'v1AlertsThresholdsUpdate').mockResolvedValue({ data: values } as never);
+    const get = vi.spyOn(api.api, 'v1AlertsThresholdsList').mockResolvedValue({ data: { status: 200, data: values } } as never);
+    const put = vi.spyOn(api.api, 'v1AlertsThresholdsUpdate').mockResolvedValue({ data: { status: 200, data: values } } as never);
     expect(await getAlertThresholds()).toEqual(values);
     expect(await updateAlertThresholds(values)).toEqual(values);
     expect(get).toHaveBeenCalledOnce(); expect(put).toHaveBeenCalledWith(values);
