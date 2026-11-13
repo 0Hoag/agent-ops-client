@@ -27,7 +27,7 @@ export function RepositoriesPage() {
   const update = useMutation({ mutationKey: ['repositories', org, 'update'], mutationFn: ({ id, input }: { id: string; input: ReturnType<typeof repositoryUpdate> }) => updateRepository(id, input), onSuccess: () => void invalidate(), onSettled: () => { client.getMutationCache().findAll({ mutationKey: ['repositories', org] }).forEach((mutation) => client.getMutationCache().remove(mutation)); } });
   const remove = useMutation({ mutationKey: ['repositories', org, 'delete'], mutationFn: deleteRepository, onSuccess: () => void invalidate(), onSettled: () => { client.getMutationCache().findAll({ mutationKey: ['repositories', org] }).forEach((mutation) => client.getMutationCache().remove(mutation)); } });
   const canEdit = role === 'owner' || role === 'admin';
-  return <section><h1 className="mb-5 text-2xl font-semibold">Repository settings</h1>
+  return <section className="readable-controls"><h1 className="mb-5 text-2xl font-semibold">Repository settings</h1>
     {!org && <p role="status">Select an organization to view repositories.</p>}
     {!!org && query.isPending && <p role="status">Loading repositories…</p>}{!!org && query.isError && <p role="alert">Unable to load repositories: {query.error.message}</p>}
     {query.data?.length === 0 && <p>No repositories configured.</p>}

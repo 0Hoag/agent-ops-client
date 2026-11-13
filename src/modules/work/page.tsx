@@ -32,7 +32,7 @@ export function WorkPage() {
       detailRegion.current?.scrollIntoView?.({ block: 'start' });
     }
   }, [selected]);
-  return <section className="min-w-0">
+  return <section className="readable-controls min-w-0">
     <header className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><h1 className="text-2xl font-semibold">Work</h1>
       <p className="text-slate-600">{query.data ? items.length ? `On this page: ${failed} work records with failing CI; ${priced.length ? `${money(cost)} recorded cost across ${priced.length} priced work records` : 'no recorded costs'}.${priced.length < items.length ? ' Other costs are unavailable; sync priced sessions.' : ''} Not repository-wide totals.` : 'No matching work to assess for attention or cost.' : 'Find work with failing CI and review its recorded session costs.'}</p></div>
       <label className="grid gap-1 text-sm">Repository<select aria-label="Repository" className="rounded border p-2" value={repository} onChange={(event) => { reset(); setRepository(event.target.value); localStorage.setItem('agent-ops-repository', event.target.value); }}><option value="">Select repository</option>{repositories.data?.map((repo) => <option key={repo.id} value={repo.id}>{repo.full_name}</option>)}</select></label>
@@ -51,9 +51,9 @@ export function WorkPage() {
         <span>Page {current}{total != null && size ? ` of ${Math.max(1, Math.ceil(total / size))}` : ''}</span>
         <button className="rounded border px-3 py-2 disabled:opacity-50" disabled={total == null || !size || current * size >= total} onClick={() => { setSelected(null); setPage(current + 1); }}>Next page</button>
       </nav>
-      {items.length ? <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      {items.length ? <div className="grid min-w-0 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 overflow-x-auto rounded border"><table className="responsive-table w-full text-left text-sm"><thead><tr className="border-b bg-slate-50">{['Work', 'Status / CI', 'Author', 'Age', 'Sessions', 'Cost'].map((label) => <th key={label} className="p-3">{label}</th>)}</tr></thead><tbody>
-          {items.map((item, index) => <tr key={`${item.kind}-${item.number}-${index}`} className="border-b hover:bg-slate-50">
+          {items.map((item, index) => <tr key={`${item.kind}-${item.number}-${index}`} aria-selected={selected?.kind === item.kind && selected?.number === item.number} className="work-row border-b">
             <td data-label="Work" className="p-3"><button className="text-left text-blue-700 underline" aria-controls="work-detail" aria-expanded={selected?.kind === item.kind && selected?.number === item.number} onClick={(event) => { if (item.kind && item.number) { trigger.current = event.currentTarget; setSelected({ kind: item.kind, number: item.number }); } }}>{item.title ?? `Work #${item.number ?? '—'}`}</button><p className="text-xs text-slate-500">{item.kind === 'pr' ? 'Merge request' : 'Issue'} #{item.number}</p></td>
             <td data-label="Status / CI" className="p-3">{item.state ?? '—'} / {item.ci_status ?? '—'}</td><td data-label="Author" className="p-3">{item.author ?? '—'}</td><td data-label="Age" className="p-3"><RelativeTime value={item.updated_at ?? item.created_at} /></td><td data-label="Sessions" className="p-3">{item.runs_count ?? '—'}</td><td data-label="Cost" className="p-3">{money(item.cost_usd)}</td>
           </tr>)}

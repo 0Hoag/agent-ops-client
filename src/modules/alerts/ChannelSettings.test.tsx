@@ -16,6 +16,23 @@ function setup(role = 'owner', channels: { kind: string; enabled: boolean; slack
 }
 describe('notification channel settings', () => {
   afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+  it('shows only the selected provider and drops unrelated draft references', async () => {
+    setup();
+    const create = vi.spyOn(api.api, 'v1AlertsChannelsCreate').mockResolvedValue({} as never);
+    mount();
+    fireEvent.change(await screen.findByLabelText('Slack webhook URL reference'), { target: { value: 'OLD_SLACK' } });
+    expect(screen.queryByLabelText('Email server reference')).toBeNull();
+    fireEvent.change(screen.getByLabelText('Notification method'), { target: { value: 'smtp' } });
+    expect(screen.queryByLabelText('Slack webhook URL reference')).toBeNull();
+    expect(screen.queryByLabelText('Telegram token reference')).toBeNull();
+    fireEvent.change(screen.getByLabelText('Email server reference'), { target: { value: 'MAIL_HOST' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create channel' }));
+    await waitFor(() => expect(create).toHaveBeenCalledWith(expect.objectContaining({ kind: 'smtp', smtp_host_env_ref: 'MAIL_HOST' })));
+    expect(create.mock.calls[0][0]).not.toHaveProperty('slack_webhook_url_env_ref');
+    fireEvent.change(screen.getByLabelText('Notification method'), { target: { value: 'telegram' } });
+    expect(screen.getByLabelText('Telegram token reference')).toBeTruthy();
+    expect(screen.queryByLabelText('Email server reference')).toBeNull();
+  });
   it('creates, edits, toggles, and deletes environment references without exposing values', async () => {
     setup();
     let saved: { kind: string; enabled: boolean; slack_webhook_url_env_ref?: string }[] = [];

@@ -19,7 +19,7 @@ export function SettingsPage() {
   }, []);
   const [repository, setRepository] = useState(localStorage.getItem('agent-ops-repository') ?? '');
   const { session, repositories } = useSetupRepositories(tab === 'Agent setup');
-  return <section className="min-w-0 p-4"><h1 className="mb-2 text-2xl font-semibold">Settings</h1><p className="mb-5 text-slate-600">Manage connected repositories, agents, prices and access.</p>
+  return <section className="readable-controls min-w-0 p-4"><h1 className="mb-2 text-2xl font-semibold">Settings</h1><p className="mb-5 text-slate-600">Manage connected repositories, agents, prices and access.</p>
     <div role="tablist" aria-label="Settings tabs" className="mb-6 flex flex-wrap gap-2">{tabs.map((item, index) => <button key={item} id={`settings-tab-${tabHash(item)}`} role="tab" aria-controls="settings-panel" aria-selected={tab === item} tabIndex={tab === item ? 0 : -1} className="rounded border px-3 py-2" onClick={() => { setTab(item); window.location.hash = tabHash(item); }} onKeyDown={(event) => {
       const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : undefined;
       if (next === undefined) return;

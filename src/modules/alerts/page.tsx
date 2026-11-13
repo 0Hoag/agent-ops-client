@@ -17,7 +17,7 @@ export function AlertsPage() {
     return () => { generation++; window.removeEventListener('organization:will-change', clear); window.removeEventListener('organization:changed', refresh); };
   }, [attempt]);
   const query = useQuery({ queryKey: ['alert-history', org, page, perPage], queryFn: () => listAlertHistory(page, perPage), enabled: !!org });
-  return <section className="[&_input:not([type=checkbox])]:block [&_input:not([type=checkbox])]:ml-0 [&_input:not([type=checkbox])]:w-full [&_input:not([type=checkbox])]:min-w-0 [&_input:not([type=checkbox])]:rounded [&_input:not([type=checkbox])]:border [&_input:not([type=checkbox])]:p-2"><h1 className="mb-2 text-2xl font-semibold">Alerts</h1><p className="mb-5">Review issues that need your attention, configure where notifications go, and set the thresholds that trigger alerts.</p>
+  return <section className="readable-controls"><h1 className="mb-2 text-2xl font-semibold">Alerts</h1><p className="mb-5">Review issues that need your attention, configure where notifications go, and set the thresholds that trigger alerts.</p>
     {!org && !sessionError && <p role="status">Select an organization to view alert history.</p>}
     {sessionError && <p role="alert">Unable to load alert organization. <button onClick={() => setAttempt((value) => value + 1)}>Retry</button></p>}
     {org && <><ChannelSettings organizationId={org} /><ThresholdSettings organizationId={org} /><h2 className="mb-3 text-xl font-semibold">Alert history</h2><label>Items per page<select value={perPage} onChange={(event) => { setPerPage(Number(event.target.value)); setPage(1); }}>{[20, 50, 100].map((size) => <option key={size} value={size}>{size}</option>)}</select></label>
