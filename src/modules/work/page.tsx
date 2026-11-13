@@ -6,17 +6,23 @@ import { ProductTerms, RelativeTime } from '../../shared/ui/ProductTerms';
 
 /** Browse repository work and recorded session costs. */
 export function WorkPage() {
-  const [repository, setRepository] = useState(localStorage.getItem('agent-ops-repository') ?? '');
+  const params = new URLSearchParams(window.location.search);
+  const [repository, setRepository] = useState(params.get('repository') ?? localStorage.getItem('agent-ops-repository') ?? '');
   const repositories = useWorkRepositories();
   const [state, setState] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState<{ kind: string; number: number } | null>(null);
+  const [selected, setSelected] = useState<{ kind: string; number: number } | null>(() => {
+    const number = Number(params.get('pr'));
+    return Number.isSafeInteger(number) && number > 0 ? { kind: 'pr', number } : null;
+  });
   const detailRegion = useRef<HTMLElement>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const filters = { repository_id: repository, state: state || undefined, q: search || undefined, page };
   const query = useWork(filters);
   const detail = useWorkDetail(filters, selected?.kind ?? '', selected?.number ?? 0);
+  const repositoryInfo = repositories.data?.find((item) => item.id === repository);
+  const workUrl = detail.data?.item?.url || (selected && repositoryInfo?.provider === 'gitlab' && repositoryInfo.full_name ? `${(repositoryInfo.gitlab_base_url || 'https://gitlab.com').replace(/\/$/, '')}/${repositoryInfo.full_name}/-/${selected.kind === 'pr' ? 'merge_requests' : 'issues'}/${selected.number}` : '');
   const items = query.data?.data ?? [];
   const meta = query.data?.meta;
   const current = meta?.page ?? page;
@@ -63,7 +69,7 @@ export function WorkPage() {
             <button className="mb-3 text-blue-700 underline" onClick={() => { setSelected(null); trigger.current?.focus(); }}>Back to selected work</button>
             {detail.isPending ? <p role="status">Loading details…</p> : detail.isError ? <p role="alert">Unable to load details: {detail.error.message} <button onClick={() => void detail.refetch()}>Retry</button></p> : detail.data ? <>
               <h2 className="font-semibold">{detail.data.item?.title ?? `${selected.kind === 'pr' ? 'Merge request' : 'Issue'} #${selected.number}`}</h2>
-              {detail.data.item?.url && <a className="text-blue-700 underline" href={detail.data.item.url} target="_blank" rel="noreferrer">Open in GitLab</a>}
+              {workUrl && <a className="text-blue-700 underline" href={workUrl} target="_blank" rel="noreferrer">Open in GitLab</a>}
               <h3 className="mt-4 font-medium">Sessions</h3>{detail.data.runs?.length ? <ul className="mt-2 grid gap-3">{detail.data.runs.map((run, index) => <li key={run.id ?? index} className="border-t pt-2"><p>{run.model ?? 'Sync model name'}</p><p className="text-sm">{money(run.cost_usd)} USD · {compact(run.tokens)} tokens</p></li>)}</ul> : <p className="text-sm text-slate-600">No sessions. Sync agent sessions to link their costs.</p>}
             </> : null}
           </>}
