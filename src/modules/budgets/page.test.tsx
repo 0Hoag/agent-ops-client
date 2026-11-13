@@ -38,8 +38,17 @@ function setup() {
 }
 
 describe('BudgetsPage', () => {
+  it('explains that open-ended budgets are unavailable and prevents unsupported requests', async () => {
+    setup();
+    const end = await screen.findByLabelText('End date') as HTMLInputElement;
+    expect(end.required).toBe(true);
+    expect(screen.getByText(/Open-ended budgets are unavailable/)).toBeTruthy();
+    fireEvent.submit(screen.getByRole('button', { name: 'Create budget' }).closest('form')!);
+    expect(screen.getByRole('alert').textContent).toContain('valid date range');
+    expect(writes).toEqual([]);
+  });
   it('names repository scopes and does not silently broaden an unavailable scope', async () => {
-    setup(); budgets = [{ id: 'budget-1', starts_at: '2026-01-01', repository_id: 'repo-1', wave: 'Release' }];
+    setup(); budgets = [{ id: 'budget-1', starts_at: '2026-01-01', ends_at: '2026-12-31', repository_id: 'repo-1', wave: 'Release' }];
     expect(await screen.findByText('Repository: team/widgets; Batch: Release')).toBeTruthy();
     budgets = [{ ...budgets[0], repository_id: 'removed-repo' }];
     fireEvent(window, new Event('organization:changed'));
@@ -97,7 +106,7 @@ describe('BudgetsPage', () => {
     fireEvent.change(screen.getByLabelText('End date'), { target: { value: '2026-03-01' } });
     fireEvent.submit(screen.getByRole('button', { name: 'Create budget' }).closest('form')!);
     expect(screen.getByRole('alert').textContent).toContain('valid date range');
-    fireEvent.change(screen.getByLabelText('End date'), { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText('End date'), { target: { value: '2026-05-01' } });
     for (const [label, value] of [['Token limit', '1.5'], ['USD limit', '-1']]) {
       fireEvent.change(screen.getByLabelText(label), { target: { value } });
       fireEvent.submit(screen.getByRole('button', { name: 'Create budget' }).closest('form')!);
