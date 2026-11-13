@@ -2,6 +2,19 @@
 :root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color-scheme: light; --bg: #f8fafc; --surface: #fff; --text: #172033; --muted: #64748b; --line: #e2e8f0; --accent: #4f46e5; --good: #15803d; --warn: #b45309; --bad: #b91c1c; }
 :root[data-theme='dark'] { color-scheme: dark; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --muted: #94a3b8; --line: #334155; --accent: #818cf8; --good: #4ade80; --warn: #fbbf24; --bad: #f87171; }
 * { box-sizing: border-box; }
+:root { --field-line: #64748b; --on-accent: #fff; --interactive: #eef2ff; }
+:root[data-theme='dark'] { --field-line: #94a3b8; --on-accent: #0f172a; --interactive: #172033; }
+/* Shared opt-in controls: do not restyle unrelated data/Usage screens. */
+.readable-controls :is(input:not([type=checkbox]), select, textarea) { display: block; width: 100%; min-width: 0; max-width: 100%; margin: 4px 0 0; padding: 8px 12px; border: 1px solid var(--field-line); border-radius: 6px; background: var(--surface); color: var(--text); }
+.readable-controls label { min-width: 0; }
+.readable-controls button:where(:not(.text-left):not(.underline)) { padding: 8px 12px; border: 1px solid var(--field-line); border-radius: 6px; background: var(--surface); color: var(--text); cursor: pointer; }
+.readable-controls button:where(:hover:not(:disabled):not(.text-left):not(.underline)) { background: var(--interactive); }
+.readable-controls :is(button.primary-action, form > button:last-of-type), .readable-controls :is(button.primary-action, form > button:last-of-type):hover:not(:disabled) { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.readable-controls button:disabled { opacity: .5; cursor: not-allowed; }
+.readable-controls [role=tab][aria-selected=true] { background: var(--interactive); border-color: var(--accent); }
+.work-row:hover, .work-row[aria-selected="true"] { background: var(--interactive); }
+.work-row .text-slate-500 { color: var(--text); }
+.work-row[aria-selected="true"] td:first-child { box-shadow: inset 3px 0 var(--accent); }
 body { margin: 0; font-family: inherit; background: var(--bg); color: var(--text); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Legacy neutral utilities must follow the same theme as token-based panels. */

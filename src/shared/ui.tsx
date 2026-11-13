@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 
-export function Button({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) { return <button {...props} style={{ padding: 8, borderRadius: 6, border: '1px solid var(--line)', background: 'var(--accent)', color: 'white', cursor: 'pointer', ...props.style }}>{children}</button>; }
+/** Primary action with theme-specific foreground contrast. */
+export function Button({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) { return <button {...props} style={{ padding: 8, borderRadius: 6, border: '1px solid var(--accent)', background: 'var(--accent)', color: 'var(--on-accent)', cursor: props.disabled ? 'not-allowed' : 'pointer', opacity: props.disabled ? .5 : 1, ...props.style }}>{children}</button>; }
 export function Card({ children }: { children: ReactNode }) { return <section style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 8, padding: 16 }}>{children}</section>; }
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'good' | 'warn' | 'bad' }) { const color = tone === 'neutral' ? 'var(--muted)' : `var(--${tone})`; return <span style={{ color, border: `1px solid ${color}`, borderRadius: 999, padding: '2px 8px' }}>{children}</span>; }
-export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) { return <select {...props} style={{ padding: 8, borderRadius: 6, background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--line)', ...props.style }} />; }
+/** Bounded field using the same boundary token as native form consumers. */
+export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) { return <select {...props} style={{ padding: 8, borderRadius: 6, background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--field-line)', ...props.style }} />; }
 export function DateRangePicker(props: React.SelectHTMLAttributes<HTMLSelectElement>) { return <Select aria-label="Date range" {...props}><option>Today</option><option>7 days</option><option>30 days</option><option>Custom</option></Select>; }
 export function Table() { return <table style={{ width: '100%', borderCollapse: 'collapse' }}><thead><tr><th align="left">Metric</th><th align="right">Value</th></tr></thead><tbody><tr><td>Agent cost</td><td align="right">$12.40</td></tr></tbody></table>; }
 export function Tabs() { return <div role="tablist"><button role="tab" aria-selected="true">Usage</button><button role="tab">Efficiency</button></div>; }

@@ -72,7 +72,7 @@ export function WavesPage() {
   const stop = useMutation({ mutationFn: stopWorker, onSuccess: refreshAcceptedAudit, onError: refreshRejectedAudit });
   const restart = useMutation({ mutationFn: restartWorker, onSuccess: (job) => { setWorker(job); refreshAcceptedAudit(); }, onError: refreshRejectedAudit });
   const waves = query.data ?? [];
-  return <section className="[&_label]:mb-2 [&_label]:grid [&_label]:gap-1 [&_input]:min-w-0 [&_input]:rounded [&_input]:border [&_input]:p-2 [&_textarea]:min-w-0 [&_textarea]:rounded [&_textarea]:border [&_textarea]:p-2 [&_select]:min-w-0 [&_select]:rounded [&_select]:border [&_select]:p-2"><h1 className="mb-2 text-2xl font-semibold">Plan and track organization work</h1><p className="mb-5">Create batches, write briefs, and track progress.</p>
+  return <section className="readable-controls [&_label]:mb-2 [&_label]:grid [&_label]:gap-1"><h1 className="mb-2 text-2xl font-semibold">Plan and track organization work</h1><p className="mb-5">Create batches, write briefs, and track progress.</p>
     {!organizationId && <p role="status">Select an organization to view batches.</p>}
     {!!organizationId && query.isPending && <p role="status">Loading batches…</p>}
     {!!organizationId && query.isError && <div role="alert">Unable to load batches. <button onClick={() => void query.refetch()}>Retry</button></div>}
