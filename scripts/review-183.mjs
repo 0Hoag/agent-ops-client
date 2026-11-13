@@ -10,9 +10,10 @@ const root = process.cwd();
 const backend = '/Users/zeross/agent-ops';
 const baselineRevision = '6bf1525350b9976432d04ed259a4b0b2c791ac14';
 const overviewReview = process.argv.includes('--overview-195');
-const compare = process.argv.includes('--compare') || overviewReview;
+const usageReview = process.argv.includes('--usage-199');
+const compare = process.argv.includes('--compare') || overviewReview || usageReview;
 const browserScript = overviewReview ? 'scripts/review-195-browser.mjs' : 'scripts/review-183-browser.mjs';
-const artifacts = resolve(overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
+const artifacts = resolve(usageReview ? '.agent-runs/W18-usage-next-step-199' : overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
 mkdirSync(artifacts, { recursive: true });
 const project = `w18r8-183-${process.pid}`;
 const env = { ...process.env, CLIENT_DIR: root, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(16).toString('hex'), AGENT_RUN_TOKEN: randomBytes(24).toString('hex'), PRODUCT_E2E_EMAIL: 'review-183@example.invalid', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex'), PRODUCT_E2E_ARTIFACTS: artifacts };
@@ -67,11 +68,12 @@ try {
       mkdirSync(dirname(`${baseline}/${path}`), { recursive: true });
       cpSync(`${root}/${path}`, `${baseline}/${path}`);
     }
-    for (const path of overviewReview ? ['src/modules/overview/page.tsx'] : ['src/modules/budgets/services/client.ts', 'src/modules/pricing/PricingPage.tsx']) {
-      writeFileSync(`${baseline}/${path}`, run('git', ['show', `${overviewReview ? 'aa63b861dc23ac9b09b610c004ebafce518da273' : baselineRevision}:${path}`]) + '\n');
+    for (const path of usageReview ? ['src/modules/usage/Evidence.tsx', 'src/modules/usage/UsagePage.tsx'] : overviewReview ? ['src/modules/overview/page.tsx'] : ['src/modules/budgets/services/client.ts', 'src/modules/pricing/PricingPage.tsx']) {
+      writeFileSync(`${baseline}/${path}`, run('git', ['show', `${usageReview ? '75107c1b1b3fc014d496b0d079104345c392d08a' : overviewReview ? 'aa63b861dc23ac9b09b610c004ebafce518da273' : baselineRevision}:${path}`]) + '\n');
     }
     env.CLIENT_DIR = baseline;
-    env.W18_ASSERT_FIXES = '1';
+    if (usageReview) env.W18_USAGE_ONLY = '1';
+    else env.W18_ASSERT_FIXES = '1';
   }
   writeFileSync(`${artifacts}/sources.json`, JSON.stringify({ client: run('git', ['rev-parse', 'HEAD']), api: run('git', ['-C', backend, 'rev-parse', 'HEAD']), apiStatus: run('git', ['-C', backend, 'status', '--short']), project, url: env.PRODUCT_E2E_URL }, null, 2));
   stage = 'compose-up';
@@ -120,8 +122,11 @@ try {
   if (compare) {
     env.PRODUCT_E2E_ARTIFACTS = `${artifacts}/before`;
     mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
-    const before = run('node', [browserScript], { expectedStatus: 1 });
-    assert.match(before, overviewReview ? /Overview spend must disclose missing model prices beside its headline/ : /Budgets regression: expected empty state, not a blank page/);
+    const before = run('node', [browserScript], { expectedStatus: usageReview ? 0 : 1 });
+    if (usageReview) {
+      const control = run('node', ['scripts/review-183-check.mjs', env.PRODUCT_E2E_ARTIFACTS, 'usage-next-step'], { expectedStatus: 1 });
+      assert.match(control, /Usage empty ranking needs a contextual next-step action/);
+    } else assert.match(before, overviewReview ? /Overview spend must disclose missing model prices beside its headline/ : /Budgets regression: expected empty state, not a blank page/);
     stage = 'build-fixed-client-same-database';
     env.CLIENT_DIR = root;
     compose('up', '-d', '--build', '--wait', 'client');
@@ -130,6 +135,7 @@ try {
     mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
   }
   run('node', [browserScript]);
+  if (usageReview) run('node', ['scripts/review-183-check.mjs', env.PRODUCT_E2E_ARTIFACTS, 'usage-next-step']);
   console.log('PASS real-browser review');
 } catch (error) {
   logs.push(`FAIL stage=${stage}: ${redact(error.stack || String(error))}`); save();
