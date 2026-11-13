@@ -15,11 +15,12 @@ function range(preset: Preset) {
   if (preset !== 'Today') start.setDate(start.getDate() - (preset === '7 days' ? 6 : 29));
   return { from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) };
 }
-function metric(current?: number, previous?: number, format: (value?: number) => string = (value) => value === undefined ? '—' : `${(value * 100).toFixed(1)}%`) {
-  if (current === undefined) return { value: 'Sync usage and delivery history', change: 'Check model pricing in Settings' };
-  if (previous === undefined) return { value: format(current), change: 'Previous period unavailable' };
+function metric(current?: number | null, previous?: number | null, format?: (value?: number) => string) {
+  const display = format ?? ((value?: number) => `${(value! * 100).toFixed(1)}%`);
+  if (current == null) return { value: 'Sync usage and delivery history', change: 'Check model pricing in Settings' };
+  if (previous == null) return { value: display(current), change: 'Previous period unavailable' };
   const delta = current - previous;
-  return { value: format(current), change: `${delta > 0 ? '+' : ''}${format(delta)} vs previous period` };
+  return { value: display(current), change: `${delta > 0 ? '+' : ''}${format ? format(delta) : `${(delta * 100).toFixed(1)} percentage points`} vs previous period` };
 }
 
 /** Organization-scoped spend evidence and progressively disclosed attention. */

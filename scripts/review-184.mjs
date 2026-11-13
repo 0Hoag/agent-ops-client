@@ -1,0 +1,65 @@
+// Reuse #183's real bootstrap, seeded login, Compose lifecycle and cleanup.
+import assert from 'node:assert/strict';
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+export async function reviewNumbers({ env, artifacts, run, compose, composeArgs, root }) {
+  env.W18_NOW = new Date().toISOString();
+  // Persist recorded telemetry, not a response override. Include null, zero,
+  // small and large recorded costs independently of calculated model pricing.
+  const fixtureSQL = `UPDATE agent_runs SET cost_usd = CASE
+    WHEN model = 'review-unpriced' THEN NULL
+    WHEN branch = 'feat/hosting-0' THEN 12.4
+    WHEN branch = 'feat/hosting-1' THEN 0
+    WHEN branch = 'feat/hosting-2' THEN 0.0001
+    WHEN branch = 'feat/hosting-3' THEN 1234567.89 ELSE 1 END;
+    UPDATE agent_runs SET input_tokens = 0, cached_input_tokens = 0,
+      cache_write_tokens = 0, output_tokens = 0, reasoning_tokens = 0
+      WHERE branch = 'feat/hosting-1';`;
+  writeFileSync(`${artifacts}/numeric-fixture.sql`, fixtureSQL);
+  run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-v', 'ON_ERROR_STOP=1'], { input: fixtureSQL });
+  const sql = `SELECT json_build_object(
+    'runs', (SELECT json_agg(r) FROM agent_runs r),
+    'steps', (SELECT json_agg(s) FROM agent_run_steps s),
+    'step_priced_usd', (SELECT SUM(input_tokens * 3 + cached_input_tokens * 0.3 +
+      cache_write_tokens * 3.75 + output_tokens * 15 + reasoning_tokens * 15) / 1000000
+      FROM agent_run_steps),
+    'prs', (SELECT json_agg(p) FROM pull_requests p),
+    'issues', (SELECT json_agg(i) FROM issues i)
+  );`;
+  writeFileSync(`${artifacts}/oracle.sql`, sql);
+  const snapshot = run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-At', '-v', 'ON_ERROR_STOP=1', '-c', sql]);
+  JSON.parse(snapshot);
+  writeFileSync(`${artifacts}/sql.json`, snapshot);
+  env.W18_SQL = `${artifacts}/sql.json`;
+  // A genuine formatter defect in a disposable worktree, never changed inputs.
+  const control = resolve(artifacts, 'control-source');
+  run('git', ['worktree', 'add', '--detach', control, 'HEAD']);
+  try {
+    for (const path of run('git', ['ls-files', '-z']).split('\0').filter(Boolean)) {
+      cpSync(`${root}/${path}`, `${control}/${path}`, { recursive: true });
+    }
+    const path = `${control}/src/shared/format.ts`;
+    const original = readFileSync(path, 'utf8');
+    assert(original.includes('.format(value);'));
+    writeFileSync(path, original.replace('.format(value);', '.format(value * 2);'));
+    env.CLIENT_DIR = control;
+    compose('up', '-d', '--build', '--wait', 'client');
+    env.PRODUCT_E2E_ARTIFACTS = `${artifacts}/control`;
+    mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
+    const output = run('node', ['scripts/review-184-browser.mjs'], { expectedStatus: 1 });
+    assert.match(output, /Session headline recorded cost/);
+    writeFileSync(`${artifacts}/control-result.txt`, output);
+  } finally {
+    env.CLIENT_DIR = root;
+    env.PRODUCT_E2E_ARTIFACTS = artifacts;
+    compose('up', '-d', '--build', '--wait', 'client');
+    run('git', ['worktree', 'remove', '--force', control]);
+  }
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  process.argv.push('--numbers-184');
+  void import('./review-183.mjs');
+}

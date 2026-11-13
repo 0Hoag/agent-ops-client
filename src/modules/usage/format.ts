@@ -2,7 +2,7 @@ import type { AgentrunAgentRun, InsightAnalyticsBucket } from '../../shared/api/
 import { compact, relativeTime } from '../../shared/format';
 export { compact, relativeTime, money } from '../../shared/format';
 
-export function sum(values: (number | undefined)[]) { return values.length && values.every((value) => value !== undefined) ? values.reduce<number>((total, value) => total + value!, 0) : undefined; }
+export function sum(values: (number | null | undefined)[]) { return values.length && values.every((value) => value != null) ? values.reduce<number>((total, value) => total + value!, 0) : undefined; }
 export function sessionName(run: AgentrunAgentRun) { return `${run.harness || 'Agent'} · ${run.branch || 'Default branch'} · ${relativeTime(run.started_at)}`; }
 export function tokens(run: AgentrunAgentRun) {
   const total = sum([run.input_tokens, run.cached_input_tokens, run.cache_write_tokens, run.output_tokens]);

@@ -20,7 +20,7 @@ function respond(config: { url?: string }) {
   if (url.pathname.endsWith('/session')) data = { organization_id: 'org-a' };
   else if (url.pathname.endsWith('/repositories')) data = { data: [{ id: 'repo-1', full_name: 'team/widgets' }] };
   else if (url.pathname.endsWith('/agent-runs')) data = { data: mode === 'empty' ? [] : [run, { ...run, id: 'run-2', cost_usd: 2 }] };
-  else if (url.pathname.endsWith('/overview')) data = { current: mode === 'missing' ? {} : { cache_savings_usd: 1.5 } };
+  else if (url.pathname.endsWith('/overview')) data = { data: { current: mode === 'missing' ? {} : { cache_savings_usd: 1.5 } } };
   else data = { data: { unknown_price_count: mode === 'unknown' ? 1 : 0, buckets: mode === 'empty' ? [] : [{ start: '2026-11-11', actual_cost_usd: mode === 'missing-cost' ? undefined : mode === 'zero' ? 0 : 4, unknown_price_count: mode === 'unknown' ? 1 : 0 }, { start: '2026-11-11', actual_cost_usd: mode === 'zero' ? 0 : 2 }] } };
   return Promise.resolve({ data, status: 200, headers: {}, config } as never);
 }
