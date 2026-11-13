@@ -80,22 +80,25 @@ try {
     await figure(`Usage session ${run.session_id} tokens`, 'input + cached + cache_write + output (reasoning excluded by UI contract)', `agent-runs.data[id=${run.id}]`, run, compact(total), row.locator('td').nth(2));
   }
   await screenshots('usage');
+  await go('/');
+  await screenshots('overview');
   await go('/work');
+  const workResponse = page.waitForResponse((result) => new URL(result.url()).pathname === '/api/v1/work');
   await page.locator('main').getByLabel('Repository', { exact: true }).selectOption(env.W18_REPOSITORY);
+  await workResponse;
+  await page.locator('nav[aria-label="Work pagination"]').waitFor();
   await page.waitForLoadState('networkidle');
   await Promise.all(pending);
+  await screenshots('work');
   const work = response('work');
   assert.equal(work.meta.total, db.prs.length + db.issues.length, 'SQL/API work total');
   await figure('Work total and page range', 'count(pull_requests) + count(issues)', 'work.meta', work.meta, `1–${work.data.length} of ${db.prs.length + db.issues.length} work records`, page.locator('nav[aria-label="Work pagination"] p'));
   for (const item of work.data) {
     const row = page.locator('tr').filter({ has: page.getByRole('button', { name: item.title, exact: true }) });
     const linked = db.runs.filter((run) => item.kind === 'pr' ? run.pr_number === item.number : run.issue_numbers?.includes(item.number));
-    assert.equal(item.runs_count, linked.length, `SQL/API work ${item.kind} #${item.number} sessions`);
     await figure(`Work ${item.kind} #${item.number} sessions`, 'count(agent_runs linked to work)', 'work.data[].runs_count', item.runs_count, String(linked.length), row.locator('td[data-label="Sessions"]'));
+    assert.equal(item.runs_count, linked.length, `SQL/API work ${item.kind} #${item.number} sessions`);
   }
-  await screenshots('work');
-  await go('/');
-  await screenshots('overview');
   console.log(`PASS ${matrix.length} explicit SQL/API/UI figures. Partial coverage; see docs/reviews/184-numbers.md.`);
 } finally {
   await page.screenshot({ path: `${dir}/last-page.png`, fullPage: true });

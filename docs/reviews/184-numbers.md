@@ -91,6 +91,15 @@ Focused tests were run before the fixes, then after:
 Final command outcomes, smoke, mutation result and uncovered acceptance belong
 in the PR evidence. Intermediate failed runs are not acceptance evidence.
 
+The real Work run exposed an unresolved attribution discrepancy:
+[agent-ops#557](https://github.com/0Hoag/agent-ops/issues/557). Two persisted runs
+link to issue #10 and PR #10; Work's `Sessions` cell for the issue displays `0`.
+The independent linked-session expectation is `2`. Backend code intentionally
+excludes PR-linked runs from issue attribution, but that narrower meaning is
+not conveyed by the UI. This requires a contract decision, not copying the
+backend rule into the oracle. The strict failing check stays in the harness;
+the real-stack command is **not passing** and #184 is not fully accepted.
+
 ## Artifact ownership and cleanup
 
 Archive ignored evidence to
