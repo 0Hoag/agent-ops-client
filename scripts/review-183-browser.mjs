@@ -74,7 +74,7 @@ try {
   const restored = await measure();
   assert.equal(restored.documentWidth, before.documentWidth);
   writeFileSync(`${dir}/viewport-control.json`, JSON.stringify({ mutation: 'html min-width:2000px; removed after measurement', before, broken, restored }, null, 2));
-  for (const [name, path] of screens) {
+  for (const [name, path] of screens.filter(([name]) => !process.env.W18_USAGE_ONLY || name === 'usage')) {
     await page.setViewportSize({ width: 1280, height: 844 });
     await page.goto(`${base}${path}`);
     await page.waitForLoadState('networkidle');

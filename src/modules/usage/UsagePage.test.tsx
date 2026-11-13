@@ -88,6 +88,9 @@ describe('Usage', () => {
   it('explains missing savings rather than inventing zero', async () => {
     mode = 'missing'; setup();
     expect(await screen.findByText(/Savings unavailable. Sync token usage/)).toBeTruthy();
+    const cache = screen.getByRole('heading', { name: 'Cache savings' }).parentElement!;
+    expect(within(cache).getByRole('link', { name: 'Configure cache pricing' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
+    expect(within(cache).getByRole('link', { name: 'Set up token telemetry' }).getAttribute('href')).toBe('/settings/advanced#agent-setup');
     expect(screen.queryByText('$0.00 saved with cache')).toBeNull();
   });
   it.each(['unknown', 'missing-cost'])('keeps %s daily spend unavailable instead of inventing zero', async (value) => {
@@ -96,6 +99,7 @@ describe('Usage', () => {
     const daily = screen.getByRole('heading', { name: 'Spend by day' }).parentElement!;
     expect(within(daily).getByText('Nov 11, 2026')).toBeTruthy();
     expect(within(daily).getByText('Cost unavailable — check model pricing in Settings')).toBeTruthy();
+    expect(within(daily).getByRole('link', { name: 'Set model prices' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
     expect(within(daily).queryByText('$0.00')).toBeNull();
   });
   it('preserves an actual numeric zero from the API', async () => {
