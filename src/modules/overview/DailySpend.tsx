@@ -3,8 +3,19 @@ import { money } from '../../shared/format';
 
 /** Direct daily labels distinguish reported priced spend from unavailable costs. */
 export function DailySpend({ buckets }: { buckets: InsightAnalyticsBucket[] }) {
-  const max = Math.max(0, ...buckets.flatMap((item) => item.actual_cost_usd == null ? [] : [item.actual_cost_usd]));
-  return <div className="mt-4 grid gap-2" aria-label="Daily spend chart">{buckets.map((item) => {
+  const days = new Map<string | undefined, InsightAnalyticsBucket>();
+  for (const bucket of buckets) {
+    const key = bucket.start?.slice(0, 10);
+    const previous = days.get(key);
+    days.set(key, {
+      start: bucket.start,
+      actual_cost_usd: previous?.actual_cost_usd == null && bucket.actual_cost_usd == null ? undefined : (previous?.actual_cost_usd ?? 0) + (bucket.actual_cost_usd ?? 0),
+      unknown_price_count: (previous?.unknown_price_count ?? 0) + (bucket.unknown_price_count ?? 0),
+    });
+  }
+  const daily = [...days.values()];
+  const max = Math.max(0, ...daily.flatMap((item) => item.actual_cost_usd == null ? [] : [item.actual_cost_usd]));
+  return <div className="mt-4 grid gap-2" aria-label="Daily spend chart">{daily.map((item) => {
     const spend = item.actual_cost_usd;
     const label = item.start ? new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(item.start)) : 'Date unavailable';
     return <div key={item.start} className="grid grid-cols-[4rem_1fr_auto] items-center gap-2 text-sm">
