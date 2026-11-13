@@ -24,7 +24,9 @@ function setup(options: { items?: WorkItem[]; fail?: boolean; pending?: boolean;
       if (options.pending) return new Promise(() => {});
       const items = url.searchParams.get('repository_id') === 'repo-1' ? options.items ?? [item, closed] : [];
       const data = items.filter((entry) => (!url.searchParams.get('q') || entry.title?.includes(url.searchParams.get('q')!)) && (!url.searchParams.get('state') || entry.state === url.searchParams.get('state')));
-      const body: WorkListResponse = { data, meta: { total: data.length } };
+      const page = Number(url.searchParams.get('page') ?? 1);
+      const per_page = Number(url.searchParams.get('per_page') ?? 50);
+      const body: WorkListResponse = { data: data.slice((page - 1) * per_page, page * per_page), meta: { page, per_page, total: data.length } };
       return response(body);
     }
     if (url.pathname === '/api/v1/work/issue/7') {
@@ -46,6 +48,43 @@ async function selectRepository() {
 }
 
 describe('WorkPage', () => {
+  it('reaches all 360 records and resets pagination and detail on filters', async () => {
+    setup({ items: Array.from({ length: 360 }, (_, index) => ({ ...item, number: index + 1, title: `Task ${index + 1}` })) });
+    await selectRepository();
+    expect(await screen.findByText('1–50 of 360 work records')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Previous page' })).toHaveProperty('disabled', true);
+    for (let page = 2; page <= 8; page++) {
+      fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+      await screen.findByText(`${(page - 1) * 50 + 1}–${Math.min(page * 50, 360)} of 360 work records`);
+    }
+    expect(screen.getByRole('button', { name: 'Task 360' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Next page' })).toHaveProperty('disabled', true);
+    fireEvent.change(screen.getByLabelText('Search work'), { target: { value: 'Task 1' } });
+    expect(await screen.findByText('1–50 of 111 work records')).toBeTruthy();
+  });
+
+  it('focuses selected session details and returns to the selected work', async () => {
+    setup();
+    await selectRepository();
+    const trigger = await screen.findByRole('button', { name: 'Fix login' });
+    fireEvent.click(trigger);
+    const region = await screen.findByRole('region', { name: 'Selected work details' });
+    expect(document.activeElement).toBe(region);
+    expect(await screen.findByRole('heading', { name: 'Sessions' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Back to selected work' }));
+    expect(document.activeElement).toBe(trigger);
+    fireEvent.click(trigger);
+    fireEvent.change(screen.getByLabelText('Status'), { target: { value: 'open' } });
+    expect(screen.queryByRole('button', { name: 'Back to selected work' })).toBeNull();
+  });
+
+  it('does not turn missing cost or CI into a repository total', async () => {
+    setup({ items: [{ ...item, ci_status: 'failure', cost_usd: undefined }] });
+    await selectRepository();
+    expect(await screen.findByText('On this page: 1 work records with failing CI; no recorded costs. Other costs are unavailable; sync priced sessions. Not repository-wide totals.')).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Repository'), { target: { value: '' } });
+    expect(screen.queryByText(/On this page:/)).toBeNull();
+  });
   it('links missing setup steps without changing work selection', async () => {
     setup({ items: [] });
     await selectRepository();
@@ -71,8 +110,9 @@ describe('WorkPage', () => {
     expect(within(row).getByTitle('Jan 1, 2025, 12:00:00 AM UTC')).toBeTruthy();
     expect(within(row).getByText('2')).toBeTruthy();
     expect(within(row).getByText('$1.25')).toBeTruthy();
+    expect(screen.getByText('On this page: 0 work records with failing CI; $2.50 recorded cost across 2 priced work records. Not repository-wide totals.')).toBeTruthy();
     expect(screen.getByRole('table').classList.contains('responsive-table')).toBe(true);
-    expect(within(row).getAllByRole('cell').map((cell) => cell.getAttribute('data-label'))).toEqual(['Work', 'Status / CI', 'Author', 'Age', 'Runs', 'Cost']);
+    expect(within(row).getAllByRole('cell').map((cell) => cell.getAttribute('data-label'))).toEqual(['Work', 'Status / CI', 'Author', 'Age', 'Sessions', 'Cost']);
     expect(screen.getByRole('button', { name: 'Update docs' })).toBeTruthy();
     fireEvent.change(screen.getByLabelText('Search work'), { target: { value: 'login' } });
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Update docs' })).toBeNull());
@@ -104,7 +144,7 @@ describe('WorkPage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Fix login' }));
     expect(await screen.findByText('model-x')).toBeTruthy();
     expect(workRequests().map(([config]) => config.url)).toEqual([
-      '/api/v1/work?repository_id=repo-1&state=open&q=login',
+      '/api/v1/work?repository_id=repo-1&state=open&q=login&page=1',
       '/api/v1/work/issue/7?repository_id=repo-1',
     ]);
     fireEvent.change(screen.getByLabelText('Repository'), { target: { value: '' } });
@@ -144,7 +184,7 @@ describe('WorkPage', () => {
     await selectRepository();
     fireEvent.click(await screen.findByRole('button', { name: 'Fix login' }));
     expect(screen.getByRole('status').textContent).toBe('Loading details…');
-    expect(await screen.findByRole('alert')).toHaveProperty('textContent', 'Unable to load details: detail offline');
+    expect(await screen.findByRole('alert')).toHaveProperty('textContent', 'Unable to load details: detail offline Retry');
     expect(screen.getByRole('button', { name: 'Fix login' })).toBeTruthy();
   });
 });
