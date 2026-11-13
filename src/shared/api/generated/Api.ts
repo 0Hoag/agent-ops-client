@@ -470,7 +470,6 @@ export interface RepositorysettingsCreatedResponse {
 }
 
 export interface RepositorysettingsCreatedView {
-  backfill_token?: string;
   full_name?: string;
   gitlab_base_url?: string;
   id?: string;
