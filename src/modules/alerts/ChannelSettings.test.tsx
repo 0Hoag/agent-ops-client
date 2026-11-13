@@ -24,15 +24,17 @@ describe('notification channel settings', () => {
     const update = vi.spyOn(api.api, 'v1AlertsChannelsUpdate').mockImplementation(async (kind, body) => { saved = [{ kind, enabled: body.enabled ?? false, slack_webhook_url_env_ref: body.slack_webhook_url_env_ref }]; return { data: saved[0] } as never; });
     const remove = vi.spyOn(api.api, 'v1AlertsChannelsDelete').mockImplementation(async () => { saved = []; return {} as never; });
     mount();
-    fireEvent.change(await screen.findByLabelText('slack_webhook_url_env_ref'), { target: { value: 'SLACK_ALERT_URL' } });
+    expect(await screen.findByLabelText('Slack webhook URL reference')).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Slack webhook URL reference'), { target: { value: 'SLACK_ALERT_URL' } });
+    expect(screen.queryByLabelText(/_env_ref$/)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Create channel' }));
     await waitFor(() => expect(api.api.v1AlertsChannelsCreate).toHaveBeenCalledWith(expect.objectContaining({ kind: 'slack', slack_webhook_url_env_ref: 'SLACK_ALERT_URL' })));
-    expect(screen.queryByText(/secret|token-value/i)).toBeNull();
-    await waitFor(() => expect(screen.getByText('slack')).toBeTruthy());
+    expect(screen.queryByText(/token-value/i)).toBeNull();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Disable' })).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Disable' }));
     await waitFor(() => expect(update).toHaveBeenCalledWith('slack', expect.objectContaining({ enabled: false })));
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
-    fireEvent.change(screen.getByLabelText('slack_webhook_url_env_ref'), { target: { value: 'ROTATED_SLACK_URL' } });
+    fireEvent.change(screen.getByLabelText('Slack webhook URL reference'), { target: { value: 'ROTATED_SLACK_URL' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save channel' }));
     await waitFor(() => expect(update).toHaveBeenCalledWith('slack', expect.objectContaining({ slack_webhook_url_env_ref: 'ROTATED_SLACK_URL' })));
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
@@ -46,16 +48,16 @@ describe('notification channel settings', () => {
   });
   it('renders API write errors', async () => {
     setup(); vi.spyOn(api.api, 'v1AlertsChannelsCreate').mockRejectedValue(new Error('fixture denied'));
-    mount(); fireEvent.change(await screen.findByLabelText('slack_webhook_url_env_ref'), { target: { value: 'SLACK_ALERT_URL' } });
+    mount(); fireEvent.change(await screen.findByLabelText('Slack webhook URL reference'), { target: { value: 'SLACK_ALERT_URL' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create channel' }));
     expect((await screen.findByRole('alert')).textContent).toContain('fixture denied');
   });
   it('clears draft and errors during organization changes', async () => {
     setup(); mount();
-    fireEvent.change(await screen.findByLabelText('slack_webhook_url_env_ref'), { target: { value: 'OLD_ORG_REF' } });
+    fireEvent.change(await screen.findByLabelText('Slack webhook URL reference'), { target: { value: 'OLD_ORG_REF' } });
     fireEvent(window, new Event('organization:will-change'));
     expect(screen.queryByDisplayValue('OLD_ORG_REF')).toBeNull();
     fireEvent(window, new Event('organization:changed'));
-    await waitFor(() => expect(screen.getByLabelText('slack_webhook_url_env_ref')).toBeTruthy());
+    await waitFor(() => expect(screen.getByLabelText('Slack webhook URL reference')).toBeTruthy());
   });
 });

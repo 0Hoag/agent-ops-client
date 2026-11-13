@@ -6,9 +6,9 @@ import { api } from '../../shared/api/client';
 import { listMembers } from '../members/services/client';
 
 const fields = [
-  { key: 'min_cache_hit', label: 'Minimum cache-hit rate (%)', min: 0, max: 1 },
-  { key: 'silent_seconds', label: 'Silent worker threshold (seconds)', min: 1, max: Number.MAX_SAFE_INTEGER },
-  { key: 'pr_stale_seconds', label: 'Stale PR threshold (seconds)', min: 1, max: Number.MAX_SAFE_INTEGER },
+  { key: 'min_cache_hit', label: 'Minimum cache-hit rate (0–1)', min: 0, max: 1 },
+  { key: 'silent_seconds', label: 'Agent inactivity threshold (seconds)', min: 1, max: Number.MAX_SAFE_INTEGER },
+  { key: 'pr_stale_seconds', label: 'Pull request inactivity threshold (seconds)', min: 1, max: Number.MAX_SAFE_INTEGER },
 ] as const;
 
 export function ThresholdSettings({ organizationId }: { organizationId: string }) {
@@ -45,7 +45,7 @@ export function ThresholdSettings({ organizationId }: { organizationId: string }
     try { await updateAlertThresholds(submitted); await queryClient.invalidateQueries({ queryKey: ['alert-thresholds', organizationId] }); setSaved(true); }
     catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to save thresholds.'); }
   }
-  return <section aria-label="Alert threshold settings" className="mb-6 border bg-white p-4"><h2 className="mb-3 text-lg font-semibold">Alert thresholds</h2>
+  return <section aria-label="Alert threshold settings" className="mb-6 border bg-white p-4"><h2 className="mb-1 text-lg font-semibold">Alert thresholds</h2><p className="mb-3">Set when the system should notify you about low cache performance, inactive agents, or stale pull requests.</p>
     {switching && <p role="status">Organization changing…</p>}
     {(query.isPending || roleQuery.isPending) && <p role="status">Loading thresholds…</p>}
     {roleQuery.isError && <p role="alert">Unable to verify organization permissions. <button onClick={() => void roleQuery.refetch()}>Retry</button></p>}

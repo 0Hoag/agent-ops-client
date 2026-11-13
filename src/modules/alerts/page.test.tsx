@@ -18,7 +18,7 @@ describe('AlertsPage', () => {
     request = vi.spyOn(api.api, 'v1AlertsHistoryList');
     vi.spyOn(api.api, 'v1AuthSessionList').mockResolvedValue({ data: { organization_id: 'org-1' } } as never);
     vi.spyOn(api.api, 'v1OrganizationsMembersList').mockResolvedValue({ data: { data: [{ account_id: 'acct', role: 'owner' }] } } as never);
-    vi.spyOn(api.api, 'v1AlertsThresholdsList').mockResolvedValue({ data: { min_cache_hit: 0.8, silent_seconds: 300, pr_stale_seconds: 86400 } } as never);
+    vi.spyOn(api.api, 'v1AlertsThresholdsList').mockResolvedValue({ data: { status: 200, data: { min_cache_hit: 0.8, silent_seconds: 300, pr_stale_seconds: 86400 } } } as never);
   });
   afterEach(() => { cleanup(); vi.restoreAllMocks(); });
   it('renders empty history with the real empty channels HTTP envelope', async () => {
@@ -40,6 +40,7 @@ describe('AlertsPage', () => {
       expect(await screen.findByText('No alert history found.')).toBeTruthy();
       expect(screen.getByRole('link', { name: 'Check setup progress' }).getAttribute('href')).toBe('/#getting-started');
       expect(screen.getByRole('heading', { name: 'Alert history' })).toBeTruthy();
+      expect(screen.getByText(/Review issues that need your attention/)).toBeTruthy();
       expect(screen.queryAllByRole('alert')).toHaveLength(0);
       expect(transport).toHaveBeenCalledTimes(2);
     } finally {

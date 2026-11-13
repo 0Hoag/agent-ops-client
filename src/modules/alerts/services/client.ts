@@ -12,10 +12,10 @@ export async function alertOrganization(): Promise<string> {
   return (await api.api.v1AuthSessionList()).data.organization_id ?? '';
 }
 export async function getAlertThresholds(): Promise<AlertThresholdsResponse> {
-  return (await api.api.v1AlertsThresholdsList()).data;
+  return ((await api.api.v1AlertsThresholdsList()).data as unknown as { data: AlertThresholdsResponse }).data;
 }
 export async function updateAlertThresholds(thresholds: AlertThresholdRequest): Promise<AlertThresholdsResponse> {
-  return (await api.api.v1AlertsThresholdsUpdate(thresholds)).data;
+  return ((await api.api.v1AlertsThresholdsUpdate(thresholds)).data as unknown as { data: AlertThresholdsResponse }).data;
 }
 export async function listAlertHistory(page: number, perPage: number): Promise<{ data: AlertOccurrence[]; total: number }> {
   const response = await api.api.v1AlertsHistoryList({ page, per_page: perPage });
