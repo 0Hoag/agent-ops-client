@@ -71,13 +71,26 @@ Final production screenshots: [1280 px](188-auth-navigation/auth-1280.png),
 [390 px](188-auth-navigation/auth-390.png). See the PR and archived `results.json` for the
 per-route acceptance table, exact full gate output and source hashes.
 
-Delivery evidence: canonical client `.agent-runs/W19n-browser-auth-188/1794568331740/`;
-API source `0176c3cb1a2a68043a0df77ab1fc91b911cd33d1`, project `w19n-auth-188-48869`.
+Integration delivery evidence: canonical client `.agent-runs/W19n-browser-auth-188/1794619938796/`;
+API source `ce0ad50baba397f93dbff318e92d0398e3b2b70f`, project `w19n-auth-188-37467`.
 All measured source hashes match the delivered tree. Production and restored browsers each exit 0;
 compiled mutation exits 1 at the named destination assertion; cleanup reports zero survivors.
-The required full gate exits 0: frozen install, typecheck, lint, 68 test files / 281 tests, and
+The required full gate exits 0: frozen install, typecheck, lint, 69 test files / 283 tests, and
 production build through `heavy.sh`. Existing Rspack bundle-size warnings remain; no checks weakened.
 `bash -n scripts/verify/auth.sh`, all helper `node --check` commands and `git diff --check` exit 0.
+
+Integration rerun (W19n-browser-auth-188-r2): merged the current development branch into
+the published verification branch without rewriting history. The only conflict was the header:
+retain development's named accessibility group alongside the tenant-boundary remount and
+signout state reset. The router's complete pathname/query/hash preservation is unchanged.
+Focused auth, repository-preference, router, layout and accessibility checks pass: 6 files,
+34 tests. Current-tree production and restored browser phases each pass all 24 checks;
+the identical-input compiled mutation fails at `AUTH_DEEP_LINK_FULL_DESTINATION` as required.
+Final screenshots were refreshed from restored production. Exact gate and browser output is
+archived and recorded in the PR;
+the first integration browser attempt failed before stack creation because Docker was unavailable.
+After starting Docker Desktop, the same command passed. Both project labels were checked for
+zero surviving containers, networks and volumes. Historical first-run evidence is preserved.
 
 ## Limitations
 
