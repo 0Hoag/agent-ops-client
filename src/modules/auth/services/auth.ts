@@ -38,6 +38,7 @@ export async function selectOrganization(organizationId: string) {
   if (session.data.organization_id !== organizationId) throw new Error('Organization selection was not validated');
   if (sessionStorage.getItem(tokenKey) !== previousToken) throw new Error('Session changed during organization selection');
   if (typeof window !== 'undefined') window.dispatchEvent(new Event('organization:will-change'));
+  localStorage.removeItem('agent-ops-repository');
   sessionStorage.setItem(tokenKey, selectedToken);
   return selectedToken;
 }
@@ -63,6 +64,7 @@ export async function validateSession(onValidated?: (organizationId: string | un
 
 export function logout() {
   sessionStorage.removeItem(tokenKey);
+  localStorage.removeItem('agent-ops-repository');
 }
 
 export function hasToken() {

@@ -1,0 +1,10 @@
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+ RUN  v2.1.9 /Users/zeross/agent-ops-wt/verify/w19p-settings-190
+
+ ✓ src/modules/budgets/page.test.tsx (7 tests) 220ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  09:10:09
+   Duration  899ms (transform 77ms, setup 0ms, collect 232ms, tests 220ms, environment 240ms, prepare 35ms)
