@@ -57,6 +57,14 @@ async function signIn() {
   fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
 }
 
+it('opens API health at its own route without redirecting to the board', async () => {
+  sessionStorage.setItem('agent-ops-token', 'issued-token');
+  mount('/health');
+  await screen.findByRole('heading', { name: 'API health' });
+  expect(screen.getByTestId('location').textContent).toBe('/health');
+  expect(requests.some((request) => request.url === '/healthz')).toBe(true);
+});
+
 it.each(['/usage', '/runs', '/insights'])('opens Usage instead of legacy aggregates: %s', async (path) => {
   sessionStorage.setItem('agent-ops-token', 'issued-token');
   mount(path);
