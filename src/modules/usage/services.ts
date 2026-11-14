@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../shared/api/client';
-import type { AgentrunAgentRun, InsightAnalyticsResponse } from '../../shared/api/generated/Api';
+import type { AgentrunAgentRun, InsightAnalyticsResponse, InsightOverviewResponse } from '../../shared/api/generated/Api';
 
 // Generated v1InsightsAnalyticsList types the body as InsightAnalyticsResponse,
 // but the API controller wraps that payload in { data: ... }.
@@ -43,6 +43,6 @@ export function useUsage(organizationId: string, filters: Filters, enabled: bool
   const repositories = useQuery({ queryKey: ['usage', organizationId, 'repositories'], queryFn: async () => (await api.api.v1RepositoriesList()).data.data ?? [] });
   const runs = useQuery({ queryKey: ['usage', organizationId, 'sessions', filters], queryFn: () => getSessions(filters), enabled });
   const analytics = useQuery({ queryKey: ['usage', organizationId, 'daily', filters], queryFn: async () => ((await api.api.v1InsightsAnalyticsList({ ...filters, period: 'daily', group_by: 'harness' })).data as unknown as AnalyticsEnvelope).data, enabled });
-  const overview = useQuery({ queryKey: ['usage', organizationId, 'summary', filters], queryFn: async () => (await api.api.v1OverviewList(filters)).data, enabled });
+  const overview = useQuery({ queryKey: ['usage', organizationId, 'summary', filters], queryFn: async () => ((await api.api.v1OverviewList(filters)).data as unknown as { data: InsightOverviewResponse }).data, enabled });
   return { repositories, runs, analytics, overview };
 }

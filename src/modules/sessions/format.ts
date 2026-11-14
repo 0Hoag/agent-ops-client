@@ -2,7 +2,7 @@ import type { AgentrunRunStep, RepositorysettingsView } from '../../shared/api/g
 export { money, compact, relativeTime as relative } from '../../shared/format';
 
 export const readable = (value: string | undefined, fallback: string) => value?.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, 'identifier omitted') || fallback;
-export function total(values: (number | undefined)[]) { return values.length && values.every((value) => value !== undefined) ? values.reduce<number>((sum, value) => sum + value!, 0) : undefined; }
+export function total(values: (number | null | undefined)[]) { return values.length && values.every((value) => value != null) ? values.reduce<number>((sum, value) => sum + value!, 0) : undefined; }
 export function pricedSteps(steps: AgentrunRunStep[]) {
   return [...steps].sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0)).map((step, index, sorted) => {
     const previous = index === 0 ? 0 : sorted[index - 1].cumulative_cost_usd;

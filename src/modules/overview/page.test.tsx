@@ -19,8 +19,8 @@ function respond(config: { url?: string }) {
   else if (url.pathname.endsWith('/agent-run-prices/missing')) data = { data: mode === 'missing-price' ? ['model-a'] : [] };
   else if (url.pathname.endsWith('/agent-run-prices')) data = { data: mode === 'empty' || organization === 'org-b' ? [] : [{ model: 'model-a', effective_date: mode === 'future-price' ? '2099-01-01' : `${new Date().toISOString().slice(0, 10)}T00:00:00Z` }] };
   else if (url.pathname.endsWith('/overview')) data = { data: {
-    current: { spend_usd: 12.5, cost_per_merged_pr: 6.25, cache_hit_rate: 0.4, rework_rate: 0.1, models_without_price: mode === 'partial' ? ['review-unpriced'] : [] },
-    previous: { spend_usd: 10, cost_per_merged_pr: 5, cache_hit_rate: 0.3, rework_rate: 0.2 },
+    current: { spend_usd: 12.5, cost_per_merged_pr: mode === 'null' ? null : 6.25, cache_hit_rate: mode === 'zero' ? 0 : 0.4, rework_rate: 0.1, models_without_price: mode === 'partial' ? ['review-unpriced'] : [] },
+    previous: { spend_usd: 10, cost_per_merged_pr: 5, cache_hit_rate: mode === 'null' ? null : mode === 'zero' ? 0 : 0.3, rework_rate: 0.2 },
     attention: mode === 'partial' ? Array.from({ length: 75 }, (_, index) => ({ kind: 'stale_pr', repository_id: 'repo-1', pr_number: index + 1, message: 'open pull request has had no activity for at least 3 days' })) : [{ message: 'Repeated failures', run_id: 'run-1' }],
   } };
   else data = { data: { buckets: [{ start: '2026-10-01', actual_cost_usd: 12.5, unknown_price_count: mode === 'partial' ? 1 : 0 }, ...(mode === 'partial' ? [{ start: '2026-10-02' }] : [])] } };
@@ -35,6 +35,20 @@ function setup() {
 describe('OverviewPage', () => {
   beforeEach(() => { mode = 'data'; organization = 'org-a'; localStorage.clear(); requests.mockImplementation(respond); });
   afterEach(() => { cleanup(); vi.clearAllMocks(); });
+
+  it('does not turn a null metric or previous period into a numeric zero', async () => {
+    mode = 'null'; setup();
+    await screen.findByText('40.0%');
+    expect(screen.getByText('Sync usage and delivery history')).toBeTruthy();
+    expect(screen.getByText('Previous period unavailable')).toBeTruthy();
+    expect(screen.queryByText('+$5.00 vs previous period')).toBeNull();
+  });
+
+  it('keeps a real zero and compares absolute rates without dividing by zero', async () => {
+    mode = 'zero'; setup();
+    expect(await screen.findByText('0.0%')).toBeTruthy();
+    expect(screen.getByText('0.0 percentage points vs previous period')).toBeTruthy();
+  });
 
   it('qualifies the unchanged priced subtotal beside the headline with missing models and pricing action', async () => {
     mode = 'partial'; setup();
