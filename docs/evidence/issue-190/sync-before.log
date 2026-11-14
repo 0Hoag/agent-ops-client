@@ -1,0 +1,393 @@
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+ RUN  v2.1.9 /Users/zeross/agent-ops-wt/verify/w19p-settings-190
+
+ ❯ src/modules/repositories/page.test.tsx (5 tests | 1 failed) 1351ms
+   × RepositoriesPage > tests candidate provider access and syncs a saved repository through HTTP 1123ms
+     → expected 1 to be greater than 1
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <section
+        class="readable-controls"
+      >
+        <h1
+          class="mb-5 text-2xl font-semibold"
+        >
+          Repository settings
+        </h1>
+        <article
+          class="mb-4 border bg-white p-4"
+        >
+          <h2
+            class="font-semibold"
+          >
+            acme/one
+
+            <span
+              class="text-sm"
+            >
+              (
+              github
+              )
+            </span>
+          </h2>
+          <p>
+            Status mappings:
+            {}
+          </p>
+          <div>
+            <p>
+              Sync status:
+              Not synced yet
+            </p>
+            <button
+              type="button"
+            >
+              Sync now
+            </button>
+            <p
+              role="alert"
+            >
+              Unable to sync. Check the repository credentials and provider connection, then retry Sync now.
+            </p>
+          </div>
+          <button>
+            Edit settings
+          </button>
+          <button
+            class="ml-3"
+          >
+            Delete
+          </button>
+        </article>
+        <article
+          class="mb-4 border bg-white p-4"
+        >
+          <h2
+            class="font-semibold"
+          >
+            acme/two
+
+            <span
+              class="text-sm"
+            >
+              (
+              gitlab
+              )
+            </span>
+          </h2>
+          <p>
+            GitLab URL:
+            https://git.example
+          </p>
+          <p>
+            Status mappings:
+            {}
+          </p>
+          <div>
+            <p>
+              Sync status:
+              Not synced yet
+            </p>
+            <button
+              type="button"
+            >
+              Sync now
+            </button>
+          </div>
+          <button>
+            Edit settings
+          </button>
+          <button
+            class="ml-3"
+          >
+            Delete
+          </button>
+        </article>
+        <form
+          class="mt-5 grid max-w-xl gap-3"
+        >
+          <h2
+            class="text-lg font-semibold"
+          >
+            Add repository
+          </h2>
+          <label>
+            Provider
+            <select>
+              <option
+                value="github"
+              >
+                GitHub
+              </option>
+              <option
+                value="gitlab"
+              >
+                GitLab
+              </option>
+            </select>
+          </label>
+          <label>
+            Full name
+            <input
+              required=""
+              value="acme/new"
+            />
+          </label>
+          <label>
+            Self-hosted base URL
+            <input
+              value="https://git.example"
+            />
+          </label>
+          <label>
+            Status mappings (JSON)
+            <textarea>
+              {}
+            </textarea>
+          </label>
+          <label>
+            Webhook credential
+            <input
+              autocomplete="new-password"
+              type="password"
+              value=""
+            />
+          </label>
+          <label>
+            Backfill credential
+            <input
+              autocomplete="new-password"
+              type="password"
+              value="synthetic-token"
+            />
+          </label>
+          <div>
+            <button
+              type="button"
+            >
+              Test connection
+            </button>
+            <p
+              role="status"
+            >
+              Connected to
+              .
+            </p>
+          </div>
+          <button>
+            Create repository
+          </button>
+        </form>
+      </section>
+    </div>
+  </body>
+</html>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/repositories/page.test.tsx > RepositoriesPage > tests candidate provider access and syncs a saved repository through HTTP
+AssertionError: expected 1 to be greater than 1
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <section
+        class="readable-controls"
+      >
+        <h1
+          class="mb-5 text-2xl font-semibold"
+        >
+          Repository settings
+        </h1>
+        <article
+          class="mb-4 border bg-white p-4"
+        >
+          <h2
+            class="font-semibold"
+          >
+            acme/one
+
+            <span
+              class="text-sm"
+            >
+              (
+              github
+              )
+            </span>
+          </h2>
+          <p>
+            Status mappings:
+            {}
+          </p>
+          <div>
+            <p>
+              Sync status:
+              Not synced yet
+            </p>
+            <button
+              type="button"
+            >
+              Sync now
+            </button>
+            <p
+              role="alert"
+            >
+              Unable to sync. Check the repository credentials and provider connection, then retry Sync now.
+            </p>
+          </div>
+          <button>
+            Edit settings
+          </button>
+          <button
+            class="ml-3"
+          >
+            Delete
+          </button>
+        </article>
+        <article
+          class="mb-4 border bg-white p-4"
+        >
+          <h2
+            class="font-semibold"
+          >
+            acme/two
+
+            <span
+              class="text-sm"
+            >
+              (
+              gitlab
+              )
+            </span>
+          </h2>
+          <p>
+            GitLab URL:
+            https://git.example
+          </p>
+          <p>
+            Status mappings:
+            {}
+          </p>
+          <div>
+            <p>
+              Sync status:
+              Not synced yet
+            </p>
+            <button
+              type="button"
+            >
+              Sync now
+            </button>
+          </div>
+          <button>
+            Edit settings
+          </button>
+          <button
+            class="ml-3"
+          >
+            Delete
+          </button>
+        </article>
+        <form
+          class="mt-5 grid max-w-xl gap-3"
+        >
+          <h2
+            class="text-lg font-semibold"
+          >
+            Add repository
+          </h2>
+          <label>
+            Provider
+            <select>
+              <option
+                value="github"
+              >
+                GitHub
+              </option>
+              <option
+                value="gitlab"
+              >
+                GitLab
+              </option>
+            </select>
+          </label>
+          <label>
+            Full name
+            <input
+              required=""
+              value="acme/new"
+            />
+          </label>
+          <label>
+            Self-hosted base URL
+            <input
+              value="https://git.example"
+            />
+          </label>
+          <label>
+            Status mappings (JSON)
+            <textarea>
+              {}
+            </textarea>
+          </label>
+          <label>
+            Webhook credential
+            <input
+              autocomplete="new-password"
+              type="password"
+              value=""
+            />
+          </label>
+          <label>
+            Backfill credential
+            <input
+              autocomplete="new-password"
+              type="password"
+              value="synthetic-token"
+            />
+          </label>
+          <div>
+            <button
+              type="button"
+            >
+              Test connection
+            </button>
+            <p
+              role="status"
+            >
+              Connected to
+              .
+            </p>
+          </div>
+          <button>
+            Create repository
+          </button>
+        </form>
+      </section>
+    </div>
+  </body>
+</html>
+ ❯ src/modules/repositories/page.test.tsx:33:146
+     31|     fireEvent.click(screen.getAllByRole('button', { name: 'Sync now' }…
+     32|     await waitFor(() => expect(request.mock.calls.some(([config]) => c…
+     33|     await waitFor(() => expect(request.mock.calls.filter(([config]) =>…
+       |                                                                                                                                                  ^
+     34|     expect(screen.queryByText(/Unable to sync/)).toBeNull();
+     35|   });
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  09:03:15
+   Duration  2.15s (transform 84ms, setup 0ms, collect 240ms, tests 1.35s, environment 326ms, prepare 42ms)

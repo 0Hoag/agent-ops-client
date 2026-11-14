@@ -1,0 +1,936 @@
+{
+  "matrix": [
+    {
+      "acceptance": "SETTINGS_REAL_LOGIN",
+      "command": "sign in synthetic account; select persisted organization",
+      "expected": "registered Settings repository panel",
+      "actual": "registered Settings repository panel"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_REPOSITORY_TEST_CREATE_SYNC",
+      "command": "Settings → GitLab fixture → Test connection → Create → reload → Sync now → Work",
+      "expected": "HTTP 200/201/200; persisted repository; success timestamp; synced task visible",
+      "actual": "HTTP 200/201/200; persisted repository; success timestamp; synced task visible"
+    },
+    {
+      "acceptance": "SETTINGS_CLIPBOARD_EXACT_COMMAND",
+      "command": "select repository + transcript; Copy command; read OS clipboard",
+      "expected": ": \"${AGENT_RUN_TOKEN:?Set AGENT_RUN_TOKEN to the configured ingestion credential}\" && agentops push --harness 'codex' --endpoint 'http://127.0.0.1:59571/api/v1/agent-runs' --repository-id '25980a79-0fde-4657-8ba1-d1382750af35' --wave setup --worker local-agent '/sessions/settings fixture.jsonl'",
+      "actual": ": \"${AGENT_RUN_TOKEN:?Set AGENT_RUN_TOKEN to the configured ingestion credential}\" && agentops push --harness 'codex' --endpoint 'http://127.0.0.1:59571/api/v1/agent-runs' --repository-id '25980a79-0fde-4657-8ba1-d1382750af35' --wave setup --worker local-agent '/sessions/settings fixture.jsonl'"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_prices_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_prices_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_prices_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_prices_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_PRICE_INDEPENDENT_COST",
+      "command": "create $2 input/$5 output version; reload; Overview → 30 days → dedicated pricing repository",
+      "expected": "persisted 1M input + 100K output → price-derived USD $2.50; not recorded cost",
+      "actual": "persisted 1M input + 100K output → price-derived USD $2.50; not recorded cost"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_priced-overview_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_priced-overview_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_priced-overview_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_priced-overview_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_INVITATION_LINK",
+      "command": "Members → viewer → invitation; separate synthetic account signs in and accepts; owner reloads",
+      "expected": "real invitation accepted; persisted viewer identity visible",
+      "actual": "real invitation accepted; persisted viewer identity visible"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_budgets_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_budgets_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_budgets_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_budgets_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_BUDGET_PERSISTED",
+      "command": "Advanced → Budgets → create dated 2M-token/$25 budget → reload",
+      "expected": "same limits after real reload",
+      "actual": "same limits after real reload"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_alerts_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_alerts_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_alerts_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_alerts_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_ALERTS_PERSISTED",
+      "command": "Advanced → Alerts → save .75/600/7200 thresholds; create synthetic Slack env reference; reload",
+      "expected": "persisted threshold + enabled channel; no external delivery claimed",
+      "actual": "persisted threshold + enabled channel; no external delivery claimed"
+    },
+    {
+      "acceptance": "SETTINGS_LOGS_REJECT_INVALID_TOKEN",
+      "command": "real worker-log upgrade with deliberately invalid credential",
+      "expected": "HTTP 401; upstream session validation remains enforced",
+      "actual": "HTTP 401; upstream session validation remains enforced"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_logs_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_logs_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_logs_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_logs_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_REAL_WORKER_LOGS",
+      "command": "Advanced → Logs → start allowlisted local fixture tool; observe real websocket",
+      "expected": "two deterministic process stdout lines + worker.completed rendered",
+      "actual": "two deterministic process stdout lines + worker.completed rendered"
+    },
+    {
+      "acceptance": "SETTINGS_RUNTIME",
+      "command": "observe browser pageerror + real HTTP responses",
+      "expected": "no runtime errors or failed API requests",
+      "actual": "no runtime errors or failed API requests"
+    }
+  ],
+  "network": [
+    {
+      "path": "/api/v1/auth/login",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/select-organization",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories/test",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories/e5fbced1-fa05-425d-b099-fa716bfa231b/sync",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/work",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-runs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices/missing",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/insights/analytics",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/overview",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/insights/analytics",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/insights/analytics",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/overview",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/overview",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-runs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/insights/analytics",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/agent-run-prices/missing",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/overview",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/insights/analytics",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/overview",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/invitations",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/budgets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/budgets",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/budgets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/thresholds",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/channels",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/history",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/thresholds",
+      "method": "PUT",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/thresholds",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/channels",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/history",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/thresholds",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/alerts/channels",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/waves",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/workers/audit-history",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/workers/start",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/workers/audit-history",
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "frames": [
+    "{\"type\":\"worker.log\",\"line\":\"settings-worker-start:settings-190\"}\n",
+    "{\"type\":\"worker.log\",\"line\":\"settings-worker-finish:settings-190\"}\n",
+    "{\"type\":\"worker.completed\"}\n"
+  ]
+}
