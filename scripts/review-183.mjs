@@ -5,8 +5,10 @@ import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { dirname, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { reviewPages } from './verify/pages-stack.mjs';
 
 const root = process.cwd();
+const pagesReview = process.argv.includes('--pages-189');
 const accessibilityReview = process.argv.includes('--accessibility-187');
 const backend = '/Users/zeross/agent-ops';
 const baselineRevision = '6bf1525350b9976432d04ed259a4b0b2c791ac14';
@@ -14,9 +16,9 @@ const overviewReview = process.argv.includes('--overview-195');
 const usageReview = process.argv.includes('--usage-199');
 const compare = process.argv.includes('--compare') || overviewReview || usageReview;
 const browserScript = accessibilityReview ? 'scripts/review-187-browser.mjs' : overviewReview ? 'scripts/review-195-browser.mjs' : 'scripts/review-183-browser.mjs';
-const artifacts = resolve(accessibilityReview ? '.agent-runs/W18R12-accessibility-187' : usageReview ? '.agent-runs/W18-usage-next-step-199' : overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
+const artifacts = resolve(pagesReview ? '.agent-runs/W19o-pages-189' : accessibilityReview ? '.agent-runs/W18R12-accessibility-187' : usageReview ? '.agent-runs/W18-usage-next-step-199' : overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
 mkdirSync(artifacts, { recursive: true });
-const project = `${accessibilityReview ? 'w18r12-187' : 'w18r8-183'}-${process.pid}`;
+const project = `${pagesReview ? `w19o-189-${randomBytes(4).toString('hex')}` : accessibilityReview ? 'w18r12-187' : 'w18r8-183'}-${process.pid}`;
 const env = { ...process.env, CLIENT_DIR: root, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(16).toString('hex'), AGENT_RUN_TOKEN: randomBytes(24).toString('hex'), PRODUCT_E2E_EMAIL: 'review-183@example.invalid', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex'), PRODUCT_E2E_ARTIFACTS: artifacts };
 const secrets = ['POSTGRES_PASSWORD', 'JWT_SECRET', 'REPOSITORY_ENCRYPTION_KEY', 'AGENT_RUN_TOKEN', 'PRODUCT_E2E_PASSWORD'];
 const logs = [];
@@ -76,8 +78,9 @@ try {
     if (usageReview) env.W18_USAGE_ONLY = '1';
     else if (!accessibilityReview) env.W18_ASSERT_FIXES = '1';
   }
-  writeFileSync(`${artifacts}/sources.json`, JSON.stringify({ client: run('git', ['rev-parse', 'HEAD']), api: run('git', ['-C', backend, 'rev-parse', 'HEAD']), apiStatus: run('git', ['-C', backend, 'status', '--short']), project, url: env.PRODUCT_E2E_URL }, null, 2));
+  writeFileSync(`${artifacts}/sources.json`, JSON.stringify({ client: run('git', ['rev-parse', 'HEAD']), clientStatus: run('git', ['status', '--short']), api: run('git', ['-C', backend, 'rev-parse', 'HEAD']), apiStatus: run('git', ['-C', backend, 'status', '--short']), project, url: env.PRODUCT_E2E_URL }, null, 2));
   stage = 'compose-up';
+  run('docker', ['info', '--format', '{{.ServerVersion}}']);
   started = true;
   compose('up', '-d', '--build', '--wait');
   stage = 'bootstrap';
@@ -91,6 +94,9 @@ try {
   const login = await request('auth/login', { email: env.PRODUCT_E2E_EMAIL, password: env.PRODUCT_E2E_PASSWORD });
   const org = await request('organizations', { name: 'Review 183' }, login.token);
   const selected = await request('auth/select-organization', { organization_id: org.data.id }, login.token);
+  if (pagesReview) {
+    await reviewPages({ root, artifacts, env, request, token: selected.token, run, composeArgs, compose });
+  } else {
   const repo = await request('repositories', { provider: 'github', full_name: 'review-183/hosting', webhook_secret: randomBytes(24).toString('hex') }, selected.token);
   env.W18_REPOSITORY = repo.data.id;
   stage = 'seed';
@@ -138,6 +144,7 @@ try {
   run('node', [browserScript]);
   if (usageReview) run('node', ['scripts/review-183-check.mjs', env.PRODUCT_E2E_ARTIFACTS, 'usage-next-step']);
   console.log('PASS real-browser review');
+  }
 } catch (error) {
   logs.push(`FAIL stage=${stage}: ${redact(error.stack || String(error))}`); save();
   console.error(logs.at(-1));
