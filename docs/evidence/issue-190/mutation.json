@@ -1,0 +1,225 @@
+{
+  "matrix": [
+    {
+      "acceptance": "SETTINGS_REAL_LOGIN",
+      "command": "sign in synthetic account; select persisted organization",
+      "expected": "registered Settings repository panel",
+      "actual": "registered Settings repository panel"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_1280_light",
+      "command": "viewport 1280; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_1280_dark",
+      "command": "viewport 1280; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_390_light",
+      "command": "viewport 390; CSS theme light; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_SCREENSHOT_repositories_390_dark",
+      "command": "viewport 390; CSS theme dark; screenshot",
+      "expected": "production panel; no document overflow",
+      "actual": "production panel; no document overflow"
+    },
+    {
+      "acceptance": "SETTINGS_REPOSITORY_TEST_CREATE_SYNC",
+      "command": "Settings → GitLab fixture → Test connection → Create → reload → Sync now → Work",
+      "expected": "HTTP 200/201/200; persisted repository; success timestamp; synced task visible",
+      "actual": "HTTP 200/201/200; persisted repository; success timestamp; synced task visible"
+    },
+    {
+      "acceptance": "FAIL",
+      "command": "node scripts/verify/settings-browser.mjs",
+      "expected": "all named assertions pass",
+      "actual": "AssertionError [ERR_ASSERTION]: SETTINGS_CLIPBOARD_EXACT_COMMAND\n+ actual - expected\n\n+ 'broken-command'\n- ': \"${AGENT_RUN_TOKEN:?Set AGENT_RUN_TOKEN to the configured ingestion credential}\" && agentops push --harness \\'codex\\' --endpoint \\'http://127.0.0.1:59571/api/v1/agent-runs\\' --repository-id \\'25980a79-0fde-4657-8ba1-d1382750af35\\' --wave setup --worker local-agent \\'/sessions/settings fixture.jsonl\\''\n\n    at file:///Users/zeross/agent-ops-wt/verify/w19p-settings-190/scripts/verify/settings-browser.mjs:51:10"
+    }
+  ],
+  "network": [
+    {
+      "path": "/api/v1/auth/login",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/select-organization",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories/test",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations/06dc8ed2-f847-440d-a161-705a81267dce/members",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories/97d993fc-656c-4d0b-a42f-c803046817c6/sync",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/work",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/organizations",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "frames": []
+}
