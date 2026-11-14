@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { http } from '../http';
 import { api } from './client';
-import type { WorkerActionAudit, WorkerAuditHistoryResponse } from './generated/Api';
 
 describe('generated worker audit history contract', () => {
   afterEach(() => {
@@ -31,23 +30,23 @@ describe('generated worker audit history contract', () => {
     expect(duplicateKeys).toEqual([]);
   });
 
-  it('requests paginated audit history and retains audit fields', async () => {
+  it('requests paginated audit history and preserves the real Go wire fields for the module adapter', async () => {
     vi.stubGlobal('sessionStorage', { getItem: () => 'worker-token' });
     const response = {
       data: {
         data: [{
-          action: 'restart',
-          actorID: 'actor-1',
-          createdAt: '2026-11-02T12:00:00Z',
-          id: 'audit-1',
-          jobID: 'job-1',
-          occurredAt: '2026-11-02T11:59:00Z',
-          organizationID: 'org-1',
-          outcome: 'success',
-          wave: 'W14x',
-        } satisfies WorkerActionAudit],
+          Action: 'start',
+          ActorID: 'actor-1',
+          CreatedAt: '2026-11-02T12:00:00Z',
+          ID: 'audit-1',
+          JobID: 'job-1',
+          OccurredAt: '2026-11-02T11:59:00Z',
+          OrganizationID: 'org-1',
+          Outcome: 'accepted',
+          Wave: 'W14x',
+        }],
         meta: { page: 2, per_page: 5, total: 11 },
-      } satisfies WorkerAuditHistoryResponse,
+      },
       status: 200,
       statusText: 'OK',
       headers: {},
@@ -66,15 +65,15 @@ describe('generated worker audit history contract', () => {
     expect(authConfig?.headers?.Authorization).toBe('Bearer worker-token');
     expect(result.data).toEqual(response.data);
     expect(result.data.data?.[0]).toMatchObject({
-      id: 'audit-1',
-      action: 'restart',
-      actorID: 'actor-1',
-      jobID: 'job-1',
-      organizationID: 'org-1',
-      outcome: 'success',
-      wave: 'W14x',
-      createdAt: '2026-11-02T12:00:00Z',
-      occurredAt: '2026-11-02T11:59:00Z',
+      ID: 'audit-1',
+      Action: 'start',
+      ActorID: 'actor-1',
+      JobID: 'job-1',
+      OrganizationID: 'org-1',
+      Outcome: 'accepted',
+      Wave: 'W14x',
+      CreatedAt: '2026-11-02T12:00:00Z',
+      OccurredAt: '2026-11-02T11:59:00Z',
     });
     expect(result.data.meta).toEqual({ page: 2, per_page: 5, total: 11 });
   });
