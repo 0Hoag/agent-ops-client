@@ -9,8 +9,9 @@ import { settingsProfile } from './settings-fixture.mjs';
 
 const root = process.cwd();
 const backend = '/Users/zeross/agent-ops';
-const settings = process.argv[2] === 'settings';
-const evidence = settings ? 'W19p-settings-190' : 'W19n-browser-auth-188';
+const audit = process.argv[2] === 'audit';
+const settings = process.argv[2] === 'settings' || audit;
+const evidence = audit ? 'W19-audit-history-229' : settings ? 'W19p-settings-190' : 'W19n-browser-auth-188';
 const dir = resolve(`.agent-runs/${evidence}`, String(Date.now()));
 mkdirSync(dir, { recursive: true });
 const project = `${settings ? 'w19p-settings-190' : 'w19n-auth-188'}-${process.pid}`;
@@ -84,8 +85,8 @@ try {
     profile?.reset();
     env.PRODUCT_E2E_ARTIFACTS = `${dir}/${phase}`;
     mkdirSync(env.PRODUCT_E2E_ARTIFACTS, { recursive: true });
-    const result = run('node', [`scripts/verify/${settings ? 'settings' : 'auth'}-browser.mjs`], { allowFailure });
-    if (result.status === 0) profile?.verify();
+    const result = run('node', [`scripts/verify/${audit ? 'audit' : settings ? 'settings' : 'auth'}-browser.mjs`], { allowFailure });
+    if (result.status === 0 && !audit) profile?.verify();
     return result;
   };
   browser('production');
@@ -94,16 +95,16 @@ try {
     mkdirSync(dirname(`${disposable}/${path}`), { recursive: true });
     cpSync(`${root}/${path}`, `${disposable}/${path}`);
   }
-  const router = `${disposable}/${settings ? 'src/modules/settings/components/AgentSetupCommand.tsx' : 'src/app/router.tsx'}`;
+  const router = `${disposable}/${audit ? 'src/modules/waves/service.ts' : settings ? 'src/modules/settings/components/AgentSetupCommand.tsx' : 'src/app/router.tsx'}`;
   const original = readFileSync(router, 'utf8');
-  const target = settings ? 'navigator.clipboard.writeText(command)' : 'location.pathname + location.search + location.hash';
+  const target = audit ? 'response.data?.map(normalizeWorkerAudit)' : settings ? 'navigator.clipboard.writeText(command)' : 'location.pathname + location.search + location.hash';
   assert(original.includes(target), 'Mutation target must exist');
-  writeFileSync(router, original.replace(target, settings ? "navigator.clipboard.writeText('broken-command')" : 'location.pathname'));
+  writeFileSync(router, original.replace(target, audit ? 'response.data' : settings ? "navigator.clipboard.writeText('broken-command')" : 'location.pathname'));
   env.CLIENT_DIR = disposable;
   compose('up', '-d', '--build', '--no-deps', '--wait', 'client');
   const control = browser('mutation', true);
   assert.equal(control.status, 1, 'Compiled mutation must fail');
-  const assertion = settings ? 'SETTINGS_CLIPBOARD_EXACT_COMMAND' : 'AUTH_DEEP_LINK_FULL_DESTINATION';
+  const assertion = audit ? 'AUDIT_ACCEPTED_START_ROW' : settings ? 'SETTINGS_CLIPBOARD_EXACT_COMMAND' : 'AUTH_DEEP_LINK_FULL_DESTINATION';
   assert(control.output.includes(assertion), `Control must fail at ${assertion}`);
   record(`PASS deliberate compiled mutation rejected by ${assertion} with identical browser inputs`);
   // Restore the disposable source and recompile. The database, fixture and browser command stay identical.
