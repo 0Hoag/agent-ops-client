@@ -1,9 +1,13 @@
 import type { InsightOverviewAttention } from '../../shared/api/generated/Api';
 
 /** Keeps every attention record available without repeating the backlog on arrival. */
-export function Attention({ items = [] }: { items?: InsightOverviewAttention[] }) {
+export function Attention({ items = [], missingModels = [] }: { items?: InsightOverviewAttention[]; missingModels?: string[] }) {
+  const reportedModels = new Set(items.filter((item) => item.kind === 'missing_price').map((item) => item.model));
+  const records = [...items, ...[...new Set(missingModels)].filter((model) => !reportedModels.has(model)).map((model) => ({
+    kind: 'missing_price', model, message: 'Model price required',
+  }))];
   const groups = new Map<string, InsightOverviewAttention[]>();
-  for (const item of items) {
+  for (const item of records) {
     const kind = item.kind ?? 'other';
     groups.set(kind, [...(groups.get(kind) ?? []), item]);
   }
@@ -11,9 +15,9 @@ export function Attention({ items = [] }: { items?: InsightOverviewAttention[] }
   const ordered = [...groups].sort(([a], [b]) => Number(a === 'stale_pr') - Number(b === 'stale_pr'));
   return <section aria-label="Needs attention" className="min-w-0 rounded border bg-white p-4">
     <h2 className="font-semibold">Needs attention</h2>
-    {!items.length ? <p className="mt-3 text-sm text-slate-600">Nothing needs attention.</p> : <>
-      <p className="mt-2 text-sm text-slate-600">{items.length} items · Review by category</p>
-      {ordered.map(([kind, records]) => <details key={kind} className="mt-3 border-t pt-3">
+    {!records.length ? <p className="mt-3 text-sm text-slate-600">Nothing needs attention.</p> : <>
+      <p className="mt-2 text-sm text-slate-600">{records.length} items · Review by category</p>
+      {ordered.map(([kind, records]) => <details key={kind} open={kind === 'missing_price'} className="mt-3 border-t pt-3">
         <summary className="cursor-pointer rounded py-1 focus-visible:outline focus-visible:outline-2">{records.length} {kind === 'stale_pr' ? `merge request${records.length === 1 ? '' : 's'} inactive for 3+ days` : kind === 'missing_price' ? `missing model price${records.length === 1 ? '' : 's'}` : kind === 'repeated_failures' ? 'repeated failures' : `other attention item${records.length === 1 ? '' : 's'}`}</summary>
         <ul className="mt-3 grid max-h-72 gap-3 overflow-y-auto text-sm">{records.map((item, index) => <li key={index} className="border-t pt-3">
           <p className="break-words">{item.message ?? 'Review this item'}{item.model ? ` · ${item.model}` : ''}</p>
