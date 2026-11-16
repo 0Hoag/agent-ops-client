@@ -61,7 +61,7 @@ export function OverviewPage() {
     {query.data && <>
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4"><Card title={partial ? 'Spend · Partial' : 'Spend'} value={{ ...metric(current?.spend_usd, previous?.spend_usd, money), ...(partialComparison ? { change: 'Priced usage only · Set missing model prices before comparing periods' } : {}) }} /><Card title={partial ? 'Cost per merged PR · Partial' : 'Cost per merged PR'} value={{ ...metric(current?.cost_per_merged_pr, previous?.cost_per_merged_pr, money), ...(partialComparison ? { change: 'Priced usage only · Set missing model prices before comparing periods' } : {}) }} /><Card title="Cache hit rate" value={metric(current?.cache_hit_rate, previous?.cache_hit_rate)} /><Card title="Rework rate" value={metric(current?.rework_rate, previous?.rework_rate)} /></div>
       <div className="mt-6 grid gap-4 lg:grid-cols-3"><section className="min-w-0 rounded border bg-white p-4 lg:col-span-2"><h2 className="font-semibold">Spend by day{partial ? ' · Priced usage only' : ''}</h2>{daily.isPending && <p role="status">Loading daily spend…</p>}{daily.isError && <p role="alert">Unable to load daily spend: {daily.error.message} <button onClick={() => void daily.refetch()}>Retry</button></p>}{daily.data && (series.length ? <DailySpend buckets={series} /> : <p className="mt-3 text-sm text-slate-600">No daily spend data for this period.</p>)}</section>
-      <Attention items={query.data.attention} /></div>
+      <Attention items={query.data.attention} missingModels={missing} /></div>
       {!current && <p className="mt-4 text-slate-600">No overview data for this period.</p>}
     </>}
   </section>;

@@ -19,9 +19,9 @@ function respond(config: { url?: string }) {
   else if (url.pathname.endsWith('/agent-run-prices/missing')) data = { data: mode === 'missing-price' ? ['model-a'] : [] };
   else if (url.pathname.endsWith('/agent-run-prices')) data = { data: mode === 'empty' || organization === 'org-b' ? [] : [{ model: 'model-a', effective_date: mode === 'future-price' ? '2099-01-01' : `${new Date().toISOString().slice(0, 10)}T00:00:00Z` }] };
   else if (url.pathname.endsWith('/overview')) data = { data: {
-    current: { spend_usd: 12.5, cost_per_merged_pr: 6.25, cache_hit_rate: 0.4, rework_rate: 0.1, models_without_price: mode === 'partial' ? ['review-unpriced'] : [] },
+    current: { spend_usd: 12.5, cost_per_merged_pr: 6.25, cache_hit_rate: 0.4, rework_rate: 0.1, models_without_price: ['partial', 'attention-gap'].includes(mode) ? ['review-unpriced'] : [] },
     previous: { spend_usd: 10, cost_per_merged_pr: 5, cache_hit_rate: 0.3, rework_rate: 0.2 },
-    attention: mode === 'partial' ? Array.from({ length: 75 }, (_, index) => ({ kind: 'stale_pr', repository_id: 'repo-1', pr_number: index + 1, message: 'open pull request has had no activity for at least 3 days' })) : [{ message: 'Repeated failures', run_id: 'run-1' }],
+    attention: ['attention-gap', 'complete'].includes(mode) ? [] : mode === 'partial' ? Array.from({ length: 75 }, (_, index) => ({ kind: 'stale_pr', repository_id: 'repo-1', pr_number: index + 1, message: 'open pull request has had no activity for at least 3 days' })) : [{ message: 'Repeated failures', run_id: 'run-1' }],
   } };
   else data = { data: { buckets: [{ start: '2026-10-01', actual_cost_usd: 12.5, unknown_price_count: mode === 'partial' ? 1 : 0 }, ...(mode === 'partial' ? [{ start: '2026-10-02' }] : [])] } };
   return Promise.resolve({ data, status: 200, headers: {}, config } as never);
@@ -35,6 +35,21 @@ function setup() {
 describe('OverviewPage', () => {
   beforeEach(() => { mode = 'data'; organization = 'org-a'; localStorage.clear(); requests.mockImplementation(respond); });
   afterEach(() => { cleanup(); vi.clearAllMocks(); });
+
+  it('identifies missing prices when the overview attention response is empty', async () => {
+    mode = 'attention-gap'; setup();
+    const attention = within(await screen.findByRole('region', { name: 'Needs attention' }));
+    expect(attention.queryByText('Nothing needs attention.')).toBeNull();
+    expect(attention.getByText(/review-unpriced/)).toBeTruthy();
+    expect(attention.getByRole('link', { name: 'Set model prices' }).getAttribute('href')).toBe('/settings/advanced#model-prices');
+  });
+
+  it('shows the empty state when both missing models and attention are empty', async () => {
+    mode = 'complete'; setup();
+    const attention = within(await screen.findByRole('region', { name: 'Needs attention' }));
+    expect(attention.getByText('Nothing needs attention.')).toBeTruthy();
+    expect(attention.queryByRole('link')).toBeNull();
+  });
 
   it('qualifies the unchanged priced subtotal beside the headline with missing models and pricing action', async () => {
     mode = 'partial'; setup();
@@ -52,12 +67,12 @@ describe('OverviewPage', () => {
   it('summarizes 75 attention records in a keyboard-native disclosure without losing any record', async () => {
     mode = 'partial'; setup();
     const attention = await screen.findByRole('region', { name: 'Needs attention' });
-    const disclosure = attention.querySelector('details')!;
+    const disclosure = [...attention.querySelectorAll('details')].find((item) => item.textContent?.includes('75 merge requests'))!;
     expect(disclosure).toBeTruthy();
     expect(disclosure.open).toBe(false);
     expect(disclosure.querySelector('summary')?.textContent).toBe('75 merge requests inactive for 3+ days');
     fireEvent.click(disclosure.querySelector('summary')!);
-    expect(within(attention).getAllByRole('listitem')).toHaveLength(75);
+    expect(within(disclosure).getAllByRole('listitem')).toHaveLength(75);
     expect(within(attention).getByText('PR #75')).toBeTruthy();
   });
 
