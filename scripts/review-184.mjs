@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 export async function reviewNumbers({ env, artifacts, run, compose, composeArgs, root }) {
   env.W18_NOW = new Date().toISOString();
@@ -44,6 +45,21 @@ export async function reviewNumbers({ env, artifacts, run, compose, composeArgs,
       cache_write_tokens * 3.75 + output_tokens * 15 + reasoning_tokens * 15) / 1000000
       FROM agent_run_steps WHERE run_id = '${env.W18_RUN}'),
     'prs', (SELECT json_agg(p) FROM pull_requests p),
+    'work_costs', (SELECT json_agg(w) FROM (
+      SELECT 'pr' AS kind, p.number,
+        CASE WHEN COUNT(r.id) = 0 OR COUNT(r.cost_usd) <> COUNT(r.id)
+          THEN NULL ELSE SUM(r.cost_usd) END AS cost_usd
+      FROM pull_requests p LEFT JOIN agent_runs r
+        ON r.repository_id = p.repository_id AND r.pr_number = p.number
+      GROUP BY p.id, p.number
+      UNION ALL
+      SELECT 'issue', i.number,
+        CASE WHEN COUNT(r.id) = 0 OR COUNT(r.cost_usd) <> COUNT(r.id)
+          THEN NULL ELSE SUM(r.cost_usd) END
+      FROM issues i LEFT JOIN agent_runs r
+        ON r.repository_id = i.repository_id AND r.issue_numbers @> jsonb_build_array(i.number)
+      GROUP BY i.id, i.number
+    ) w),
     'pipelines', (SELECT json_agg(p) FROM pipeline_runs p),
     'issues', (SELECT json_agg(i) FROM issues i)
   );`;
@@ -80,5 +96,21 @@ export async function reviewNumbers({ env, artifacts, run, compose, composeArgs,
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   process.argv.push('--numbers-184');
-  void import('./review-183.mjs');
+  // Reuse the lifecycle without building another worker's dirty API checkout.
+  const artifacts = resolve('.agent-runs/W18R9-numbers-184');
+  mkdirSync(artifacts, { recursive: true });
+  const canonical = '/Users/zeross/agent-ops';
+  const revision = execFileSync('git', ['-C', canonical, 'rev-parse', 'origin/reviews/development'], { encoding: 'utf8' }).trim();
+  const backend = `${artifacts}/api-source-${Date.now()}`;
+  execFileSync('git', ['clone', '--shared', '--no-checkout', canonical, backend]);
+  execFileSync('git', ['-C', backend, 'checkout', '--detach', revision]);
+  const lifecycle = readFileSync(new URL('./review-183.mjs', import.meta.url), 'utf8');
+  assert(lifecycle.includes(`const backend = '${canonical}';`), 'Review 183 lifecycle backend anchor must exist');
+  assert(lifecycle.includes("import('./review-184.mjs')"), 'Review 183 numeric hook must exist');
+  const isolated = lifecycle.replace(`const backend = '${canonical}';`, `const backend = ${JSON.stringify(backend)};`)
+    .replace("import('./review-184.mjs')", `import(${JSON.stringify(import.meta.url)})`);
+  const entry = `${artifacts}/isolated-lifecycle.mjs`;
+  writeFileSync(entry, isolated);
+  // Resolve this module before the lifecycle imports its numeric hook.
+  void import(pathToFileURL(entry).href);
 }

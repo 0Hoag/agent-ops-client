@@ -22,3 +22,16 @@ test('family infrastructure errors cannot mask failure or stop unrelated familie
   assert.throws(result.finish, /locator unavailable/);
   assert.throws(result.finish, /Overview spend/);
 });
+
+test('recorded cost comparisons stay exact, including tiny differences and missing costs', () => {
+  const exact = results();
+  exact.check('Work SQL NUMERIC subtotal', 0.0003, 0.0003);
+  assert.doesNotThrow(exact.finish);
+
+  const mismatch = results();
+  mismatch.check('Work binary-float subtotal', 0.0001 + 0.0002, 0.0003);
+  mismatch.check('Work missing is not zero', null, 0);
+  assert.equal(mismatch.failures.length, 2);
+  assert.throws(mismatch.finish, /Work binary-float subtotal/);
+  assert.throws(mismatch.finish, /Work missing is not zero/);
+});

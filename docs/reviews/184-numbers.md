@@ -33,6 +33,14 @@ adds persisted recorded cost fixtures (null, zero, 0.0001, 12.4, 1234567.89) and
 zero-token records with SQL. No success responses are mocked. Each invocation
 owns an isolated Compose project and volume; it records commands and cleanup.
 
+The owner-authorized completion run additionally clones the published API
+`origin/reviews/development` revision into an ignored, detached source copy.
+It never builds the canonical API working tree or another worker's changes.
+The existing #183 lifecycle is reused unchanged through a generated entry that
+substitutes only the backend source path and the numeric-hook import URL.
+`sources.json` records the exact API revision and clean source status. The
+entry starts asynchronously so its numeric-hook import cannot await itself.
+
 `numeric-fixture.sql`, `oracle.sql` and `sql.json` record actual persisted rows.
 `matrix.json` is the finite executed UI figure list, with SQL expression/source,
 HTTP path/value, expected/actual text and browser locator. `api-responses.json`
@@ -79,8 +87,8 @@ that subsequent figures/families execute. No mismatch is filtered or downgraded.
 | Session sequence, five token categories, cache trend percent/fraction | Four persisted steps: miss, hit, miss, hit; 0%, 50%, 33%, 50% | All-zero token step covered; relative time checked on original step only; missing-cache/zero-denominator browser trend blocked by DB NOT NULL cache_hit |
 | Usage session cost and four-category token total | Every returned session, including two-run grouping | SQL/API includes reasoning, excluded from Usage UI total by contract |
 | Usage headline/day/model/tool/repository splits, MR rankings, savings | Independent persisted run arithmetic and seed-rate persistence checks; top recorded MR groups and unknown exclusion | One repository, two tools, fewer than five rankable groups; no ties or multiple prices |
-| Work total/range/page count, numbers/ages and per-row sessions/costs | All 360 records over every page; strict persisted linkage, including #557 | Attribution discrepancy is not accepted |
-| Work header and details | Page CI counts and priced subtotal; all linked records opened; returned detail run costs/tokens | Missing issue-linked runs remain failures; no backend attribution decision |
+| Work total/range/page count, numbers/ages and per-row sessions/costs | All 360 records over every page; strict persisted linkage, including #557 | Fixture now passes; additional linkage patterns are not covered |
+| Work header and details | Page CI counts and priced subtotal; all linked records opened; returned detail run costs/tokens | Fixture now passes; no backend attribution rule is copied into expectations |
 | Overview headline spend/savings, spend/cost-per-merged-PR/cache-rate cards, deltas, daily | Independent persisted token counters, merge dates and historical seed rates; current and previous periods | Monetary deltas are intentionally suppressed by partial pricing in this browser fixture; zero previous value remains focused-test evidence only |
 | Overview rework card/delta | No independent definition established | Not covered; do not infer a zero expectation from API/production implementation |
 | Overview checklist, attention counts/PR numbers and date labels | No | Not covered |
@@ -129,7 +137,65 @@ token-priced expectation would incorrectly erase missing-price semantics.
 
 ## Regression evidence
 
-### Final second-run results
+### Owner-authorized completion, 2026-11-20
+
+The previous #557/#559 dependency block is historical: both API issues are
+closed. This run uses published API development
+`b1b87e727f8064243f6081826cf35b2c0dcdfb7d`, with a clean isolated source status.
+Client development was merged normally; no force push or backend edits.
+
+The full client gate passed: 76 test files, 313 tests; typecheck and lint exit
+0; the heavy-wrapped production build exits 0 with three bundle-size warnings.
+Focused numeric consumers: 7 files, 28 tests passed; aggregation: 3 tests passed.
+`node --check` for the entry, browser and aggregate scripts and
+`git diff --check` also pass.
+
+An initial isolated-lifecycle attempt exited 13 after bootstrap/seed because
+the generated lifecycle awaited the module that was awaiting it. That attempt
+is retained in `owner-completion/import-cycle`, not claimed as a numeric run.
+Starting the lifecycle without top-level await fixes the cycle; the exact
+real-stack command is the before/after regression. Its first owned stack was
+torn down before rerunning; no shared stack or credentials were changed.
+
+The first completed matrix had 1,598 matching UI figures and two SQL/API
+oracle errors: JavaScript added 0.0001 + 0.0002 as 0.00030000000000000003,
+while the API correctly returned 0.0003 for Work issue/PR #3. Work cost
+expectations now come directly from PostgreSQL `SUM(numeric)` on persisted
+linked runs, preserving null propagation and the independent issue linkage.
+No tolerance, filtering or rounding was added to comparisons. The additional
+focused test proves tiny differences and null-versus-zero still fail strictly.
+The failing before matrix is retained under `owner-completion/binary-float`.
+
+The corrected real-stack command exits **0**: **1,598/1,598 UI figures** and
+**3,626/3,626 total comparisons**, zero named failures. Both strict persisted
+issue #10 linkage expectations remain **2**, API/UI **2**; recorded Work costs
+also match SQL. All 360 Work records, eight pages and linked details execute.
+The formatter-doubling control uses the identical database/account/URL/fixed
+time, executes the same 1,598 figures, and exits 1 with 58 named failures.
+It names `Session headline recorded cost`, expected `$12.40 · USD`, actual
+`$24.80 · USD`; the restored production figure is `$12.40 · USD` and passes.
+Both runs use API `b1b87e7` and the same client application source. Gate inputs
+and application code remain unchanged after the full gate; subsequent changes
+are confined to the review harness, its focused test and this document.
+
+Screenshots for Overview, Usage, Work and one-/two-run Sessions were captured
+at 1280/390, inspected locally, and remain **local-only**. Width assertions
+pass; mobile money wraps within its cell, and the long Work image has not had
+every row visually inspected. Compose cleanup reports zero owned containers,
+networks and volumes for final project `w18r8-183-27761`; the disposable control
+worktree was removed. Final evidence is archived under canonical client
+`.agent-runs/W18R9-numbers-184/owner-completion/` before safe worktree cleanup.
+
+Unexecuted acceptance is tracked separately in
+[client #235](https://github.com/0Hoag/agent-ops-client/issues/235), including
+the inventory's rework/attention/checklist/date labels, unsuppressed monetary
+comparisons and previous-zero browser case, missing-cache/zero-observation
+browser case, price versions, repository names, ranking ties and broader
+boundary combinations. This finite matrix is not exhaustive acceptance.
+The newer owner authorization permits readiness with a green gate and linked
+gaps; the coordinator, not this run, checks exact-head CI and decides merge.
+
+### Historical second-run results (not final-tree acceptance)
 
 The final real-stack invocation completed both the formatter control and the
 restored production browser matrix against the **same** persisted database and

@@ -161,7 +161,11 @@ try {
     check(`SQL/API work ${item.kind} #${item.number} sessions`, linked.length, item.runs_count);
     // Empty work has unavailable recorded cost; any missing linked run also
     // makes its recorded subtotal unavailable. Do not narrow issue linkage.
-    const cost = !linked.length || linked.some((run) => run.cost_usd == null) ? null : linked.reduce((sum, run) => sum + Number(run.cost_usd), 0);
+    // PostgreSQL sums persisted NUMERIC values exactly (0.0001 + 0.0002 =
+    // 0.0003); do not manufacture binary-float noise in the SQL/API oracle.
+    const sqlCost = db.work_costs.find((work) => work.kind === item.kind && work.number === item.number);
+    assert(sqlCost, `SQL recorded-cost aggregate must exist for ${item.kind} #${item.number}`);
+    const cost = sqlCost.cost_usd;
     if (cost != null) { expectedPriced++; expectedCost += cost; }
     check(`SQL/API work ${item.kind} #${item.number} cost`, cost, item.cost_usd ?? null);
     await figure(`Work ${item.kind} #${item.number} cost`, 'SUM(linked agent_runs.cost_usd), unavailable for missing components', 'work.data[].cost_usd', item.cost_usd, usd(cost), row.locator('td[data-label="Cost"]'));
