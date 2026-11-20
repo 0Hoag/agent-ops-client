@@ -7,9 +7,10 @@ import { dirname, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
-const backend = '/Users/zeross/agent-ops';
+const canonicalBackend = '/Users/zeross/agent-ops';
 const archive = '/Users/zeross/agent-ops-client/.agent-runs/W18R10-userflows-185';
 const artifacts = resolve(`.agent-runs/W18R10-userflows-185/${Date.now()}`);
+const backend = `${artifacts}/api-source`;
 const project = `w18r10-185-${process.pid}`;
 mkdirSync(artifacts, { recursive: true });
 for (const file of ['review-185.mjs', 'review-185-browser.mjs']) cpSync(`${root}/scripts/${file}`, `${artifacts}/${file}`);
@@ -63,9 +64,16 @@ function cleanup() {
 }
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { try { cleanup(); } finally { process.exit(1); } });
 try {
+  const api = run('git', ['-C', canonicalBackend, 'rev-parse', 'refs/remotes/origin/reviews/development']);
+  const published = run('git', ['-C', canonicalBackend, 'ls-remote', 'origin', 'refs/heads/reviews/development']).split(/\s/)[0];
+  assert.equal(api, published, 'API copy must match current published development');
+  mkdirSync(backend, { recursive: true });
+  const source = spawnSync('git', ['-C', canonicalBackend, 'archive', api], { maxBuffer: 100 * 1024 * 1024 });
+  assert.equal(source.status, 0, 'Read published API archive');
+  run('tar', ['-x', '-C', backend], { input: source.stdout });
   env.PRODUCTION_API_PORT = await port(); env.PRODUCTION_CLIENT_PORT = await port(); env.POSTGRES_HOST_PORT = await port();
   env.PRODUCT_E2E_URL = `http://127.0.0.1:${env.PRODUCTION_CLIENT_PORT}`;
-  writeFileSync(`${artifacts}/sources.json`, JSON.stringify({ client: run('git', ['rev-parse', 'HEAD']), api: run('git', ['-C', backend, 'rev-parse', 'HEAD']), apiStatus: run('git', ['-C', backend, 'status', '--short']), project, url: env.PRODUCT_E2E_URL, time: env.W185_TIME }, null, 2));
+  writeFileSync(`${artifacts}/sources.json`, JSON.stringify({ client: run('git', ['rev-parse', 'HEAD']), api, apiSource: 'isolated git archive of published development', project, url: env.PRODUCT_E2E_URL, time: env.W185_TIME }, null, 2));
   started = true; compose('up', '-d', '--build', '--wait');
   writeFileSync(`${artifacts}/schema.txt`, sql("SELECT table_name,column_name,data_type FROM information_schema.columns WHERE table_name IN ('repositories','pull_requests') ORDER BY table_name,ordinal_position;"));
   run('docker', [...composeArgs, 'exec', '-T', 'api', '/bootstrap-account', '--email', env.PRODUCT_E2E_EMAIL], { input: `${env.PRODUCT_E2E_PASSWORD}\n` });

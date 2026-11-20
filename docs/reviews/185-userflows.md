@@ -7,7 +7,8 @@ pnpm install --frozen-lockfile
 /Users/zeross/agent-ops/scripts/heavy.sh node scripts/review-185.mjs
 ```
 
-The runner uses the read-only backend checkout at `/Users/zeross/agent-ops`,
+The runner exports current published API development from the read-only Git
+object store at `/Users/zeross/agent-ops` into an isolated source copy, using
 its production Compose definition, three ephemeral localhost ports, a unique
 Compose project, random synthetic secrets, and a fresh PostgreSQL volume.
 It bootstraps an `.invalid` account and two organizations. Playwright signs in
@@ -30,9 +31,9 @@ is used. HTTP session ingestion uses that validated browser's token.
   options, not merely a previously idle browser document. This interprets retention as the
   round trip to the owning organization, not permission to expose A data in B.
 - Work session amounts must match persisted recorded values, not the independent
-  $3-per-million estimate. Issue 10 links all three sessions. Unresolved owner
-  semantics remain [backend #559](https://github.com/0Hoag/agent-ops/issues/559)
-  and [backend #557](https://github.com/0Hoag/agent-ops/issues/557), respectively.
+  $3-per-million estimate. Issue 10 links all three sessions. Historical backend
+  defects #559 and #557 are closed; the strict recorded-cost and attribution
+  checks remain unchanged and must be measured against current published API.
 
 ### Fixture limits
 
@@ -110,6 +111,19 @@ no files or evidence were read from other workers' worktrees.
 
 Execution results and uncovered acceptance are reported in the PR; screenshots
 in the local evidence archive are not claimed as hosted attachments.
+
+### Owner completion, 2026-11-20
+
+After integrating current client development, the production-before matrix
+passes both historical numeric checks against published API
+`20fb461492e505c8b66bc588f8fbd00d4c918219`. They are no longer dependency blocks.
+The strict repository-retention checks now fail: development's #224 deliberately
+clears the preference on logout and organization selection to resolve #222.
+Sign-in/reload and returning to the original organization select All repositories
+instead of the original repository; cross-organization isolation still passes.
+The logout mutation therefore cannot distinguish production from broken code.
+This conflict is tracked in [client #236](https://github.com/0Hoag/agent-ops-client/issues/236).
+No shell/auth changes or weaker retention expectations are introduced here.
 
 During harness development, an initial empty-spend oracle incorrectly expected
 `$0.00 spent`. SQL/HTTP showed no telemetry and `spend_usd: null`; the UX standard

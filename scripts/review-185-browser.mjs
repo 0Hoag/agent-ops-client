@@ -131,7 +131,7 @@ try {
       assert.equal(await page.locator('#work-detail li').count(), 2);
     });
     const issue = page.locator('main tr').filter({ has: page.getByRole('button', { name: 'Userflows linked issue', exact: true }) });
-    await check('cost.linked-sessions-557', async () => assert.equal(await issue.locator('[data-label="Sessions"]').innerText(), '3', 'Three persisted runs link issue 10; attribution decision remains #557'));
+    await check('cost.linked-sessions-557', async () => assert.equal(await issue.locator('[data-label="Sessions"]').innerText(), '3', 'Three persisted runs link issue 10'));
     await screenshots('attention');
     await page.getByRole('banner').getByLabel('Repository', { exact: true }).selectOption(env.W185_REPOSITORY);
     await page.getByText('User menu', { exact: true }).click(); await page.getByRole('button', { name: 'Sign out', exact: true }).click();
