@@ -38,6 +38,15 @@ function setup() {
 }
 
 describe('BudgetsPage', () => {
+  it('omits the optional repository ID when creating an All repositories budget', async () => {
+    setup();
+    fireEvent.change(await screen.findByLabelText('Start date'), { target: { value: '2026-01-01' } });
+    fireEvent.change(screen.getByLabelText('End date'), { target: { value: '2026-12-31' } });
+    fireEvent.change(screen.getByLabelText('USD limit'), { target: { value: '25' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create budget' }));
+    await waitFor(() => expect(writes).toHaveLength(1));
+    expect(writes[0]).not.toHaveProperty('repository_id');
+  });
   it('explains that open-ended budgets are unavailable and prevents unsupported requests', async () => {
     setup();
     const end = await screen.findByLabelText('End date') as HTMLInputElement;

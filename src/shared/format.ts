@@ -1,4 +1,4 @@
-export const money = (value?: number) => value == null ? 'Cost unavailable — check model pricing in Settings' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(value);
+export const money = (value?: number | null) => value == null ? 'Cost unavailable — check model pricing in Settings' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(value);
 export const compact = (value?: number) => value == null ? 'Not reported — sync usage' : new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
 export const count = (value?: number) => value == null ? 'Not reported — sync usage' : new Intl.NumberFormat('en-US').format(value);
 export function exactTime(value?: string) {

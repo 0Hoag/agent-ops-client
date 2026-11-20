@@ -15,11 +15,12 @@ function range(preset: Preset) {
   if (preset !== 'Today') start.setDate(start.getDate() - (preset === '7 days' ? 6 : 29));
   return { from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) };
 }
-function metric(current?: number, previous?: number, format: (value?: number) => string = (value) => value === undefined ? '—' : `${(value * 100).toFixed(1)}%`) {
-  if (current === undefined) return { value: 'Sync usage and delivery history', change: 'Check model pricing in Settings' };
-  if (previous === undefined) return { value: format(current), change: 'Previous period unavailable' };
+function metric(current?: number | null, previous?: number | null, format?: (value?: number) => string) {
+  const display = format ?? ((value?: number) => `${(value! * 100).toFixed(1)}%`);
+  if (current == null) return { value: 'Sync usage and delivery history', change: 'Check model pricing in Settings' };
+  if (previous == null) return { value: display(current), change: 'Previous period unavailable' };
   const delta = current - previous;
-  return { value: format(current), change: `${delta > 0 ? '+' : ''}${format(delta)} vs previous period` };
+  return { value: display(current), change: `${delta > 0 ? '+' : ''}${format ? format(delta) : `${(delta * 100).toFixed(1)} percentage points`} vs previous period` };
 }
 
 /** Organization-scoped spend evidence and progressively disclosed attention. */
@@ -56,12 +57,12 @@ export function OverviewPage() {
     {session.isError && <p role="alert">Unable to load session: {session.error.message} <button onClick={() => void session.refetch()}>Retry</button></p>}
     {session.isPending && <p role="status">Loading overview…</p>}
     {organizationId && <Checklist key={`${organizationId}-${generation}`} organizationId={organizationId} />}
-    <div className="mb-5 flex flex-wrap gap-2" aria-label="Date range presets">{(['Today', '7 days', '30 days'] as const).map((item) => <button key={item} aria-pressed={preset === item} className="rounded border px-3 py-2" onClick={() => { setPreset(item); setDates(range(item)); }}>{item}</button>)}</div>
+    <div role="group" className="mb-5 flex flex-wrap gap-2" aria-label="Date range presets">{(['Today', '7 days', '30 days'] as const).map((item) => <button key={item} aria-pressed={preset === item} className="rounded border px-3 py-2" onClick={() => { setPreset(item); setDates(range(item)); }}>{item}</button>)}</div>
     {query.isPending && <p role="status">Loading overview data…</p>}{query.isError && <p role="alert">Unable to load overview: {query.error.message} <button onClick={() => void query.refetch()}>Retry</button></p>}
     {query.data && <>
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4"><Card title={partial ? 'Spend · Partial' : 'Spend'} value={{ ...metric(current?.spend_usd, previous?.spend_usd, money), ...(partialComparison ? { change: 'Priced usage only · Set missing model prices before comparing periods' } : {}) }} /><Card title={partial ? 'Cost per merged PR · Partial' : 'Cost per merged PR'} value={{ ...metric(current?.cost_per_merged_pr, previous?.cost_per_merged_pr, money), ...(partialComparison ? { change: 'Priced usage only · Set missing model prices before comparing periods' } : {}) }} /><Card title="Cache hit rate" value={metric(current?.cache_hit_rate, previous?.cache_hit_rate)} /><Card title="Rework rate" value={metric(current?.rework_rate, previous?.rework_rate)} /></div>
       <div className="mt-6 grid gap-4 lg:grid-cols-3"><section className="min-w-0 rounded border bg-white p-4 lg:col-span-2"><h2 className="font-semibold">Spend by day{partial ? ' · Priced usage only' : ''}</h2>{daily.isPending && <p role="status">Loading daily spend…</p>}{daily.isError && <p role="alert">Unable to load daily spend: {daily.error.message} <button onClick={() => void daily.refetch()}>Retry</button></p>}{daily.data && (series.length ? <DailySpend buckets={series} /> : <p className="mt-3 text-sm text-slate-600">No daily spend data for this period.</p>)}</section>
-      <Attention items={query.data.attention} /></div>
+      <Attention items={query.data.attention} missingModels={missing} /></div>
       {!current && <p className="mt-4 text-slate-600">No overview data for this period.</p>}
     </>}
   </section>;

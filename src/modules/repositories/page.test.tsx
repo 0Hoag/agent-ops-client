@@ -20,6 +20,19 @@ function setup() {
 }
 
 describe('RepositoriesPage', () => {
+  it('tests candidate provider access and syncs a saved repository through HTTP', async () => {
+    setup();
+    fireEvent.change(await screen.findByLabelText('Provider'), { target: { value: 'gitlab' } });
+    fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'acme/new' } });
+    fireEvent.change(screen.getByLabelText('Self-hosted base URL'), { target: { value: 'https://git.example' } });
+    fireEvent.change(screen.getByLabelText('Backfill credential'), { target: { value: 'synthetic-token' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Test connection' }));
+    await waitFor(() => expect(request.mock.calls.some(([config]) => config.url === '/api/v1/repositories/test' && config.method === 'POST' && JSON.parse(config.data as string).token === 'synthetic-token')).toBe(true));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Sync now' })[0]);
+    await waitFor(() => expect(request.mock.calls.some(([config]) => config.url === '/api/v1/repositories/gh/sync' && config.method === 'POST')).toBe(true));
+    await waitFor(() => expect(request.mock.calls.filter(([config]) => config.url === '/api/v1/repositories' && config.method === 'GET').length).toBeGreaterThan(1));
+    expect(screen.queryByText(/Unable to sync/)).toBeNull();
+  });
   afterEach(() => { cleanup(); vi.clearAllMocks(); memberRole = 'owner'; });
   it('renders both providers and hides mutation controls for read-only roles', async () => {
     memberRole = 'viewer'; setup();
