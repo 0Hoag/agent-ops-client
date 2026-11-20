@@ -1,0 +1,521 @@
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+ RUN  v2.1.9 /Users/zeross/agent-ops-wt/verify/w19p-settings-190
+
+ ❯ src/modules/repositories/page.test.tsx (5 tests | 1 failed) 288ms
+   × RepositoriesPage > tests candidate provider access and syncs a saved repository through HTTP 101ms
+     → Unable to find an accessible element with the role "button" and name "Test connection"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Repository settings":
+  <h1
+    class="mb-5 text-2xl font-semibold"
+  />
+
+  Name "acme/one (github)":
+  <h2
+    class="font-semibold"
+  />
+
+  Name "acme/two (gitlab)":
+  <h2
+    class="font-semibold"
+  />
+
+  Name "Add repository":
+  <h2
+    class="text-lg font-semibold"
+  />
+
+  --------------------------------------------------
+  article:
+
+  Name "":
+  <article
+    class="mb-4 border bg-white p-4"
+  />
+
+  Name "":
+  <article
+    class="mb-4 border bg-white p-4"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+  button:
+
+  Name "Edit settings":
+  <button />
+
+  Name "Delete":
+  <button
+    class="ml-3"
+  />
+
+  Name "Edit settings":
+  <button />
+
+  Name "Delete":
+  <button
+    class="ml-3"
+  />
+
+  Name "Create repository":
+  <button />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Provider":
+  <select />
+
+  --------------------------------------------------
+  option:
+
+  Name "GitHub":
+  <option
+    value="github"
+  />
+
+  Name "GitLab":
+  <option
+    value="gitlab"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Full name":
+  <input
+    required=""
+    value="acme/new"
+  />
+
+  Name "Self-hosted base URL":
+  <input
+    value="https://git.example"
+  />
+
+  Name "Status mappings (JSON)":
+  <textarea />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      class="readable-controls"
+    >
+      <h1
+        class="mb-5 text-2xl font-semibold"
+      >
+        Repository settings
+      </h1>
+      <article
+        class="mb-4 border bg-white p-4"
+      >
+        <h2
+          class="font-semibold"
+        >
+          acme/one
+
+          <span
+            class="text-sm"
+          >
+            (
+            github
+            )
+          </span>
+        </h2>
+        <p>
+          Status mappings:
+          {}
+        </p>
+        <button>
+          Edit settings
+        </button>
+        <button
+          class="ml-3"
+        >
+          Delete
+        </button>
+      </article>
+      <article
+        class="mb-4 border bg-white p-4"
+      >
+        <h2
+          class="font-semibold"
+        >
+          acme/two
+
+          <span
+            class="text-sm"
+          >
+            (
+            gitlab
+            )
+          </span>
+        </h2>
+        <p>
+          GitLab URL:
+          https://git.example
+        </p>
+        <p>
+          Status mappings:
+          {}
+        </p>
+        <button>
+          Edit settings
+        </button>
+        <button
+          class="ml-3"
+        >
+          Delete
+        </button>
+      </article>
+      <form
+        class="mt-5 grid max-w-xl gap-3"
+      >
+        <h2
+          class="text-lg font-semibold"
+        >
+          Add repository
+        </h2>
+        <label>
+          Provider
+          <select>
+            <option
+              value="github"
+            >
+              GitHub
+            </option>
+            <option
+              value="gitlab"
+            >
+              GitLab
+            </option>
+          </select>
+        </label>
+        <label>
+          Full name
+          <input
+            required=""
+            value="acme/new"
+          />
+        </label>
+        <label>
+          Self-hosted base URL
+          <input
+            value="https://git.example"
+          />
+        </label>
+        <label>
+          Status mappings (JSON)
+          <textarea>
+            {}
+          </textarea>
+        </label>
+        <label>
+          Webhook credential
+          <input
+            autocomplete="new-password"
+            type="password"
+            value=""
+          />
+        </label>
+        <label>
+          Backfill credential
+          <input
+            autocomplete="new-password"
+            type="password"
+            value="synthetic-token"
+          />
+        </label>
+        <button>
+          Create repository
+        </button>
+      </form>
+    </section>
+  </div>
+</body>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/repositories/page.test.tsx > RepositoriesPage > tests candidate provider access and syncs a saved repository through HTTP
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "Test connection"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Repository settings":
+  <h1
+    class="mb-5 text-2xl font-semibold"
+  />
+
+  Name "acme/one (github)":
+  <h2
+    class="font-semibold"
+  />
+
+  Name "acme/two (gitlab)":
+  <h2
+    class="font-semibold"
+  />
+
+  Name "Add repository":
+  <h2
+    class="text-lg font-semibold"
+  />
+
+  --------------------------------------------------
+  article:
+
+  Name "":
+  <article
+    class="mb-4 border bg-white p-4"
+  />
+
+  Name "":
+  <article
+    class="mb-4 border bg-white p-4"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+  button:
+
+  Name "Edit settings":
+  <button />
+
+  Name "Delete":
+  <button
+    class="ml-3"
+  />
+
+  Name "Edit settings":
+  <button />
+
+  Name "Delete":
+  <button
+    class="ml-3"
+  />
+
+  Name "Create repository":
+  <button />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Provider":
+  <select />
+
+  --------------------------------------------------
+  option:
+
+  Name "GitHub":
+  <option
+    value="github"
+  />
+
+  Name "GitLab":
+  <option
+    value="gitlab"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Full name":
+  <input
+    required=""
+    value="acme/new"
+  />
+
+  Name "Self-hosted base URL":
+  <input
+    value="https://git.example"
+  />
+
+  Name "Status mappings (JSON)":
+  <textarea />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <section
+      class="readable-controls"
+    >
+      <h1
+        class="mb-5 text-2xl font-semibold"
+      >
+        Repository settings
+      </h1>
+      <article
+        class="mb-4 border bg-white p-4"
+      >
+        <h2
+          class="font-semibold"
+        >
+          acme/one
+
+          <span
+            class="text-sm"
+          >
+            (
+            github
+            )
+          </span>
+        </h2>
+        <p>
+          Status mappings:
+          {}
+        </p>
+        <button>
+          Edit settings
+        </button>
+        <button
+          class="ml-3"
+        >
+          Delete
+        </button>
+      </article>
+      <article
+        class="mb-4 border bg-white p-4"
+      >
+        <h2
+          class="font-semibold"
+        >
+          acme/two
+
+          <span
+            class="text-sm"
+          >
+            (
+            gitlab
+            )
+          </span>
+        </h2>
+        <p>
+          GitLab URL:
+          https://git.example
+        </p>
+        <p>
+          Status mappings:
+          {}
+        </p>
+        <button>
+          Edit settings
+        </button>
+        <button
+          class="ml-3"
+        >
+          Delete
+        </button>
+      </article>
+      <form
+        class="mt-5 grid max-w-xl gap-3"
+      >
+        <h2
+          class="text-lg font-semibold"
+        >
+          Add repository
+        </h2>
+        <label>
+          Provider
+          <select>
+            <option
+              value="github"
+            >
+              GitHub
+            </option>
+            <option
+              value="gitlab"
+            >
+              GitLab
+            </option>
+          </select>
+        </label>
+        <label>
+          Full name
+          <input
+            required=""
+            value="acme/new"
+          />
+        </label>
+        <label>
+          Self-hosted base URL
+          <input
+            value="https://git.example"
+          />
+        </label>
+        <label>
+          Status mappings (JSON)
+          <textarea>
+            {}
+          </textarea>
+        </label>
+        <label>
+          Webhook credential
+          <input
+            autocomplete="new-password"
+            type="password"
+            value=""
+          />
+        </label>
+        <label>
+          Backfill credential
+          <input
+            autocomplete="new-password"
+            type="password"
+            value="synthetic-token"
+          />
+        </label>
+        <button>
+          Create repository
+        </button>
+      </form>
+    </section>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/modules/repositories/page.test.tsx:29:28
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  08:57:33
+   Duration  904ms (transform 66ms, setup 0ms, collect 171ms, tests 288ms, environment 204ms, prepare 33ms)

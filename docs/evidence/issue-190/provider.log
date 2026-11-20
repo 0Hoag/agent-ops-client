@@ -1,0 +1,12 @@
+GET /api/v4/projects/settings-190%2Fconnected: 200
+GET /api/v4/projects/settings-190%2Fconnected/issues?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/merge_requests?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/pipelines?per_page=100&page=1: 200
+GET /api/v4/projects/settings-190%2Fconnected: 200
+GET /api/v4/projects/settings-190%2Fconnected/issues?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/merge_requests?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/pipelines?per_page=100&page=1: 200
+GET /api/v4/projects/settings-190%2Fconnected: 200
+GET /api/v4/projects/settings-190%2Fconnected/issues?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/merge_requests?per_page=100&page=1&state=all: 200
+GET /api/v4/projects/settings-190%2Fconnected/pipelines?per_page=100&page=1: 200

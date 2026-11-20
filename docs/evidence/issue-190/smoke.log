@@ -1,0 +1,87 @@
+PASS real HTTP login, unscoped/scoped sessions and cross-tenant repository isolation
+PASS persisted synthetic pricing fixture; snapshot reset before every identical-input browser phase
+PASS SETTINGS_IDENTICAL_SNAPSHOT 87eafca48312a109d510a840b8bb555ddb056bd0e232b7ba1835aee3adc06ce1
+PASS SETTINGS_REAL_LOGIN: registered Settings repository panel
+PASS SETTINGS_SCREENSHOT_repositories_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_dark: production panel; no document overflow
+PASS SETTINGS_REPOSITORY_TEST_CREATE_SYNC: HTTP 200/201/200; persisted repository; success timestamp; synced task visible
+PASS SETTINGS_CLIPBOARD_EXACT_COMMAND: : "${AGENT_RUN_TOKEN:?Set AGENT_RUN_TOKEN to the configured ingestion credential}" && agentops push --harness 'codex' --endpoint 'http://127.0.0.1:59571/api/v1/agent-runs' --repository-id '25980a79-0fde-4657-8ba1-d1382750af35' --wave setup --worker local-agent '/sessions/settings fixture.jsonl'
+PASS SETTINGS_SCREENSHOT_prices_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_390_dark: production panel; no document overflow
+PASS SETTINGS_PRICE_INDEPENDENT_COST: persisted 1M input + 100K output → price-derived USD $2.50; not recorded cost
+PASS SETTINGS_SCREENSHOT_priced-overview_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_390_dark: production panel; no document overflow
+PASS SETTINGS_INVITATION_LINK: real invitation accepted; persisted viewer identity visible
+PASS SETTINGS_SCREENSHOT_budgets_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_390_dark: production panel; no document overflow
+PASS SETTINGS_BUDGET_PERSISTED: same limits after real reload
+PASS SETTINGS_SCREENSHOT_alerts_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_390_dark: production panel; no document overflow
+PASS SETTINGS_ALERTS_PERSISTED: persisted threshold + enabled channel; no external delivery claimed
+PASS SETTINGS_LOGS_REJECT_INVALID_TOKEN: HTTP 401; upstream session validation remains enforced
+PASS SETTINGS_SCREENSHOT_logs_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_390_dark: production panel; no document overflow
+PASS SETTINGS_REAL_WORKER_LOGS: two deterministic process stdout lines + worker.completed rendered
+PASS SETTINGS_RUNTIME: no runtime errors or failed API requests
+PASS SETTINGS_INDEPENDENT_PERSISTED_STATE: SQL price=2.5; synced issue=1; budget=1; invited viewer=1; real provider HTTP log
+PASS SETTINGS_IDENTICAL_SNAPSHOT 87eafca48312a109d510a840b8bb555ddb056bd0e232b7ba1835aee3adc06ce1
+PASS SETTINGS_REAL_LOGIN: registered Settings repository panel
+PASS SETTINGS_SCREENSHOT_repositories_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_dark: production panel; no document overflow
+PASS SETTINGS_REPOSITORY_TEST_CREATE_SYNC: HTTP 200/201/200; persisted repository; success timestamp; synced task visible
+AssertionError [ERR_ASSERTION]: SETTINGS_CLIPBOARD_EXACT_COMMAND
+exit=1
+PASS deliberate compiled mutation rejected by SETTINGS_CLIPBOARD_EXACT_COMMAND with identical browser inputs
+PASS SETTINGS_IDENTICAL_SNAPSHOT 87eafca48312a109d510a840b8bb555ddb056bd0e232b7ba1835aee3adc06ce1
+PASS SETTINGS_REAL_LOGIN: registered Settings repository panel
+PASS SETTINGS_SCREENSHOT_repositories_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_repositories_390_dark: production panel; no document overflow
+PASS SETTINGS_REPOSITORY_TEST_CREATE_SYNC: HTTP 200/201/200; persisted repository; success timestamp; synced task visible
+PASS SETTINGS_CLIPBOARD_EXACT_COMMAND: : "${AGENT_RUN_TOKEN:?Set AGENT_RUN_TOKEN to the configured ingestion credential}" && agentops push --harness 'codex' --endpoint 'http://127.0.0.1:59571/api/v1/agent-runs' --repository-id '25980a79-0fde-4657-8ba1-d1382750af35' --wave setup --worker local-agent '/sessions/settings fixture.jsonl'
+PASS SETTINGS_SCREENSHOT_prices_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_prices_390_dark: production panel; no document overflow
+PASS SETTINGS_PRICE_INDEPENDENT_COST: persisted 1M input + 100K output → price-derived USD $2.50; not recorded cost
+PASS SETTINGS_SCREENSHOT_priced-overview_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_priced-overview_390_dark: production panel; no document overflow
+PASS SETTINGS_INVITATION_LINK: real invitation accepted; persisted viewer identity visible
+PASS SETTINGS_SCREENSHOT_budgets_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_budgets_390_dark: production panel; no document overflow
+PASS SETTINGS_BUDGET_PERSISTED: same limits after real reload
+PASS SETTINGS_SCREENSHOT_alerts_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_alerts_390_dark: production panel; no document overflow
+PASS SETTINGS_ALERTS_PERSISTED: persisted threshold + enabled channel; no external delivery claimed
+PASS SETTINGS_LOGS_REJECT_INVALID_TOKEN: HTTP 401; upstream session validation remains enforced
+PASS SETTINGS_SCREENSHOT_logs_1280_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_1280_dark: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_390_light: production panel; no document overflow
+PASS SETTINGS_SCREENSHOT_logs_390_dark: production panel; no document overflow
+PASS SETTINGS_REAL_WORKER_LOGS: two deterministic process stdout lines + worker.completed rendered
+PASS SETTINGS_RUNTIME: no runtime errors or failed API requests
+PASS SETTINGS_INDEPENDENT_PERSISTED_STATE: SQL price=2.5; synced issue=1; budget=1; invited viewer=1; real provider HTTP log
+PASS Settings production + failing control + restored production
+PASS cleanup w19p-settings-190-52397: zero owned containers, networks and volumes
+PASS cleanup local provider pid=52404: exited; zero owned provider processes

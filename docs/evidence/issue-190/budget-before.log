@@ -1,0 +1,33 @@
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+ RUN  v2.1.9 /Users/zeross/agent-ops-wt/verify/w19p-settings-190
+
+ ❯ src/modules/budgets/page.test.tsx (7 tests | 1 failed) 226ms
+   × BudgetsPage > omits the optional repository ID when creating an All repositories budget 85ms
+     → expected { …(5) } to not have property "repository_id"
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/budgets/page.test.tsx > BudgetsPage > omits the optional repository ID when creating an All repositories budget
+AssertionError: expected { …(5) } to not have property "repository_id"
+
+- Expected:
+undefined
+
++ Received:
+""
+
+ ❯ src/modules/budgets/page.test.tsx:48:27
+     46|     fireEvent.click(screen.getByRole('button', { name: 'Create budget'…
+     47|     await waitFor(() => expect(writes).toHaveLength(1));
+     48|     expect(writes[0]).not.toHaveProperty('repository_id');
+       |                           ^
+     49|   });
+     50|   it('explains that open-ended budgets are unavailable and prevents un…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  09:09:58
+   Duration  1.02s (transform 80ms, setup 0ms, collect 238ms, tests 226ms, environment 350ms, prepare 43ms)

@@ -42,4 +42,18 @@ describe('Overview evidence', () => {
     expect(screen.getByText('Nothing needs attention.')).toBeTruthy();
     expect(document.querySelector('details')).toBeNull();
   });
+
+  it('adds only unreported missing models while preserving server records and actions', () => {
+    render(<Attention missingModels={['known', 'new-model', 'new-model']} items={[
+      { kind: 'missing_price', model: 'known', message: 'Server pricing reason' },
+      { kind: 'repeated_failures', run_id: 'run-1', message: 'Repeated failures' },
+    ]} />);
+    document.querySelectorAll('details').forEach((item) => { item.open = true; });
+    expect(screen.getAllByRole('listitem')).toHaveLength(3);
+    expect(screen.getByText('2 missing model prices')).toBeTruthy();
+    expect(screen.getByText('Server pricing reason · known')).toBeTruthy();
+    expect(screen.getByText('Model price required · new-model')).toBeTruthy();
+    expect(screen.getAllByRole('link', { name: 'Set model prices' })).toHaveLength(2);
+    expect(screen.getByRole('link', { name: 'View run' }).getAttribute('href')).toBe('/runs/run-1');
+  });
 });

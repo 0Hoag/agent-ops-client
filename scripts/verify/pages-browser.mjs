@@ -14,7 +14,7 @@ let authorization;
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 844 } });
 page.on('pageerror', (error) => errors.push(error.message));
-page.on('request', (request) => { if (request.url().includes('/api/')) authorization ||= request.headers().authorization; });
+page.on('request', (request) => { if (request.url().includes('/api/') && request.headers().authorization) authorization = request.headers().authorization; });
 page.on('response', (response) => { if (response.url().includes('/api/')) network.push({ url: response.url(), status: response.status() }); });
 async function check(name, command, expected, fn, blocked) {
   try {
@@ -59,13 +59,13 @@ try {
   await page.getByLabel('Organization', { exact: true }).selectOption({ label: 'Review 183' });
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.getByRole('heading', { name: 'Work', exact: true }).waitFor();
-  await page.getByRole('combobox', { name: 'Repository', exact: true }).selectOption(fixture.repository); await settle();
+  await page.getByRole('main').getByRole('combobox', { name: 'Repository', exact: true }).selectOption(fixture.repository); await settle();
   const query = `repository_id=${fixture.repository}`;
   await check('WORK_PAGINATION', 'GET work?page=2 + click Next page / Previous page', 'API page 2 and same UI titles, then page 1', async () => {
     const second = await http(`work?${query}&page=2`);
     assert(second.data.length > 0); assert.equal(second.meta.page, 2);
     await page.getByRole('button', { name: 'Next page', exact: true }).click(); await settle();
-    for (const item of second.data) assert(await page.getByRole('button', { name: item.title, exact: true }).count());
+    for (const item of second.data) await page.getByRole('button', { name: item.title, exact: true }).waitFor();
     assert.match(await page.getByRole('navigation', { name: 'Work pagination' }).innerText(), /Page 2/);
     await page.getByRole('button', { name: 'Previous page', exact: true }).click(); await settle(); return second.meta;
   });
@@ -85,6 +85,7 @@ try {
     const detail = await http(`work/pr/1?${query}`);
     const run = detail.runs.find((row) => row.id === fixture.run1);
     assert.equal(run.cost_usd, 2); assert.equal(run.tokens, 1000000);
+    await page.locator('#work-detail').getByText('$2.00 USD · 1M tokens', { exact: true }).waitFor();
     const text = await page.locator('#work-detail').innerText(); assert.match(text, /\$2\.00 USD · 1M tokens/); return text;
   });
   await check('WORK_GITLAB_HREF', 'Selected detail → Open in GitLab href', 'https://gitlab.example.invalid/w19/pages/-/merge_requests/1', async () => {
@@ -104,8 +105,9 @@ try {
   await check('USAGE_RECORDED_COST_TOKENS', 'GET agent-runs and Usage sessions table', '$2.00 + $12.40, each 1M tokens; header $14.40', async () => {
     const data = await http(`agent-runs?${query}`);
     assert.equal(data.data.length, 2); assert.equal(data.data.reduce((sum, row) => sum + row.cost_usd, 0), 14.4);
-    const text = await page.locator('main').innerText(); assert.match(text, /\$14\.40 spent/);
+    await page.getByRole('link', { name: /feat\/pages-2/ }).waitFor();
     for (const number of [1, 2]) { const row = page.getByRole('row').filter({ has: page.getByRole('link', { name: new RegExp(`feat/pages-${number}`) }) }); assert.match(await row.innerText(), number === 1 ? /\$2\.00/ : /\$12\.40/); assert.match(await row.innerText(), /1M/); }
+    const text = await page.locator('main').innerText(); assert.match(text, /\$14\.40 spent/);
     return 'HTTP persisted sum=14.4; two UI rows each 1M';
   });
   await check('USAGE_FILTERS', 'Select Today; Split by Tool then Repository', 'Claude and w19/pages splits, date selection applied', async () => {
@@ -117,15 +119,24 @@ try {
   });
   await capture('usage');
   await page.getByRole('link', { name: /feat\/pages-1/ }).click(); await settle();
-  await check('PAGE_SESSION_TIMELINE', 'Usage session link → compiled Session Timeline component', 'Ordered Read/Test steps, $0.50/$1.50, cache trend 100%/50%, real MR href', async () => {
+  await check('PAGE_SESSION_TIMELINE', 'Usage session link → compiled Session Timeline component', 'Ordered Step 1 Read pages / Step 2 Test pages', async () => {
     await page.getByRole('heading', { name: 'Session detail', exact: true }).waitFor();
     const text = await page.locator('main').innerText(); assert.match(text, /\$2\.00 · USD/);
     assert(text.indexOf('Step 1 · Read pages') >= 0, 'PAGE_SESSION_TIMELINE: Step 1 · Read pages must render');
     assert(text.indexOf('Step 1 · Read pages') < text.indexOf('Step 2 · Test pages'));
+    return text;
+  });
+  await check('PAGE_SESSION_NUMBERS', 'Session Timeline costs and GET agent-runs/:id/timeline', 'Persisted cumulative $0.50/$2.00; displayed increments $0.50/$1.50', async () => {
+    const timeline = await http(`agent-runs/${fixture.run1}/timeline`); assert.equal(timeline.data.length, 2);
+    assert.deepEqual(timeline.data.map((step) => step.cumulative_cost_usd), [0.5, 2]);
+    const text = await page.locator('main').innerText();
     assert.match(text, /\$0\.50/); assert.match(text, /\$1\.50/);
+    return text;
+  });
+  await check('PAGE_SESSION_CACHE_HREF', 'Session Timeline meters and linked MR href', 'Cache trend 100%/50%, exact GitLab MR URL', async () => {
     assert.deepEqual(await page.getByRole('meter').evaluateAll((els) => els.map((el) => el.getAttribute('value'))), ['100', '50']);
     assert.equal(await page.getByRole('link', { name: 'w19/pages · MR #1', exact: true }).getAttribute('href'), 'https://gitlab.example.invalid/w19/pages/-/merge_requests/1');
-    const timeline = await http(`agent-runs/${fixture.run1}/timeline`); assert.equal(timeline.data.steps.length, 2); return text;
+    return '100% / 50%; exact GitLab MR href';
   });
   await capture('session');
   await check('BROWSER_ERRORS', 'Playwright pageerror and real HTTP status log', 'No page errors or failed API requests', () => { assert.deepEqual(errors, []); assert.deepEqual(network.filter((row) => row.status >= 400), []); return 'none'; });

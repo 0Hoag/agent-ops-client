@@ -9,7 +9,7 @@ export async function reviewPages({ root, artifacts, env, request, token, run, c
   const started = new Date(Date.now() - 3600000).toISOString();
   const fixture = { repository: repo.id, started, limits: 'One priced model, one tool, one GitLab repository; not complete cost acceptance. Separate strict #557/#559 probes remain blocking.' };
   for (const number of [1, 2]) {
-    const row = (await request('agent-runs', { repository_id: repo.id, model: 'pages-priced', harness: 'Claude', branch: `feat/pages-${number}`, session_id: `pages-session-${number}`, pr_number: number, issue_numbers: [number], started_at: started, ended_at: new Date().toISOString(), input_tokens: 1000000, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 0, reasoning_tokens: 0 }, token)).data;
+    const row = (await request('agent-runs', { repository_id: repo.id, wave: 'Pages verification', worker: 'Synthetic agent', model: 'pages-priced', harness: 'Claude', branch: `feat/pages-${number}`, session_id: `pages-session-${number}`, pr_number: number, issue_numbers: [number], started_at: started, ended_at: new Date().toISOString(), input_tokens: 1000000, cached_input_tokens: 0, cache_write_tokens: 0, output_tokens: 0, reasoning_tokens: 0 }, token)).data;
     fixture[`run${number}`] = row.id;
   }
   // Both the unaffected $2 case and divergent recorded $12.40 probe are persisted.
@@ -30,6 +30,9 @@ export async function reviewPages({ root, artifacts, env, request, token, run, c
   const snapshot = run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-At', '-c', `SELECT json_agg(t) FROM (SELECT id, pr_number, issue_numbers, cost_usd, input_tokens FROM agent_runs WHERE repository_id='${repo.id}' ORDER BY pr_number) t`]);
   writeFileSync(`${artifacts}/persisted.json`, snapshot);
   assert.deepEqual(JSON.parse(snapshot).map((row) => Number(row.cost_usd)), [2, 12.4]);
+  const steps = run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-At', '-c', `SELECT json_agg(t) FROM (SELECT sequence, cumulative_cost_usd FROM agent_run_steps WHERE run_id='${fixture.run1}' ORDER BY sequence) t`]);
+  writeFileSync(`${artifacts}/persisted-steps.json`, steps);
+  assert.deepEqual(JSON.parse(steps).map((row) => Number(row.cumulative_cost_usd)), [0.5, 2]);
   writeFileSync(`${artifacts}/fixture.json`, JSON.stringify(fixture, null, 2));
   env.PAGES_FIXTURE = `${artifacts}/fixture.json`;
   const browser = (phase) => {
@@ -41,9 +44,11 @@ export async function reviewPages({ root, artifacts, env, request, token, run, c
     return JSON.parse(readFileSync(`${env.PRODUCT_E2E_ARTIFACTS}/result.json`, 'utf8'));
   };
   const before = browser('production');
-  assert.deepEqual(before.failures.filter((row) => !row.blocked), [], 'Unrelated production assertions must pass');
+  assert(before.rows.some((row) => row.name === 'PAGE_SESSION_TIMELINE' && row.result === 'PASS'), 'Production timeline must pass before its mutation control');
   const image = run('docker', [...composeArgs, 'images', '-q', 'client']);
   const tag = run('docker', ['image', 'inspect', image, '--format', '{{index .RepoTags 0}}']);
+  const retained = `${tag.split(':')[0]}:pages-production`;
+  run('docker', ['image', 'tag', image, retained]);
   const source = `${artifacts}/mutation-source`;
   for (const path of run('git', ['ls-files', '-z']).split('\0').filter(Boolean)) {
     mkdirSync(dirname(`${source}/${path}`), { recursive: true });
@@ -55,16 +60,17 @@ export async function reviewPages({ root, artifacts, env, request, token, run, c
   writeFileSync(timeline, original.replace('Step {step.sequence', 'Broken {step.sequence'));
   try {
     env.CLIENT_DIR = source;
-    compose('up', '-d', '--build', '--wait', 'client');
+    compose('up', '-d', '--build', '--no-deps', '--wait', 'client');
     const broken = browser('mutation');
     assert(broken.failures.some((row) => row.name === 'PAGE_SESSION_TIMELINE' && !row.blocked), 'Compiled production mutation must fail PAGE_SESSION_TIMELINE');
+    assert.deepEqual(broken.failures.filter((row) => row.name !== 'PAGE_SESSION_TIMELINE').map((row) => row.name), before.failures.map((row) => row.name), 'Mutation must add only the intended timeline failure');
   } finally {
     env.CLIENT_DIR = root;
-    run('docker', ['image', 'tag', image, tag]);
-    compose('up', '-d', '--no-build', '--wait', 'client');
+    run('docker', ['image', 'tag', retained, tag]);
+    compose('up', '-d', '--no-build', '--no-deps', '--wait', 'client');
+    run('docker', ['image', 'rm', retained]);
   }
   const restored = browser('restored');
-  assert.deepEqual(restored.failures.filter((row) => !row.blocked), [], 'Restored production must pass unrelated checks');
   assert.deepEqual(restored.failures.map((row) => row.name), before.failures.map((row) => row.name), 'Identical persisted inputs and restored output');
-  assert.equal(restored.failures.length, 0, 'Strict known #557/#559 checks block overall acceptance; never passing exemptions');
+  assert.equal(restored.failures.length, 0, 'Every strict assertion must pass, including recorded costs and linked sessions');
 }
