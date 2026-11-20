@@ -7,7 +7,14 @@ The wrapper owns the heavy lock; do not wrap it in another `heavy.sh`.
 Run without `--preflight` for the guided, headed production-browser checklist.
 This is an observation tool, not a numeric oracle or a passing acceptance test.
 
-Run `bash scripts/verify/walkthrough-191.sh --isolated` for the second-run
+Set `WALKTHROUGH_BACKEND` to a clean detached copy of the published API
+development revision, then run `bash scripts/verify/walkthrough-191.sh --isolated`.
+Never point it at a concurrently edited backend checkout. For example, clone
+the local API repository with `git clone --shared --no-checkout`, verify the
+published SHA with `git ls-remote origin refs/heads/reviews/development`, and
+check out that exact SHA detached in the copy. This excludes unpublished edits
+and local environment files without changing the shared fixture helpers.
+The isolated mode provides a
 scripted-worker observation. This owns a fresh uniquely named Compose project,
 ephemeral ports and synthetic local bootstrap account, reuses the committed
 `auth-fixture.mjs` unchanged, and tears down only its own project on normal exit
@@ -19,7 +26,7 @@ The isolated mode uses real headless Chromium and the production Docker client,
 not mocked HTTP, injected authentication or a replacement UI. It signs in and
 selects the synthetic organization through the UI. The timed segment begins once
 Overview metrics load; it clicks the 7-day preset, reads the visible metrics,
-then expands each attention category. It records actual DOM click events and
+then toggles each attention category. It records actual DOM click events and
 screenshots per question at 1280px, plus one 390px screenshot/overflow observation.
 Timing is scripted browser execution, **not manual owner deliberation time**.
 Text capture does not automatically validate an answer: the worker must interpret
@@ -71,9 +78,10 @@ on success, failure and signals. The checklist creates no Docker resources.
    includes transitions and screenshot overhead, excludes the subsequent comparison.
    More than three clicks, NOT FOUND or combined time >=300 seconds is a failure.
 6. Compare each visible value with archived persisted SQL and captured real HTTP.
-   Record exact values and differences. Preserve root agent-ops#557 linked-session
-   attribution and #559 recorded-versus-estimated discrepancies; do not redefine their
-   semantics or create duplicates. An answer is not validated merely by being visible.
+   Record exact values and differences. Root agent-ops#557 and #559 are now closed;
+   their historical discrepancies below are not current blockers or current proof.
+   Preserve their strict semantics and reuse matching follow-ups rather than creating
+   duplicates. An answer is not validated merely by being visible.
 7. File only distinct measured defects, with command, expected/actual, screenshots,
    `found-by:agent`, `wave:W21`, `area:client`, priority/status and type labels.
 
@@ -179,3 +187,90 @@ hosted GitHub attachments. All three desktop captures were inspected by the work
 Cleanup archived evidence before deleting the stack; owned containers, networks
 and volumes each returned zero survivors (exit 0). No source mutation was run;
 no product assertion was introduced. Manual observations are not mutation proof.
+
+## Owner-authorized completion — 2026-11-20 (final run)
+
+This section supersedes historical acceptance and blocker statements above.
+Starting published head was `b4ac39a4f1f522483ca640e724c278ebb9a6be2f`.
+Fetched and merged published client development
+`b47f21f84220bf7bf605024609101902e2b21f59` without force-pushing, preserving
+inherited tracked artifacts. Tested UI merge head:
+`8b99695a78d3ec43cf147d27bd635e5b2c0eb9fe`; the only uncommitted executable
+change at observation was the walkthrough backend-path configuration.
+
+The API was a fresh local shared clone, detached at published development
+`20fb461492e505c8b66bc588f8fbd00d4c918219`, verified with `git ls-remote`.
+No dirty or concurrent backend source, local environment files or shared listeners
+were consumed. No shared fixture, production UI, API, contract or CI was edited.
+The required root `docs/ux-principles.md` does not exist in this client checkout;
+the original brief's `/Users/zeross/agent-ops/docs/ux-principles.md` was read instead.
+
+### Commands and current results
+
+```sh
+WALKTHROUGH_BACKEND="$PWD/.agent-runs/W21c-walkthrough-191/owner-completion/backend" \
+  bash scripts/verify/walkthrough-191.sh --isolated
+pnpm install --frozen-lockfile && pnpm typecheck && pnpm lint && pnpm test && \
+  /Users/zeross/agent-ops/scripts/heavy.sh pnpm build
+```
+
+Each command ran once and exited 0. The wrapper owns the browser/Compose heavy
+lock; it was not nested. Gate: **76 test files, 313 tests passed**, Rspack compiled
+with 3 bundle-size warnings in 496 ms. Existing test stderr remains in `gate.log`.
+
+Fresh project `w21c-walkthrough-191-97212`, API/client/Postgres ports
+50370/50371/50372. Real Chromium signed in and selected synthetic organization A
+through the UI; the unchanged sanctioned fixture also verified B isolation.
+SQL persisted five A sessions, four MRs, issue #188 and three recent failed CI
+attempts. All recorded costs remain NULL. No unsupported cost field was sent.
+
+| Question | Visible answer | Clicks | Scripted seconds | Strict assessment |
+| --- | --- | ---: | ---: | --- |
+| AI cost this week? | $9.30 priced subtotal, Partial spend; auth-fixture excluded; $2.70 cache savings | 1 | 0.033981458 | FAIL: complete weekly/recorded spend unavailable; rolling Nov 14–20 is not a calendar week. |
+| Getting more efficient? | Cache 33.3%, +24.2 percentage points; rework 0%, unchanged; partial cost/MR $9.30 | 0 | 0.001550125 | Cache improved; FAIL for complete cost-efficiency answer, explicitly suppressed until prices are complete. |
+| Needs attention? | 1 missing model price; model auth-fixture and Set model prices visible before the category toggle | 1 | 0.032082791 | Available and consistent with SQL/HTTP. #233 is closed by #234 and does not reproduce. |
+
+Combined **0.250615083 seconds** includes screenshot overhead. All paths were
+within three clicks and the automated segment below 300 seconds, but these are
+**not human reading/answer-formulation measurements**. Overall acceptance remains
+**measured-answer-failure**, not a passing exemption. The observer's exit 0 means
+capture completed, not that unavailable answers passed.
+
+Independent comparison uses persisted counters and configured rate HTTP, not
+production arithmetic: each current priced session costs
+`1M*3/M + 0.5M*0.3/M + 0.1M*15/M = $4.65`; previous sessions cost $4.53 each.
+SQL dates Nov 18/19 versus Nov 11/12 yield current/previous priced subtotals
+$9.30/$9.06, one/two merged MRs and $9.30/$4.53 estimated cost per merged MR.
+These match real `/overview` HTTP; full monetary comparisons are not visible.
+Current cache `1M/3.0001M = 33.3322%`, prior `0.2M/2.2M = 9.0909%`, delta
+24.2413 percentage points and savings `1M*(3-0.3)/M = $2.70` agree with HTTP/UI.
+No repeat sessions matches rework 0. No recorded-cost reconciliation is claimed.
+Recent failing CI and the unlinked session are below the 24-hour attention rules.
+HTTP reports `models_without_price=["auth-fixture"]`, missing-price HTTP reports
+one run/100 tokens, and the UI now supplies the matching action even though API
+`attention=[]`. The category starts expanded; the observer toggles it closed for
+question 3. The model/action are captured in question 1/2 screenshots, not the
+collapsed question 3 screenshot. No claim of following that action is made.
+
+All four 1280/390 screenshots were inspected; mobile horizontal overflow was
+false. Canonical evidence (commands, SQL, HTTP, results, screenshots, review):
+`/Users/zeross/agent-ops-client/.agent-runs/W21c-walkthrough-191/owner-completion/`.
+The original `1795172212143-isolated` archive and all historical archives remain.
+Teardown and three label-filtered queries verified **zero owned containers,
+networks and volumes**. Worktree-removal outcome is recorded in the PR.
+
+### Remaining acceptance and controls
+
+No product assertion was added and no disposable identical-input production
+mutation was executed. Screenshots, timing and historical SQL harness failure
+are not failing controls. Human timing, mobile interaction, dark theme, hosted
+screenshot attachments and a named mutation/restoration pair are tracked in
+[#239](https://github.com/0Hoag/agent-ops-client/issues/239). Fully priced monetary
+period comparisons reuse [#235](https://github.com/0Hoag/agent-ops-client/issues/235).
+Recorded-cost follow-up [#238](https://github.com/0Hoag/agent-ops-client/issues/238)
+was not exercised with this NULL-cost fixture; #236/#237 do not match this path.
+Root #557/#559 are closed, not current blockers; their fixes are not independently
+certified here. No real company reconciliation (owner-dropped), backend/UI fixes,
+extra run, merge or promotion is included. Per the final owner decision the green
+gate permits readiness with these gaps tracked; exact-head CI is for the
+coordinator to check, not a worker wait or a merge authorization.

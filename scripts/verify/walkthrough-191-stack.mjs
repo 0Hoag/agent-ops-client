@@ -6,7 +6,9 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { seed } from './auth-fixture.mjs';
 
-const backend = '/Users/zeross/agent-ops';
+// Completion runs supply a detached copy of the published API, never a dirty checkout.
+const backend = process.env.WALKTHROUGH_BACKEND;
+if (!backend) throw new Error('WALKTHROUGH_BACKEND must identify an isolated published API checkout');
 const dir = resolve('.agent-runs/W21c-walkthrough-191', `${Date.now()}-isolated`);
 const archive = `/Users/zeross/agent-ops-client/.agent-runs/W21c-walkthrough-191/${dir.split('/').at(-1)}`;
 mkdirSync(dir, { recursive: true });
