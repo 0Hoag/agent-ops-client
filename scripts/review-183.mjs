@@ -7,14 +7,15 @@ import { dirname, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
+const numbersReview = process.argv.includes('--numbers-184');
 const accessibilityReview = process.argv.includes('--accessibility-187');
 const backend = '/Users/zeross/agent-ops';
 const baselineRevision = '6bf1525350b9976432d04ed259a4b0b2c791ac14';
 const overviewReview = process.argv.includes('--overview-195');
 const usageReview = process.argv.includes('--usage-199');
 const compare = process.argv.includes('--compare') || overviewReview || usageReview;
-const browserScript = accessibilityReview ? 'scripts/review-187-browser.mjs' : overviewReview ? 'scripts/review-195-browser.mjs' : 'scripts/review-183-browser.mjs';
-const artifacts = resolve(accessibilityReview ? '.agent-runs/W18R12-accessibility-187' : usageReview ? '.agent-runs/W18-usage-next-step-199' : overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
+const browserScript = numbersReview ? 'scripts/review-184-browser.mjs' : accessibilityReview ? 'scripts/review-187-browser.mjs' : overviewReview ? 'scripts/review-195-browser.mjs' : 'scripts/review-183-browser.mjs';
+const artifacts = resolve(numbersReview ? '.agent-runs/W18R9-numbers-184' : accessibilityReview ? '.agent-runs/W18R12-accessibility-187' : usageReview ? '.agent-runs/W18-usage-next-step-199' : overviewReview ? '.agent-runs/W18-overview-truth-195' : '.agent-runs/W18R8-browser-183');
 mkdirSync(artifacts, { recursive: true });
 const project = `${accessibilityReview ? 'w18r12-187' : 'w18r8-183'}-${process.pid}`;
 const env = { ...process.env, CLIENT_DIR: root, POSTGRES_PASSWORD: randomBytes(24).toString('hex'), JWT_SECRET: randomBytes(32).toString('hex'), REPOSITORY_ENCRYPTION_KEY: randomBytes(16).toString('hex'), AGENT_RUN_TOKEN: randomBytes(24).toString('hex'), PRODUCT_E2E_EMAIL: 'review-183@example.invalid', PRODUCT_E2E_PASSWORD: randomBytes(24).toString('hex'), PRODUCT_E2E_ARTIFACTS: artifacts };
@@ -119,6 +120,10 @@ try {
   `;
   writeFileSync(`${artifacts}/seed.sql`, sql);
   run('docker', [...composeArgs, 'exec', '-T', 'postgres', 'psql', '-U', 'agent_ops', '-d', 'agent_ops', '-v', 'ON_ERROR_STOP=1'], { input: sql });
+  if (numbersReview) {
+    const { reviewNumbers } = await import('./review-184.mjs');
+    await reviewNumbers({ env, artifacts, run, compose, composeArgs, root });
+  }
   stage = 'browser';
   if (compare) {
     env.PRODUCT_E2E_ARTIFACTS = `${artifacts}/before`;
