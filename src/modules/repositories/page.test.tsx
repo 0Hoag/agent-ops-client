@@ -20,11 +20,28 @@ function setup() {
 }
 
 describe('RepositoriesPage', () => {
+  it.each([
+    ['gitlab', '', 'https://gitlab.com'],
+    ['gitlab', 'https://gitlab.vnetwork.dev', 'https://gitlab.vnetwork.dev'],
+    ['github', '', 'https://api.github.com'],
+  ])('tests %s with base URL %s', async (provider, inputUrl, expectedUrl) => {
+    setup();
+    fireEvent.change(await screen.findByLabelText('Provider'), { target: { value: provider } });
+    fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'acme/project' } });
+    if (provider === 'gitlab') fireEvent.change(screen.getByPlaceholderText('https://gitlab.vnetwork.dev'), { target: { value: inputUrl } });
+    fireEvent.change(screen.getByLabelText('Backfill credential'), { target: { value: 'synthetic-token' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Test connection' }));
+    await waitFor(() => {
+      const call = request.mock.calls.find(([config]) => config.url === '/api/v1/repositories/test' && config.method === 'POST');
+      expect(call).toBeTruthy();
+      expect(JSON.parse(call![0].data as string)).toMatchObject({ provider, full_name: 'acme/project', base_url: expectedUrl });
+    });
+  });
   it('tests candidate provider access and syncs a saved repository through HTTP', async () => {
     setup();
     fireEvent.change(await screen.findByLabelText('Provider'), { target: { value: 'gitlab' } });
     fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'acme/new' } });
-    fireEvent.change(screen.getByLabelText('Self-hosted base URL'), { target: { value: 'https://git.example' } });
+    fireEvent.change(screen.getByPlaceholderText('https://gitlab.vnetwork.dev'), { target: { value: 'https://git.example' } });
     fireEvent.change(screen.getByLabelText('Backfill credential'), { target: { value: 'synthetic-token' } });
     fireEvent.click(screen.getByRole('button', { name: 'Test connection' }));
     await waitFor(() => expect(request.mock.calls.some(([config]) => config.url === '/api/v1/repositories/test' && config.method === 'POST' && JSON.parse(config.data as string).token === 'synthetic-token')).toBe(true));
@@ -64,7 +81,7 @@ describe('RepositoriesPage', () => {
     const queryClient = setup();
     fireEvent.change(await screen.findByLabelText('Provider'), { target: { value: 'gitlab' } });
     fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'acme/new' } });
-    fireEvent.change(screen.getByLabelText('Self-hosted base URL'), { target: { value: 'https://git.internal' } });
+    fireEvent.change(screen.getByPlaceholderText('https://gitlab.vnetwork.dev'), { target: { value: 'https://git.internal' } });
     fireEvent.change(screen.getByLabelText('Webhook credential'), { target: { value: 'credential' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create repository' }));
     expect(await screen.findByText('one-time-secret')).toBeTruthy();

@@ -4,7 +4,8 @@ import { syncRepository, testRepository } from '../services/repositories';
 
 /** Tests unsaved credentials without creating a repository or retaining mutation variables. */
 export function TestConnection({ form }: { form: RepositorysettingsCreateRequest }) {
-  const test = useMutation({ mutationFn: () => testRepository({ provider: form.provider, full_name: form.full_name, base_url: form.gitlab_base_url || 'https://api.github.com', token: form.backfill_token }) });
+  const defaultBaseUrl = form.provider === 'gitlab' ? 'https://gitlab.com' : 'https://api.github.com';
+  const test = useMutation({ mutationFn: () => testRepository({ provider: form.provider, full_name: form.full_name, base_url: form.provider === 'gitlab' ? form.gitlab_base_url || defaultBaseUrl : defaultBaseUrl, token: form.backfill_token }) });
   return <div><button type="button" disabled={test.isPending || !form.full_name || !form.backfill_token} onClick={() => test.mutate()}>Test connection</button>
     {test.isSuccess && <p role="status">Connected to {test.data?.project_name}.</p>}
     {test.isError && <p role="alert">Unable to connect. Check the provider URL, repository name and backfill credential, then retry Test connection.</p>}
