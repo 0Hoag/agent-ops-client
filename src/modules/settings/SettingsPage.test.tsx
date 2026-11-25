@@ -32,9 +32,9 @@ describe('SettingsPage', () => {
     render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
     await screen.findByRole('option', { name: 'team/widgets' });
     fireEvent.change(screen.getByLabelText('Repository'), { target: { value: 'repo-a' } });
-    expect((screen.getByRole('button', { name: 'Copy command' }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.change(screen.getByLabelText('Transcript file path'), { target: { value: '/sessions/example.jsonl' } });
-    expect(screen.getByText(/agentops push.*--repository-id 'repo-a'/)).toBeTruthy();
+    expect((screen.getByRole('button', { name: 'Copy setup command' }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByText(/agentops setup claude.*--repository-id 'repo-a'/)).toBeTruthy();
+    expect(screen.getByText(/api\/v1\/agent-runs/)).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Check first session progress' }).getAttribute('href')).toBe('/#getting-started');
   });
 
@@ -43,8 +43,7 @@ describe('SettingsPage', () => {
     localStorage.setItem('agent-ops-repository', 'old-org-repository');
     render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
     await screen.findByRole('link', { name: 'Connect a repository first' });
-    fireEvent.change(screen.getByLabelText('Transcript file path'), { target: { value: '/sessions/example.jsonl' } });
-    expect((screen.getByRole('button', { name: 'Copy command' }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole('button', { name: 'Copy setup command' }) as HTMLButtonElement).disabled).toBe(true);
     expect(screen.queryByText(/agentops push/)).toBeNull();
   });
 
