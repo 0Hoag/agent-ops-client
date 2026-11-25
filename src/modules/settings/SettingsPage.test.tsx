@@ -31,8 +31,11 @@ describe('SettingsPage', () => {
     }));
     render(<QueryClientProvider client={new QueryClient()}><SettingsPage /></QueryClientProvider>);
     await screen.findByRole('option', { name: 'team/widgets' });
+    const copyButton = screen.getByRole('button', { name: 'Copy setup command' }) as HTMLButtonElement;
+    expect(copyButton.disabled).toBe(true);
+    expect(screen.queryByText(/agentops setup claude.*--repository-id 'repo-a'/)).toBeNull();
     fireEvent.change(screen.getByLabelText('Repository'), { target: { value: 'repo-a' } });
-    expect((screen.getByRole('button', { name: 'Copy setup command' }) as HTMLButtonElement).disabled).toBe(true);
+    expect(copyButton.disabled).toBe(false);
     expect(screen.getByText(/agentops setup claude.*--repository-id 'repo-a'/)).toBeTruthy();
     expect(screen.getByText(/api\/v1\/agent-runs/)).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Check first session progress' }).getAttribute('href')).toBe('/#getting-started');
