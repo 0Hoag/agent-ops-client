@@ -23,6 +23,7 @@ export interface AgentrunAgentRun {
   input_tokens?: number;
   issue_numbers?: number[];
   model?: string;
+  organization_id?: string;
   output_tokens?: number;
   pr_number?: number;
   reasoning_tokens?: number;
@@ -69,7 +70,7 @@ export interface AgentrunCreateInput {
   output_tokens?: number;
   pr_number?: number;
   reasoning_tokens?: number;
-  repository_id: string;
+  repository_id?: string;
   session_id?: string;
   started_at: string;
   wave: string;

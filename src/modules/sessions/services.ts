@@ -13,7 +13,7 @@ export async function getSessionRuns(runId: string, repositoryId?: string) {
     if (response.data.length < 100) break;
   }
   const selected = rows.find((run) => run.id === runId);
-  return selected ? rows.filter((run) => run.id === selected.id || Boolean(selected.session_id && run.session_id === selected.session_id && run.repository_id === selected.repository_id)) : [];
+    return selected ? rows.filter((run) => run.id === selected.id || Boolean(selected.session_id && run.session_id === selected.session_id && run.repository_id === selected.repository_id)) : [];
 }
 export function useSessionOrganization() {
   const [generation, setGeneration] = useState(0);

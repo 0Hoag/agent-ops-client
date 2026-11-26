@@ -11,10 +11,11 @@ import { Sessions } from '../usage/Evidence';
 const requests = vi.spyOn(http, 'request');
 let organization = 'org-a';
 let mode = 'data';
-const run = { id: 'private-run', session_id: 'private-session', repository_id: 'private-repo', harness: 'Claude', branch: 'feat/detail', model: 'Sonnet', started_at: '2026-11-11T10:00:00Z', cost_usd: 4, pr_number: 42 };
+const run = { id: 'private-run', session_id: 'private-session', repository_id: 'private-repo', harness: 'Claude', branch: 'feat/detail', model: 'Sonnet', started_at: '2026-11-11T10:00:00Z', cost_usd: 4, input_tokens: 1000, output_tokens: 700, pr_number: 42 };
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
-  render(<QueryClientProvider client={client}><MemoryRouter initialEntries={['/usage/sessions?run=private-run&repository=private-repo']}><SessionPage /></MemoryRouter></QueryClientProvider>);
+  const search = mode === 'local' ? '?run=local-run' : '?run=private-run&repository=private-repo';
+  render(<QueryClientProvider client={client}><MemoryRouter initialEntries={[`/usage/sessions${search}`]}><SessionPage /></MemoryRouter></QueryClientProvider>);
   return client;
 }
 beforeEach(() => {
@@ -29,7 +30,7 @@ beforeEach(() => {
         { sequence: 2, tool_name: 'Run tests', cumulative_cost_usd: 4, cache_hit: false, input_tokens: 1200, started_at: run.started_at },
         { sequence: 1, tool_name: 'Read files', cumulative_cost_usd: 1, cache_hit: true, input_tokens: 1000, started_at: run.started_at },
       ] } }
-      : { data: organization === 'org-b' || mode === 'empty' ? [] : mode === 'missing' ? [{ ...run, cost_usd: undefined }] : [run, { ...run, id: 'second-run', cost_usd: 2 }, { ...run, id: 'unrelated', session_id: 'other', cost_usd: 100 }] };
+      : { data: organization === 'org-b' || mode === 'empty' ? [] : mode === 'local' ? [{ ...run, id: 'local-run', repository_id: null, session_id: 'local-session', pr_number: undefined }] : mode === 'missing' ? [{ ...run, cost_usd: undefined }] : [run, { ...run, id: 'second-run', cost_usd: 2 }, { ...run, id: 'unrelated', session_id: 'other', cost_usd: 100 }] };
     return Promise.resolve({ data, status: 200, headers: {}, config } as never);
   });
 });
@@ -57,6 +58,14 @@ it('explains actual session cost, real MR URL, sorted tools, incremental expensi
   expect(screen.getAllByText('Step 2 · Run tests')[0].parentElement?.textContent).toContain('$3.00');
   expect(document.body.textContent).not.toContain('private-');
   expect(document.querySelector('time')?.title).toBe('Nov 11, 2026, 10:00:00 AM UTC');
+});
+it('identifies a local session and does not invent repository or MR links', async () => {
+  mode = 'local'; setup();
+  await screen.findByText(/Claude · Local session · No repository/);
+    expect(screen.queryByText('Linked merge requests')).toBeNull();
+    expect(screen.queryByText(/Link this session to a merge request/)).toBeNull();
+  expect(screen.queryByRole('link', { name: /MR #/ })).toBeNull();
+  expect(requests.mock.calls.some(([config]) => config.url?.includes('/agent-runs?') && config.url.includes('repository_id='))).toBe(false);
 });
 it('hides previous tenant immediately and keys queries by validated organization', async () => {
   const client = setup(); await screen.findByText('$6.00 · USD');
