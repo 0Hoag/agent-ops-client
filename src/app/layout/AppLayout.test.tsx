@@ -5,10 +5,42 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, expect, it, vi } from 'vitest';
 import { AppLayout } from './AppLayout';
 
+function installStorage() {
+  const values = new Map<string, string>();
+  const storage = { get length() { return values.size; }, clear: () => values.clear(), getItem: (key: string) => values.get(key) ?? null, key: (index: number) => [...values.keys()][index] ?? null, removeItem: (key: string) => { values.delete(key); }, setItem: (key: string, value: string) => { values.set(key, String(value)); } };
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: storage });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: storage });
+}
+
 const { listOrganizations } = vi.hoisted(() => ({ listOrganizations: vi.fn() }));
 vi.mock('../../modules/auth/services/auth', () => ({ hasToken: () => true, listOrganizations, validateSession: async (ready: (id: string) => void) => { ready('org'); return true; } }));
 vi.mock('../../shared/api/client', () => ({ api: { api: { v1RepositoriesList: async () => ({ data: { data: [] } }) } } }));
 afterEach(cleanup);
+
+function renderLayout() {
+  return render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><AppLayout><h2>Page content</h2></AppLayout></MemoryRouter></QueryClientProvider>);
+}
+
+it('defaults to dark mode and exposes an accessible light-mode action', () => {
+  installStorage();
+  window.localStorage.removeItem('agent-ops-theme');
+  renderLayout();
+  expect(document.documentElement.dataset.theme).toBe('dark');
+  expect(screen.getByRole('button', { name: 'Switch to light mode' }).getAttribute('aria-pressed')).toBe('true');
+});
+
+it('toggles to light mode and persists the choice across remounts', () => {
+  installStorage();
+  window.localStorage.removeItem('agent-ops-theme');
+  const view = renderLayout();
+  fireEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }));
+  expect(document.documentElement.dataset.theme).toBe('light');
+  expect(window.localStorage.getItem('agent-ops-theme')).toBe('light');
+  view.unmount();
+  renderLayout();
+  expect(document.documentElement.dataset.theme).toBe('light');
+  expect(screen.getByRole('button', { name: 'Switch to dark mode' }).getAttribute('aria-pressed')).toBe('false');
+});
 
 it('keeps the header above the content in one flexible column beside navigation', () => {
   render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><AppLayout><h2>Page content</h2></AppLayout></MemoryRouter></QueryClientProvider>);
