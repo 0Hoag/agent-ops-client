@@ -34,15 +34,15 @@ function Detail({ organizationId }: { organizationId: string }) {
     <ProductTerms />
     <Card><p>{readable(first.harness, 'Sync tool name')} · {first.repository_id ? readable(first.branch, 'Sync branch name') : 'Local session · No repository'} · <RelativeTime value={first.started_at} /></p>
       {first.repository_id && <>
-      <h2 className="mt-3 font-semibold">Linked merge requests</h2>
-      {repositories.isPending && <p role="status">Loading repository metadata…</p>}
-      {repositories.isError && <p role="alert">Unable to load repository metadata. <button onClick={() => void repositories.refetch()}>Retry</button></p>}
-      {!links.size && <p>Link this session to a merge request in your tool telemetry, then sync it.</p>}
-      {[...links].map(([key, link]) => {
-        const repo = repositories.data?.find((row) => row.id === link.repositoryId);
-        const url = mergeRequestUrl(repo, link.number);
-        return <p key={key}>{url ? <a className="underline" href={url} target="_blank" rel="noreferrer">{readable(repo?.full_name, 'Repository')} · MR #{link.number}</a> : `MR #${link.number} — sync repository provider and URL in Settings to enable this link.`}</p>;
-      })}
+        <h2 className="mt-3 font-semibold">Linked merge requests</h2>
+        {repositories.isPending && <p role="status">Loading repository metadata…</p>}
+        {repositories.isError && <p role="alert">Unable to load repository metadata. <button onClick={() => void repositories.refetch()}>Retry</button></p>}
+        {!links.size && <p>Link this session to a merge request in your tool telemetry, then sync it.</p>}
+        {[...links].map(([key, link]) => {
+          const repo = repositories.data?.find((row) => row.id === link.repositoryId);
+          const url = mergeRequestUrl(repo, link.number);
+          return <p key={key}>{url ? <a className="underline" href={url} target="_blank" rel="noreferrer">{readable(repo?.full_name, 'Repository')} · MR #{link.number}</a> : `MR #${link.number} — sync repository provider and URL in Settings to enable this link.`}</p>;
+        })}
       </>}
     </Card>
     <h2 className="text-lg font-semibold">Time, tools, tokens and cache trend</h2>

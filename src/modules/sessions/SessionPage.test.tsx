@@ -62,8 +62,8 @@ it('explains actual session cost, real MR URL, sorted tools, incremental expensi
 it('identifies a local session and does not invent repository or MR links', async () => {
   mode = 'local'; setup();
   await screen.findByText(/Claude · Local session · No repository/);
-    expect(screen.queryByText('Linked merge requests')).toBeNull();
-    expect(screen.queryByText(/Link this session to a merge request/)).toBeNull();
+  expect(screen.queryByText('Linked merge requests')).toBeNull();
+  expect(screen.queryByText(/Link this session to a merge request/)).toBeNull();
   expect(screen.queryByRole('link', { name: /MR #/ })).toBeNull();
   expect(requests.mock.calls.some(([config]) => config.url?.includes('/agent-runs?') && config.url.includes('repository_id='))).toBe(false);
 });
