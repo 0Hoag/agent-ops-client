@@ -30,7 +30,7 @@ The same standalone checks run in GitHub Actions for pull requests and pushes to
 
 ## Generated API
 
-`src/shared/api/swagger.json` is the pinned Swagger 2.0 contract generated from `0Hoag/agent-ops` commit `64a74a2761d5b738aaa81c81dea41ce03be718ec` (`api/docs/swagger.json`, SHA-256 `f2f92b03322b3d1559cc4495b5a6a428250b860dbc8f041be11afd382d2679df`). Generate it with `make -C api swagger` (swag v1.16.6), then copy the output byte-for-byte, without adding a trailing newline. The snapshot byte hash is checked against this provenance by `src/shared/api/swagger-bytes-contract.test.ts`. Regenerate the checked-in TypeScript client with `pnpm generate:api`; `swagger-typescript-api` 13.1.1 and its templates are pinned in the lockfile and `scripts/api-templates/`.
+`src/shared/api/swagger.json` is the pinned Swagger 2.0 contract generated from `0Hoag/agent-ops` API PR #667 commit `dfd84cf07f90085474a3ff9233f30cc902dcf06d` (`api/docs/swagger.json`, SHA-256 `f635dd8a8b72db2da96be31bbdff161602e2f67f596b6c64bf526630d5e8666e`). Generate it with `make -C api swagger` (swag v1.16.6), then copy the output byte-for-byte, without adding a trailing newline. The snapshot byte hash is checked against this provenance by `src/shared/api/swagger-bytes-contract.test.ts`. Regenerate the checked-in TypeScript client with `pnpm generate:api`; `swagger-typescript-api` 13.1.1 and its templates are pinned in the lockfile and `scripts/api-templates/`.
 
 ## Insights API smoke
 

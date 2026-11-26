@@ -32,16 +32,18 @@ function Detail({ organizationId }: { organizationId: string }) {
     <header><h1 className="text-2xl font-semibold">Session detail</h1><p className="mt-2 text-xl">{money(total(runs.map((run) => run.cost_usd)))} · USD</p><p>Actual recorded cost across {runs.length} {runs.length === 1 ? 'run' : 'runs'} in this session; not an estimate.</p></header>
     <a href="/usage" className="underline">Back to Usage</a>
     <ProductTerms />
-    <Card><p>{readable(first.harness, 'Sync tool name')} · {readable(first.branch, 'Sync branch name')} · <RelativeTime value={first.started_at} /></p>
-      <h2 className="mt-3 font-semibold">Linked merge requests</h2>
-      {repositories.isPending && <p role="status">Loading repository metadata…</p>}
-      {repositories.isError && <p role="alert">Unable to load repository metadata. <button onClick={() => void repositories.refetch()}>Retry</button></p>}
-      {!links.size && <p>Link this session to a merge request in your tool telemetry, then sync it.</p>}
-      {[...links].map(([key, link]) => {
-        const repo = repositories.data?.find((row) => row.id === link.repositoryId);
-        const url = mergeRequestUrl(repo, link.number);
-        return <p key={key}>{url ? <a className="underline" href={url} target="_blank" rel="noreferrer">{readable(repo?.full_name, 'Repository')} · MR #{link.number}</a> : `MR #${link.number} — sync repository provider and URL in Settings to enable this link.`}</p>;
-      })}
+    <Card><p>{readable(first.harness, 'Sync tool name')} · {first.repository_id ? readable(first.branch, 'Sync branch name') : 'Local session · No repository'} · <RelativeTime value={first.started_at} /></p>
+      {first.repository_id && <>
+        <h2 className="mt-3 font-semibold">Linked merge requests</h2>
+        {repositories.isPending && <p role="status">Loading repository metadata…</p>}
+        {repositories.isError && <p role="alert">Unable to load repository metadata. <button onClick={() => void repositories.refetch()}>Retry</button></p>}
+        {!links.size && <p>Link this session to a merge request in your tool telemetry, then sync it.</p>}
+        {[...links].map(([key, link]) => {
+          const repo = repositories.data?.find((row) => row.id === link.repositoryId);
+          const url = mergeRequestUrl(repo, link.number);
+          return <p key={key}>{url ? <a className="underline" href={url} target="_blank" rel="noreferrer">{readable(repo?.full_name, 'Repository')} · MR #{link.number}</a> : `MR #${link.number} — sync repository provider and URL in Settings to enable this link.`}</p>;
+        })}
+      </>}
     </Card>
     <h2 className="text-lg font-semibold">Time, tools, tokens and cache trend</h2>
     {runs.map((run, index) => <section className="space-y-3" key={run.id ?? index}><h3>{readable(run.model, 'Sync model name')} · {readable(run.harness, 'Sync tool name')} · {money(run.cost_usd)}</h3><Timeline organizationId={organizationId} runId={run.id} /></section>)}

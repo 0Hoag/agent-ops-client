@@ -19,7 +19,11 @@ function respond(config: { url?: string }) {
   let data: unknown;
   if (url.pathname.endsWith('/session')) data = { organization_id: 'org-a' };
   else if (url.pathname.endsWith('/repositories')) data = { data: [{ id: 'repo-1', full_name: 'team/widgets' }] };
-  else if (url.pathname.endsWith('/agent-runs')) data = { data: mode === 'empty' ? [] : [run, { ...run, id: 'run-2', cost_usd: 2 }] };
+  else if (url.pathname.endsWith('/agent-runs')) {
+    const runs = mode === 'empty' ? [] : [run, { ...run, id: 'run-2', cost_usd: 2 }, ...(mode === 'local' && !url.searchParams.get('repository_id') ? [{ ...run, id: 'local-run', session_id: 'local-session', repository_id: null, pr_number: undefined, harness: 'Claude Code', model: 'Opus' }] : [])];
+    const repositoryId = url.searchParams.get('repository_id');
+    data = { data: repositoryId ? runs.filter((item) => item.repository_id === repositoryId) : runs };
+  }
   else if (url.pathname.endsWith('/overview')) data = { data: { current: mode === 'missing' ? {} : { cache_savings_usd: 1.5 } } };
   else data = { data: { unknown_price_count: mode === 'unknown' ? 1 : 0, buckets: mode === 'empty' ? [] : [{ start: '2026-11-11', actual_cost_usd: mode === 'missing-cost' ? undefined : mode === 'zero' ? 0 : 4, unknown_price_count: mode === 'unknown' ? 1 : 0 }, { start: '2026-11-11', actual_cost_usd: mode === 'zero' ? 0 : 2 }] } };
   return Promise.resolve({ data, status: 200, headers: {}, config } as never);
@@ -68,6 +72,31 @@ describe('Usage', () => {
     fireEvent.change(screen.getByLabelText('Date range'), { target: { value: 'Custom' } });
     fireEvent.change(screen.getByLabelText('From date'), { target: { value: '2099-01-01' } });
     expect(screen.getByRole('alert').textContent).toContain('ordered date range');
+  });
+  it('shows local sessions for all repositories, links without a repository, and excludes them for a selected repository', async () => {
+    mode = 'local'; setup();
+    const table = await screen.findByRole('table');
+    const localLink = within(table).getByRole('link', { name: /Claude Code · Local session/ });
+    expect(localLink.getAttribute('href')).toMatch(/^\/usage\/sessions\?run=local-run$/);
+    expect(within(table).getByText('No repository · Opus')).toBeTruthy();
+    expect(within(table).getByText('4K')).toBeTruthy();
+    expect(within(table).getByRole('link', { name: /Claude Code · Local session/ }).closest('td')?.getAttribute('title')).toBe('Nov 11, 2026, 10:00:00 AM UTC');
+    expect(within(table).getByText('$4.00')).toBeTruthy();
+    requests.mockImplementation((config) => {
+      const url = new URL(config.url!, 'http://fixture');
+      if (url.pathname.endsWith('/agent-runs') && url.searchParams.get('repository_id')) {
+        const filtered = [run, { ...run, id: 'run-2', cost_usd: 2 }];
+        return Promise.resolve({ data: { data: filtered }, status: 200, headers: {}, config } as never);
+      }
+      return respond(config);
+    });
+    fireEvent.change(screen.getByLabelText('Usage repository'), { target: { value: 'repo-1' } });
+    await waitFor(() => expect(requests.mock.calls.some(([config]) => new URL(config.url!, 'http://fixture').pathname.endsWith('/agent-runs') && new URL(config.url!, 'http://fixture').searchParams.get('repository_id') === 'repo-1')).toBe(true));
+    await waitFor(() => expect(requests.mock.calls.some(([config]) => {
+      const url = new URL(config.url!, 'http://fixture');
+      return url.pathname.endsWith('/agent-runs') && url.searchParams.get('repository_id') === 'repo-1';
+    })).toBe(true));
+    await waitFor(() => expect(within(screen.getByRole('table')).queryByRole('link', { name: /Claude Code · Local session/ })).toBeNull());
   });
   it('loads every API page for complete rankings and splits', async () => {
     requests.mockImplementation((config) => Promise.resolve({ data: { data: new URL(config.url!, 'http://fixture').searchParams.get('page') === '1' ? Array.from({ length: 100 }, () => run) : [run] }, status: 200 } as never));
