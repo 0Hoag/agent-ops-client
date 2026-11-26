@@ -19,3 +19,4 @@ describe('Swagger generator byte contract', () => {
     expect(sha256(drifted)).not.toBe(generatorHash);
   });
 });
+// @vitest-environment node

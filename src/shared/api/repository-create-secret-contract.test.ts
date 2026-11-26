@@ -31,3 +31,4 @@ describe('repository create secret contract', () => {
     expect(createRequest?.match(/webhook_secret\?: string;/g)).toHaveLength(1);
   });
 });
+// @vitest-environment node

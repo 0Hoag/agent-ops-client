@@ -82,3 +82,4 @@ describe('generated worker audit history contract', () => {
     expect(api.api.v1WorkersAuditHistoryList).toBeTypeOf('function');
   });
 });
+// @vitest-environment node

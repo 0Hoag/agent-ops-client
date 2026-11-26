@@ -60,3 +60,4 @@ describe('text/plain Swagger generation', () => {
     }
   });
 });
+// @vitest-environment node
