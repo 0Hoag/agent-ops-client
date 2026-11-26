@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { http } from '../../shared/http';
@@ -35,4 +36,3 @@ describe('worker audit API adapter', () => {
     expect(result.data?.[1]).toEqual({ id: 'missing', organizationID: undefined, actorID: undefined, occurredAt: undefined, createdAt: undefined, action: undefined, wave: undefined, jobID: undefined, outcome: undefined });
   });
 });
-// @vitest-environment node

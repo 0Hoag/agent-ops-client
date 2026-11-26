@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
@@ -19,4 +20,3 @@ describe('Swagger generator byte contract', () => {
     expect(sha256(drifted)).not.toBe(generatorHash);
   });
 });
-// @vitest-environment node

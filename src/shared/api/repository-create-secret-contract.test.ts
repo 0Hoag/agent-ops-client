@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import swagger from './swagger.json';
@@ -31,4 +32,3 @@ describe('repository create secret contract', () => {
     expect(createRequest?.match(/webhook_secret\?: string;/g)).toHaveLength(1);
   });
 });
-// @vitest-environment node

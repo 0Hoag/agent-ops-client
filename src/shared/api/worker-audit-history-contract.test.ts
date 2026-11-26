@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -82,4 +83,3 @@ describe('generated worker audit history contract', () => {
     expect(api.api.v1WorkersAuditHistoryList).toBeTypeOf('function');
   });
 });
-// @vitest-environment node
